@@ -2,18 +2,28 @@
 
 const express = require('express');
 const app = express();
-const stripe = require('stripe')('sk_test_51O5HvsG4lCkKqAxddRmipdQZj4KF5HGqS50Ei4MOzler4N0AbHiN3yRgAm3cX9AcTJAG0gWdbSVt4tonMNxhCQJB00PTwpaww0');
+const path = require('path');
+const stripe = require('stripe')('sk_test_51O5HvsG4lCkKqAxddRmipdQZj4KF5HGqS50Ei4MOzler4N0AbHiN3yRgAm3cX9AcTJAG0wdbSVt4tonMNxhCQJB00PTwpaww0');
 const cors = require('cors');
 
 app.use(cors());
 app.use(express.json());
 
+// ✅ Serve static frontend files (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, '../')));
+
+// ✅ Route to serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../index.html'));
+});
+
+// ✅ Stripe Payment Route
 app.post('/create-payment-intent', async (req, res) => {
   const { amount, currency } = req.body;
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount, // e.g. 500 = $5.00
+      amount,
       currency: currency || 'usd',
       automatic_payment_methods: { enabled: true },
     });
@@ -26,4 +36,6 @@ app.post('/create-payment-intent', async (req, res) => {
   }
 });
 
-app.listen(4242, () => console.log('✅ Server running on http://localhost:4242'));
+// ✅ Use Render's provided port (for production deployment)
+const PORT = process.env.PORT || 4242;
+app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
