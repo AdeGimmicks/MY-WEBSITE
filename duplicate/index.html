@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KingsArena | Remote Control Replacements</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="Product images/Favicon image/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1 class="logo">KingsArena</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+            <li>
+  <a href="cart.html" class="cart-icon">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count">0</span>
+  </a>
+</li>
+
+          
+          
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h2>Welcome to KingsArena</h2>
+      <p>Your #1 source for premium remote control replacements for TVs and smart devices.</p>
+      <a href="products.html" class="btn">Shop Remotes</a>
+    </div>
+  </section>
+
+  <section class="highlights">
+    <div class="container">
+      <h3>Top Remotes</h3>
+      <div class="products">
+        
+        <div class="product-card">
+        <a href="samsung-remote.html">
+        <img src="Product images/Samsung Remote Pix/14.png" alt="Samsung Remote">
+        </a>
+          <h4>Samsung Smart TV Remote</h4>
+          <p>Compatible with all Samsung smart TVs.</p>
+          <p><strong>$14.99</strong></p>
+          <a href="samsung-remote.html" class="btn small">View</a>
+        </div>
+
+        <div class="product-card">
+        <a href="Roku-remote.html">
+            <img src="Product images/Roku Remote control/26.png" alt="Roku Remote">
+         </a>
+          <h4>Roku Streaming Remote</h4>
+          <p>Works with all Roku streaming devices.</p>
+          <p><strong>$12.49</strong></p>
+          <a href="Roku-remote.html" class="btn small">View</a>
+        </div>
+
+        <div class="product-card">
+            <a href="Alexatv-remote.html">
+            <img src="Product images/Alexa Remote  Pix (NewDesign)/1.png" alt="Fire TV Remote">
+            </a>        
+          <h4>Fire TV Voice Remote</h4>
+          <p>Alexa-enabled with voice control features.</p>
+          <p><strong>$18.99</strong></p>
+          <a href="Alexatv-remote.html" class="btn small">View</a>
+        </div>
+
+        <div class="product-card">
+            <a href="vizio-remote.html">
+            <img src="Product images/Visio TV Remote/8.png" alt="Vizio TV Replacement Remote">
+            </a>
+          <h4>Vizio TV Replacement Remote</h4>
+          <p>Ready to use out of the box, no setup required.</p>
+          <p><strong>$16.50</strong></p>
+          <a href="vizio-remote.html" class="btn small">View</a>
+        </div>
+
+        <div class="product-card">
+            <a href="lg tv-remote.html">
+            <img src="Product images/LG Remotes Pix/2.png" alt="Vizio TV Replacement Remote">
+            </a>
+          <h4>LG Magic Remote</h4>
+          <p>Smart pointer remote compatible with LG Smart TVs (webOS). Supports motion control, scrolling, and voice commands.</p>
+          <p><strong>$9.99</strong></p>
+          <a href="lg tv-remote.html" class="btn small">View</a>
+        </div>
+
+        <div class="product-card">
+            <a href="philips tv-remote.html">
+            <img src="Product images/Philip TV remote/22.png" alt="Vizio TV Replacement Remote">
+        </a>
+          <h4>Philips Smart TV Remote</h4>
+          <p>Replacement remote compatible with Philips Smart and Android TVs. Works out of the box with no programming required.</p>
+          <p><strong>$13.99</strong></p>
+          <a href="philips tv-remote.html" class="btn small">View</a>
+        </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 KingsArena. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <script>
+    // Show total cart item count
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    document.getElementById('cart-count').textContent = cart.length;
+  </script>
+  
+
+</body>
+</html>

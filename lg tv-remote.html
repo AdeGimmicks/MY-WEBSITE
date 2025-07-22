@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LG Magic Remote | KingsArena</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Product images/Favicon image/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .product-detail {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      padding: 60px 0;
+    }
+
+    .main-image {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .main-image img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .thumbnails {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .thumbnails img {
+      width: 60px;
+      height: auto;
+      cursor: pointer;
+      border: 2px solid transparent;
+      border-radius: 6px;
+    }
+
+    .thumbnails img:hover {
+      border-color: #f9c80e;
+    }
+
+    .product-info {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .product-info h2 {
+      margin-top: 0;
+    }
+
+    .buy-btn {
+      margin-top: 20px;
+    }
+
+    .video-preview {
+      margin-top: 40px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 315px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1 class="logo">ElectronicsOnly.com</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li>
+            <a href="cart.html" class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="container product-detail">
+    <div class="main-image">
+      <img id="mainProductImage" src="Product images/LG Remotes Pix/1.png" alt="Samsung Remote">
+
+      <div class="thumbnails">
+        <img src="Product images/LG Remotes Pix/2.png" onclick="changeImage(this.src)">
+        <img src="Product images/LG Remotes Pix/3.png" onclick="changeImage(this.src)">
+        <img src="Product images/LG Remotes Pix/4.png" onclick="changeImage(this.src)">
+        <img src="Product images/LG Remotes Pix/5.png" onclick="changeImage(this.src)">
+        <img src="Product images/LG Remotes Pix/6.png" onclick="changeImage(this.src)">
+      </div>
+    </div>
+
+    <div class="product-info">
+      <h2>LG Magic Remote</h2>
+      <p>Compatible with LG smart TVs, motion pointer included</p>
+      <p><strong>Price:</strong> $16.50</p>
+      <div class="buy-btn">
+        <a href="#" class="btn small buy-now" data-name="LG Magic Remote" data-price="16.50" data-image="Product images/LG Remotes Pix/1.png">Buy Now</a>
+        <a href="#" class="btn small add-to-cart" data-name="LG Magic Remote" data-price="16.50" data-image="Product images/LG Remotes Pix/1.png">Add to Cart</a>
+      </div>
+
+      <div class="video-preview">
+        <h3>Product Video</h3>
+        <!-- Replace the video URL below with your own YouTube or self-hosted link -->
+        <iframe src="TV remote control replacement Video.mp4" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 KingsArena. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/cart.js"></script> <!-- You can use your existing JS file here -->
+
+  <script>
+    // Show total cart item count
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    document.getElementById('cart-count').textContent = cart.length;
+  </script>
+
+
+  <script>
+    function changeImage(src) {
+      document.getElementById("mainProductImage").src = src;
+    }
+  </script>
+</body>
+</html>

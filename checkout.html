@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout | KingsArena</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Product images/Favicon image/favicon.png" type="image/png" />
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <h1 class="logo">ElectronicsOnly.com</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="cart.html">Cart</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="cart-section">
+  <div class="container checkout-container">
+    <div class="container">
+      <h2>Your Shopping Cart</h2>
+      <div id="cart-items"></div>
+
+      <div class="cart-summary" style="margin-top: 10px;">
+        <div class="cart-total-wrapper">
+          <p><strong>Total:</strong> $<span id="cart-total">0.00</span></p>
+          <p id="cart-tax"><strong>Tax:</strong> $0.00</p>
+        </div>
+      </div>
+
+      <form id="checkout-form" class="checkout-form">
+        <h3>Customer Information</h3>
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required />
+
+        <label for="address">Shipping Address</label>
+        <textarea id="address" required></textarea>
+
+        <h3>Payment Method</h3>
+        <div class="payment-methods">
+
+          <label class="payment-option">
+            <div class="left">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="MasterCard" />
+              <span>Credit/Debit Card</span>
+            </div>
+            <input type="radio" name="payment" value="credit-card" checked />
+          </label>
+
+          <div id="card-element" style="margin-top: 15px;"></div>
+          <div id="card-errors" role="alert" style="color: red; margin-top: 10px;"></div>
+
+          <label class="payment-option">
+            <div class="left">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" />
+              <span>Apple Pay</span>
+            </div>
+            <input type="radio" name="payment" value="apple-pay" />
+          </label>
+
+          <label class="payment-option">
+            <div class="left">
+              <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal" />
+              <span>PayPal (Pay now or later with PayPal)</span>
+            </div>
+            <input type="radio" name="payment" value="paypal" />
+          </label>
+
+        </div>
+
+        <button type="submit" class="btn">Place Your Order</button>
+      </form>
+
+      <div id="success-message" style="display:none; margin-top: 30px; font-weight: bold; color: green;">
+        ✅ Order placed successfully! Thank you for shopping at KingsArena.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 KingsArena. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- Cart JS -->
+<script src="js/cart.js"></script>
+
+<script>
+  const stripe = Stripe("pk_test_51O5HvsG4lCkKqAxdyMNNucgsBvU6NUuifKGcVs7ZWRo4n9EelUAgWHoTvGkxFT2V6DgtPayksxHMX3KVrMS8V7FK00cbmfp3Al"); // 🔁 Replace this with your real publishable key
+  const elements = stripe.elements();
+  const card = elements.create('card');
+  card.mount('#card-element');
+
+  card.on('change', function(event) {
+    const displayError = document.getElementById('card-errors');
+    displayError.textContent = event.error ? event.error.message : '';
+  });
+
+  document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+    if (selectedPayment !== 'credit-card') {
+      alert("Only Credit/Debit Card is supported at the moment.");
+      return;
+    }
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const address = document.getElementById('address').value;
+    const total = parseFloat(document.getElementById('cart-total').textContent);
+
+    const response = await fetch('http://localhost:4242/create-payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: total * 100 }) // amount in cents
+    });
+
+    const { clientSecret } = await response.json();
+
+    const result = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: card,
+        billing_details: {
+          name,
+          email,
+          address: { line1: address }
+        }
+      }
+    });
+
+    if (result.error) {
+      document.getElementById('card-errors').textContent = result.error.message;
+    } else {
+      if (result.paymentIntent.status === 'succeeded') {
+        document.getElementById('success-message').style.display = 'block';
+        localStorage.removeItem('cart');
+      }
+    }
+  });
+</script>
+
+<script>
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartCount = document.getElementById('cart-count');
+  if (cartCount) cartCount.textContent = cart.length;
+</script>
+
+</body>
+</html>
