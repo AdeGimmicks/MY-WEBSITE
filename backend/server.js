@@ -4,7 +4,6 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
-require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 
@@ -12,11 +11,11 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static frontend files (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static(path.join(__dirname, '../Public')));
 
 // Serve home page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index.html'));
+  res.sendFile(path.join(__dirname, '../Public/index.html'));
 });
 
 // Stripe payment route
