@@ -47,7 +47,7 @@
       <div class="cart-summary" style="margin-top: 10px;">
         <div class="cart-total-wrapper">
           <p><strong>Subtotal:</strong> $<span id="cart-total">0.00</span></p>
-          <p id="shipping-cost"><strong>Shipping:</strong> $<span id="shipping-amount">5.00</span></p>
+          <p id="shipping-cost"><strong>Shipping:</strong> $<span id="shipping-amount">0.00</span></p>
           <p id="cart-tax"><strong>Tax:</strong> $0.00</p>
           <p><strong>Total:</strong> $<span id="final-total">0.00</span></p>
         </div>
@@ -120,7 +120,6 @@
   </div>
 </footer>
 
-<!-- Cart JS -->
 <script src="js/cart.js"></script>
 
 <script>
@@ -136,9 +135,17 @@
 
   function updateTotalWithShipping() {
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
-    const selectedShipping = parseFloat(document.querySelector('input[name="shipping"]:checked').value) || 0;
-    document.getElementById('shipping-amount').textContent = selectedShipping.toFixed(2);
-    const final = cartTotal + selectedShipping;
+    const selected = document.querySelector('input[name="shipping"]:checked');
+    let shippingFee = 0;
+
+    if (selected) {
+      shippingFee = parseFloat(selected.value);
+      document.getElementById('shipping-amount').textContent = shippingFee.toFixed(2);
+    } else {
+      document.getElementById('shipping-amount').textContent = "0.00";
+    }
+
+    const final = cartTotal + shippingFee;
     document.getElementById('final-total').textContent = final.toFixed(2);
   }
 
@@ -146,10 +153,16 @@
     radio.addEventListener('change', updateTotalWithShipping);
   });
 
-  updateTotalWithShipping(); // initialize on page load
+  updateTotalWithShipping(); // Initialize
 
   document.getElementById('checkout-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const selectedShipping = document.querySelector('input[name="shipping"]:checked');
+    if (!selectedShipping) {
+      alert("Please select a shipping option before placing your order.");
+      return;
+    }
 
     const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
     if (selectedPayment !== 'credit-card') {
@@ -162,7 +175,7 @@
     const address = document.getElementById('address').value;
 
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
-    const shippingFee = parseFloat(document.querySelector('input[name="shipping"]:checked').value) || 0;
+    const shippingFee = parseFloat(selectedShipping.value);
     const total = cartTotal + shippingFee;
 
     const response = await fetch('https://my-website-e5d1.onrender.com/create-payment-intent', {
