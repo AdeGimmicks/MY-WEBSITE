@@ -5,7 +5,6 @@ function addToCart(name, price, image) {
   cart.push({ name, price: parseFloat(price), image, quantity: 1 });
   localStorage.setItem('cart', JSON.stringify(cart));
 
-  // Update cart icon count
   const count = document.getElementById('cart-count');
   if (count) {
     count.textContent = cart.length;
@@ -38,15 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Load cart items if on cart.html
+  // Load Cart Items if on cart or checkout page
   const cartItemsDiv = document.getElementById('cart-items');
   const cartTotalSpan = document.getElementById('cart-total');
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
   if (!cartItemsDiv || !cartTotalSpan) return;
 
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  let total = 0;
-
+  let subtotal = 0;
   cartItemsDiv.innerHTML = '';
 
   if (cart.length === 0) {
@@ -58,12 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
   cart.forEach((item, index) => {
     const quantity = item.quantity || 1;
     const itemTotal = item.price * quantity;
-    total += itemTotal;
+    subtotal += itemTotal;
 
     const itemDiv = document.createElement('div');
     itemDiv.className = 'cart-item';
 
-    // Create dropdown options
     let options = '';
     for (let i = 1; i <= 20; i++) {
       options += `<option value="${i}" ${i === quantity ? 'selected' : ''}>${i}</option>`;
@@ -78,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <select onchange="changeQuantity(${index}, this.value)">
             ${options}
           </select>
-         
         </div>
       </div>
       <button class="cart-item-remove" onclick="removeItem(${index})">Remove</button>
@@ -87,18 +83,18 @@ document.addEventListener('DOMContentLoaded', () => {
     cartItemsDiv.appendChild(itemDiv);
   });
 
-  const taxRate = 0.075; // 7.5% tax
-const taxAmount = total * taxRate;
-const finalTotal = total + taxAmount;
+  const taxRate = 0.075;
+  const taxAmount = subtotal * taxRate;
+  const finalTotal = subtotal + taxAmount;
 
-cartTotalSpan.textContent = finalTotal.toFixed(2);
+  cartTotalSpan.textContent = subtotal.toFixed(2);
 
-// Optionally, show the tax breakdown somewhere:
-const taxDisplay = document.getElementById('cart-tax');
-if (taxDisplay) {
-  taxDisplay.textContent = `Tax:$${taxAmount.toFixed(2)}`;
-}
+  const taxDisplay = document.getElementById('cart-tax');
+  if (taxDisplay) {
+    taxDisplay.textContent = `Tax: $${taxAmount.toFixed(2)}`;
+  }
 
+  // On checkout.html, we show finalTotal (subtotal + tax + shipping) via that page’s script
 });
 
 function removeItem(index) {

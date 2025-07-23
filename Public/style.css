@@ -512,6 +512,20 @@ body {
   accent-color: #0070ba;
 }
 
+.shipping-options label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.shipping-options input[type="radio"] {
+  margin-right: 8px;
+}
+#shipping-cost {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+
 
 
 
