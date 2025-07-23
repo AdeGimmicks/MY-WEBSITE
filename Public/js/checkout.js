@@ -1,4 +1,7 @@
-console.log("Welcome to KingsArena!");
+console.log("Welcome to ElectronicsOnly.com!");
+
+// Initialize Stripe with your real publishable key
+const stripe = Stripe("pk_live_51O5HvsG4lCkKqAxdeefJRoaHWQ1vzAJlOJvZCAMsorL3J3pSyD1cqomDKW4P2PTbXKMih08ej613DJ6JtslJmt6900OjlCC376");
 
 function addToCart(name, price, image) {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -22,7 +25,6 @@ function buyNow(name, price, image) {
   window.location.href = "checkout.html";
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
   // Add to Cart buttons
   document.querySelectorAll('.add-to-cart').forEach(button => {
@@ -44,40 +46,74 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Load cart items if on cart.html
+  // Load cart items if on checkout.html
   const cartItemsDiv = document.getElementById('checkout-items');
   const cartTotalSpan = document.getElementById('heckout-total');
 
-  if (!cartItemsDiv || !cartTotalSpan) return;
+  if (cartItemsDiv && cartTotalSpan) {
+    const cart = JSON.parse(localStorage.getItem('checkout')) || [];
+    let total = 0;
 
-  const cart = JSON.parse(localStorage.getItem('checkout')) || [];
-  let total = 0;
+    cartItemsDiv.innerHTML = '';
 
-  cartItemsDiv.innerHTML = '';
+    if (cart.length === 0) {
+      cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+      cartTotalSpan.textContent = '0.00';
+    } else {
+      cart.forEach((item, index) => {
+        total += item.price;
 
-  if (cart.length === 0) {
-    cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
-    cartTotalSpan.textContent = '0.00';
-    return;
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'checkout-item';
+        itemDiv.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" />
+          <div class="cart-item-details">
+            <div class="cart-item-title">${item.name}</div>
+            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+          </div>
+          <button class="cart-item-remove" onclick="removeItem(${index})">Remove</button>
+        `;
+        cartItemsDiv.appendChild(itemDiv);
+      });
+
+      cartTotalSpan.textContent = total.toFixed(2);
+    }
   }
 
-  cart.forEach((item, index) => {
-    total += item.price;
+  // Stripe payment: trigger checkout session
+  const checkoutButton = document.getElementById("checkout-button");
+  if (checkoutButton) {
+    checkoutButton.addEventListener("click", async () => {
+      try {
+        const response = await fetch("http://localhost:4242/create-checkout-session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            items: JSON.parse(localStorage.getItem("checkoutItem")) || []
+          })
+        });
 
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'checkout-item';
-    itemDiv.innerHTML = `
-      <img src="${item.image}" alt="${item.name}" />
-      <div class="cart-item-details">
-        <div class="cart-item-title">${item.name}</div>
-        <div class="cart-item-price">$${item.price.toFixed(2)}</div>
-      </div>
-      <button class="cart-item-remove" onclick="removeItem(${index})">Remove</button>
-    `;
-    cartItemsDiv.appendChild(itemDiv);
-  });
+        const session = await response.json();
 
-  cartTotalSpan.textContent = total.toFixed(2);
+        if (session.id) {
+          const result = await stripe.redirectToCheckout({
+            sessionId: session.id
+          });
+
+          if (result.error) {
+            alert(result.error.message);
+          }
+        } else {
+          alert("Error: Unable to create Stripe session.");
+        }
+      } catch (err) {
+        console.error("Checkout error:", err);
+        alert("Something went wrong. Please try again.");
+      }
+    });
+  }
 });
 
 function removeItem(index) {
