@@ -11,9 +11,10 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend files
+// Serve static frontend files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, '../Public')));
 
+// Serve home page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../Public/index.html'));
 });
