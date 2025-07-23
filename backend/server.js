@@ -37,6 +37,24 @@ app.post('/create-payment-intent', async (req, res) => {
   }
 });
 
+// ✅ NEW: Save Order Route (temporary in-memory storage)
+const orders = [];
+
+app.post('/save-order', (req, res) => {
+  const order = req.body;
+
+  if (!order || !order.items || !order.customer) {
+    return res.status(400).json({ message: 'Invalid order data' });
+  }
+
+  order.timestamp = new Date().toISOString();
+  orders.push(order);
+
+  console.log('✅ New Order Saved:', order);
+
+  res.status(200).json({ message: 'Order saved successfully' });
+});
+
 // Use Render's port or default to 4242 locally
 const PORT = process.env.PORT || 4242;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));

@@ -73,7 +73,6 @@
 
         <h3>Payment Method</h3>
         <div class="payment-methods">
-
           <label class="payment-option">
             <div class="left">
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" />
@@ -101,7 +100,6 @@
             </div>
             <input type="radio" name="payment" value="paypal" />
           </label>
-
         </div>
 
         <button type="submit" class="btn">Place Your Order</button>
@@ -153,7 +151,7 @@
     radio.addEventListener('change', updateTotalWithShipping);
   });
 
-  updateTotalWithShipping(); // Initialize
+  updateTotalWithShipping();
 
   document.getElementById('checkout-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -174,6 +172,7 @@
     const email = document.getElementById('email').value;
     const address = document.getElementById('address').value;
 
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
     const shippingFee = parseFloat(selectedShipping.value);
     const total = cartTotal + shippingFee;
@@ -203,6 +202,28 @@
       if (result.paymentIntent.status === 'succeeded') {
         document.getElementById('success-message').style.display = 'block';
         localStorage.removeItem('cart');
+
+        // ✅ Send order to backend
+        const orderData = {
+          customer: {
+            name,
+            email,
+            address
+          },
+          items: cart,
+          total: total.toFixed(2),
+          shipping: shippingFee.toFixed(2),
+          paymentId: result.paymentIntent.id
+        };
+
+        fetch('https://my-website-e5d1.onrender.com/save-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        })
+        .then(res => res.json())
+        .then(data => console.log('✅ Order saved:', data))
+        .catch(err => console.error('❌ Failed to save order:', err));
       }
     }
   });
