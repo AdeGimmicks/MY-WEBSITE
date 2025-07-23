@@ -101,7 +101,7 @@
 <script src="js/cart.js"></script>
 
 <script>
-  const stripe = Stripe("pk_test_51O5HvsG4lCkKqAxdyMNNucgsBvU6NUuifKGcVs7ZWRo4n9EelUAgWHoTvGkxFT2V6DgtPayksxHMX3KVrMS8V7FK00cbmfp3Al"); // 🔁 Replace this with your real publishable key
+  const stripe = Stripe("pk_live_51O5HvsG4lCkKqAxdeefJRoaHWQ1vzAJlOJvZCAMsorL3J3pSyD1cqomDKW4P2PTbXKMih08ej613DJ6JtslJmt6900OjlCC376"); // 🔁 Replace this with your real publishable key
   const elements = stripe.elements();
   const card = elements.create('card');
   card.mount('#card-element');
