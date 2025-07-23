@@ -4,21 +4,21 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
+const fs = require('fs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend files (HTML, CSS, JS)
+// Serve static frontend files
 app.use(express.static(path.join(__dirname, '../Public')));
 
-// Serve home page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../Public/index.html'));
 });
 
-// Stripe payment route
+// Stripe Payment Intent
 app.post('/create-payment-intent', async (req, res) => {
   const { amount, currency } = req.body;
 
@@ -29,32 +29,37 @@ app.post('/create-payment-intent', async (req, res) => {
       automatic_payment_methods: { enabled: true },
     });
 
-    res.send({
-      clientSecret: paymentIntent.client_secret,
-    });
+    res.send({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
 });
 
-// ✅ NEW: Save Order Route (temporary in-memory storage)
-const orders = [];
-
+// Save order after successful payment
 app.post('/save-order', (req, res) => {
-  const order = req.body;
+  const orderData = req.body;
 
-  if (!order || !order.items || !order.customer) {
-    return res.status(400).json({ message: 'Invalid order data' });
+  const filePath = path.join(__dirname, 'orders.json');
+
+  // Read existing orders if file exists
+  let existingOrders = [];
+  if (fs.existsSync(filePath)) {
+    const data = fs.readFileSync(filePath);
+    existingOrders = JSON.parse(data);
   }
 
-  order.timestamp = new Date().toISOString();
-  orders.push(order);
+  // Add new order to existing orders
+  existingOrders.push({
+    ...orderData,
+    timestamp: new Date().toISOString(),
+  });
 
-  console.log('✅ New Order Saved:', order);
+  // Save all orders back to file
+  fs.writeFileSync(filePath, JSON.stringify(existingOrders, null, 2));
 
-  res.status(200).json({ message: 'Order saved successfully' });
+  res.send({ success: true, message: 'Order saved successfully.' });
 });
 
-// Use Render's port or default to 4242 locally
+// Start the server
 const PORT = process.env.PORT || 4242;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
