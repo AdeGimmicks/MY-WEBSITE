@@ -61,6 +61,18 @@ app.post('/save-order', (req, res) => {
   res.send({ success: true, message: 'Order saved successfully.' });
 });
 
+// ✅ Route to return saved orders for the admin page
+app.get('/get-orders', (req, res) => {
+  const filePath = path.join(__dirname, 'orders.json');
+  if (fs.existsSync(filePath)) {
+    const data = fs.readFileSync(filePath);
+    const orders = JSON.parse(data);
+    res.json(orders);
+  } else {
+    res.json([]);
+  }
+});
+
 // Start the server
 const PORT = process.env.PORT || 4242;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));

@@ -1,0 +1,78 @@
+<!-- Public/admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 10px; border: 1px solid #ddd; }
+    th { background-color: #f4f4f4; }
+    #login-form { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+  <h2>Admin Login</h2>
+  <form id="login-form">
+    <input type="password" id="admin-password" placeholder="Enter Admin Password" required />
+    <button type="submit">Login</button>
+  </form>
+
+  <div id="orders-section" style="display:none;">
+    <h2>Customer Orders</h2>
+    <table id="orders-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Items</th>
+          <th>Total ($)</th>
+          <th>Shipping ($)</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "admin123"; // change this to your own password!
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const inputPassword = document.getElementById('admin-password').value;
+      if (inputPassword === ADMIN_PASSWORD) {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('orders-section').style.display = 'block';
+
+        const res = await fetch('/get-orders');
+        const orders = await res.json();
+        const tbody = document.querySelector('#orders-table tbody');
+
+        orders.forEach(order => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${order.customer.name}</td>
+            <td>${order.customer.email}</td>
+            <td>${order.customer.address}</td>
+            <td>
+              ${order.items.map(item => `${item.name} (x${item.quantity})`).join('<br>')}
+            </td>
+            <td>${order.total}</td>
+            <td>${order.shipping}</td>
+            <td>${new Date(order.timestamp).toLocaleString()}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        alert("Wrong password.");
+      }
+    });
+  </script>
+</body>
+</html>
