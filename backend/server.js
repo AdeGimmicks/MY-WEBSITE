@@ -5,9 +5,9 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const fs = require('fs');
-const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const nodemailer = require('nodemailer');
+const cors = require('cors');
+const nodemailer = require('nodemailer'); // ✅ added
 
 app.use(cors());
 app.use(express.json());
@@ -38,9 +38,8 @@ app.post('/create-payment-intent', async (req, res) => {
 });
 
 // Save order after successful payment
-app.post('/save-order', async (req, res) => {
+app.post('/save-order', (req, res) => {
   const orderData = req.body;
-
   const filePath = path.join(__dirname, 'orders.json');
 
   // Read existing orders if file exists
@@ -50,58 +49,52 @@ app.post('/save-order', async (req, res) => {
     existingOrders = JSON.parse(data);
   }
 
-  // Add new order to existing orders
-  existingOrders.push({
+  // Add timestamp to new order
+  const newOrder = {
     ...orderData,
-    timestamp: new Date().toISOString(),
-  });
+    timestamp: new Date().toISOString()
+  };
 
-  // Save all orders back to file
+  // Add to list and save
+  existingOrders.push(newOrder);
   fs.writeFileSync(filePath, JSON.stringify(existingOrders, null, 2));
 
-  // ✅ Send email to customer using Nodemailer
-  if (orderData.email) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
-    });
-
-    const mailOptions = {
-      from: `"KingsArena" <${process.env.GMAIL_USER}>`,
-      to: orderData.email,
-      subject: 'Your Order Confirmation - KingsArena',
-      html: `
-        <h2>Thank you for your order, ${orderData.fullName}!</h2>
-        <p>Your order is being processed.</p>
-        <p><strong>Order Details:</strong></p>
-        <ul>
-          <li><strong>Name:</strong> ${orderData.fullName}</li>
-          <li><strong>Email:</strong> ${orderData.email}</li>
-          <li><strong>Shipping Address:</strong> ${orderData.address}</li>
-          <li><strong>Total Paid:</strong> $${orderData.total}</li>
-          <li><strong>Order Time:</strong> ${new Date().toLocaleString()}</li>
-        </ul>
-        <p>If you have any questions, feel free to reply to this email.</p>
-        <br/>
-        <p>Thanks for shopping at KingsArena!</p>
-      `,
-    };
-
-    try {
-      await transporter.sendMail(mailOptions);
-      console.log(`✅ Email sent to ${orderData.email}`);
-    } catch (error) {
-      console.error(`❌ Failed to send email: ${error.message}`);
+  // ✅ Send confirmation email
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS
     }
-  }
+  });
 
-  res.send({ success: true, message: 'Order saved and email sent successfully.' });
+  const mailOptions = {
+    from: `"ElectronicsOnly" <${process.env.GMAIL_USER}>`,
+    to: newOrder.customer.email,
+    subject: '✅ Order Confirmation – ElectronicsOnly',
+    html: `
+      <h2>Thank You for Your Order!</h2>
+      <p><strong>Name:</strong> ${newOrder.customer.name}</p>
+      <p><strong>Email:</strong> ${newOrder.customer.email}</p>
+      <p><strong>Shipping Address:</strong> ${newOrder.customer.address}</p>
+      <p><strong>Total Paid:</strong> $${newOrder.total}</p>
+      <p><strong>Order Time:</strong> ${new Date(newOrder.timestamp).toLocaleString()}</p>
+      <p>We’ve received your order and it is being processed.</p>
+    `
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('❌ Failed to send email:', error);
+      return res.status(500).json({ success: false, message: 'Order saved, but email failed.' });
+    } else {
+      console.log('📧 Email sent:', info.response);
+      return res.send({ success: true, message: 'Order saved and email sent.' });
+    }
+  });
 });
 
-// Route to return saved orders for the admin page
+// ✅ Route to return saved orders for the admin page
 app.get('/get-orders', (req, res) => {
   const filePath = path.join(__dirname, 'orders.json');
   if (fs.existsSync(filePath)) {
