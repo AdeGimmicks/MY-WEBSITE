@@ -24,7 +24,6 @@
 </head>
 
 <body>
-
 <header>
   <div class="container">
     <h1 class="logo">ElectronicsOnly.com</h1>
@@ -69,10 +68,7 @@
           <label><input type="radio" name="shipping" value="5.00" /> Standard (5–7 days) — $5.00</label>
           <label><input type="radio" name="shipping" value="10.00" /> Expedited (2–3 days) — $10.00</label>
           <label><input type="radio" name="shipping" value="20.00" /> Express (Next-day) — $20.00</label>
-          <label>
-          <input type="radio" name="shipping" value="0" checked />
-            Free Shipping (0.00 USD)
-          </label><br>
+          <label><input type="radio" name="shipping" value="0" checked /> Free Shipping (0.00 USD)</label>
         </div>
 
         <h3>Payment Method</h3>
@@ -123,7 +119,6 @@
 </footer>
 
 <script src="js/cart.js"></script>
-
 <script>
   const stripe = Stripe("pk_live_51O5HvsG4lCkKqAxdeefJRoaHWQ1vzAJlOJvZCAMsorL3J3pSyD1cqomDKW4P2PTbXKMih08ej613DJ6JtslJmt6900OjlCC376");
   const elements = stripe.elements();
@@ -139,14 +134,12 @@
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
     const selected = document.querySelector('input[name="shipping"]:checked');
     let shippingFee = 0;
-
     if (selected) {
       shippingFee = parseFloat(selected.value);
       document.getElementById('shipping-amount').textContent = shippingFee.toFixed(2);
     } else {
       document.getElementById('shipping-amount').textContent = "0.00";
     }
-
     const final = cartTotal + shippingFee;
     document.getElementById('final-total').textContent = final.toFixed(2);
   }
@@ -159,23 +152,15 @@
 
   document.getElementById('checkout-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const selectedShipping = document.querySelector('input[name="shipping"]:checked');
-    if (!selectedShipping) {
-      alert("Please select a shipping option before placing your order.");
-      return;
-    }
-
     const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
     if (selectedPayment !== 'credit-card') {
       alert("Only Credit/Debit Card is supported at the moment.");
       return;
     }
-
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const address = document.getElementById('address').value;
-
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
     const shippingFee = parseFloat(selectedShipping.value);
@@ -184,7 +169,7 @@
     const response = await fetch('https://my-website-e5d1.onrender.com/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: total * 100 }) // in cents
+      body: JSON.stringify({ amount: total * 100 })
     });
 
     const { clientSecret } = await response.json();
@@ -207,13 +192,8 @@
         document.getElementById('success-message').style.display = 'block';
         localStorage.removeItem('cart');
 
-        // ✅ Send order to backend
         const orderData = {
-          customer: {
-            name,
-            email,
-            address
-          },
+          customer: { name, email, address },
           items: cart,
           total: total.toFixed(2),
           shipping: shippingFee.toFixed(2),
@@ -226,8 +206,18 @@
           body: JSON.stringify(orderData)
         })
         .then(res => res.json())
-        .then(data => console.log('✅ Order saved:', data))
-        .catch(err => console.error('❌ Failed to save order:', err));
+        .then(data => {
+          console.log('✅ Order saved:', data);
+          localStorage.setItem("latestOrder", JSON.stringify({
+            ...orderData,
+            timestamp: new Date().toISOString()
+          }));
+          window.location.href = "thankyou.html";
+        })
+        .catch(err => {
+          console.error('❌ Failed to save order:', err);
+          alert("Your order was processed, but we had trouble saving it.");
+        });
       }
     }
   });
