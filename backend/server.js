@@ -60,7 +60,7 @@ app.post('/save-order', async (req, res) => {
   fs.writeFileSync(filePath, JSON.stringify(existingOrders, null, 2));
 
   // ✅ Send email to customer using Nodemailer
-  if (orderData.customer && orderData.customer.email) {
+  if (orderData.email) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -71,16 +71,16 @@ app.post('/save-order', async (req, res) => {
 
     const mailOptions = {
       from: `"KingsArena" <${process.env.GMAIL_USER}>`,
-      to: orderData.customer.email,
+      to: orderData.email,
       subject: 'Your Order Confirmation - KingsArena',
       html: `
-        <h2>Thank you for your order, ${orderData.customer.name}!</h2>
+        <h2>Thank you for your order, ${orderData.fullName}!</h2>
         <p>Your order is being processed.</p>
         <p><strong>Order Details:</strong></p>
         <ul>
-          <li><strong>Name:</strong> ${orderData.customer.name}</li>
-          <li><strong>Email:</strong> ${orderData.customer.email}</li>
-          <li><strong>Shipping Address:</strong> ${orderData.customer.address}</li>
+          <li><strong>Name:</strong> ${orderData.fullName}</li>
+          <li><strong>Email:</strong> ${orderData.email}</li>
+          <li><strong>Shipping Address:</strong> ${orderData.address}</li>
           <li><strong>Total Paid:</strong> $${orderData.total}</li>
           <li><strong>Order Time:</strong> ${new Date().toLocaleString()}</li>
         </ul>
@@ -92,7 +92,7 @@ app.post('/save-order', async (req, res) => {
 
     try {
       await transporter.sendMail(mailOptions);
-      console.log(`✅ Email sent to ${orderData.customer.email}`);
+      console.log(`✅ Email sent to ${orderData.email}`);
     } catch (error) {
       console.error(`❌ Failed to send email: ${error.message}`);
     }
