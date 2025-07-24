@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (cartItemsDiv && cartTotalSpan) {
     const cart = JSON.parse(localStorage.getItem('checkout')) || [];
-    let total = 0;
+    let subtotal = 0;
 
     cartItemsDiv.innerHTML = '';
 
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cartTotalSpan.textContent = '0.00';
     } else {
       cart.forEach((item, index) => {
-        total += item.price;
+        subtotal += item.price;
 
         const itemDiv = document.createElement('div');
         itemDiv.className = 'checkout-item';
@@ -76,7 +76,18 @@ document.addEventListener('DOMContentLoaded', () => {
         cartItemsDiv.appendChild(itemDiv);
       });
 
-      cartTotalSpan.textContent = total.toFixed(2);
+      // ✅ Add tax calculation (e.g., 7%)
+      const taxRate = 0.07;
+      const taxAmount = subtotal * taxRate;
+      const totalWithTax = subtotal + taxAmount;
+
+      // Update total display with tax included
+      cartTotalSpan.textContent = totalWithTax.toFixed(2);
+
+      // Optional: Store for use on thankyou.html if needed
+      localStorage.setItem('cartSubtotal', subtotal.toFixed(2));
+      localStorage.setItem('cartTax', taxAmount.toFixed(2));
+      localStorage.setItem('cartTotal', totalWithTax.toFixed(2));
     }
   }
 
