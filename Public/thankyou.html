@@ -38,6 +38,9 @@
     <p><strong>Name:</strong> <span id="name"></span></p>
     <p><strong>Email:</strong> <span id="email"></span></p>
     <p><strong>Shipping Address:</strong> <span id="address"></span></p>
+    <p><strong>Subtotal (Items):</strong> $<span id="subtotal"></span></p>
+    <p><strong>Shipping:</strong> $<span id="shipping"></span></p>
+    <p><strong>Tax:</strong> $<span id="tax"></span></p>
     <p><strong>Total Paid:</strong> $<span id="total"></span></p>
     <p><strong>Order Time:</strong> <span id="time"></span></p>
   </div>
@@ -48,12 +51,22 @@
   <script>
     const order = JSON.parse(localStorage.getItem('latestOrder'));
     if (order) {
+      const cartTotal = parseFloat(order.total); // Subtotal of items
+      const shipping = parseFloat(order.shipping) || 0; // Shipping fee
+      const tax = 0.00; // If you want to add tax in future
+
+      const grandTotal = cartTotal + shipping + tax;
+
       document.getElementById('name').textContent = order.customer.name;
       document.getElementById('email').textContent = order.customer.email;
       document.getElementById('address').textContent = order.customer.address;
-      document.getElementById('total').textContent = order.total.toFixed(2);
+      document.getElementById('subtotal').textContent = cartTotal.toFixed(2);
+      document.getElementById('shipping').textContent = shipping.toFixed(2);
+      document.getElementById('tax').textContent = tax.toFixed(2);
+      document.getElementById('total').textContent = grandTotal.toFixed(2);
       document.getElementById('time').textContent = new Date(order.timestamp).toLocaleString();
     }
   </script>
+  
 </body>
 </html>

@@ -212,7 +212,10 @@
             ...orderData,
             timestamp: new Date().toISOString()
           }));
-          window.location.href = "thankyou.html";
+          setTimeout(() => {
+          window.location.href = 'thankyou.html';
+        }, 10000); // 10 seconds
+
         })
         .catch(err => {
           console.error('❌ Failed to save order:', err);
