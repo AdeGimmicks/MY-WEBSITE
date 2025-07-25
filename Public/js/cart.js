@@ -84,17 +84,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const taxRate = 0.075;
-  const taxAmount = subtotal * taxRate;
-  const finalTotal = subtotal + taxAmount;
+  const taxAmount = parseFloat((subtotal * taxRate).toFixed(2));
+  const finalTotal = parseFloat((subtotal + taxAmount).toFixed(2));
 
-  cartTotalSpan.textContent = subtotal.toFixed(2);
+  // ✅ Display final total instead of just subtotal
+  cartTotalSpan.textContent = finalTotal.toFixed(2);
 
+  // ✅ Display tax
   const taxDisplay = document.getElementById('cart-tax');
   if (taxDisplay) {
     taxDisplay.textContent = `Tax: $${taxAmount.toFixed(2)}`;
   }
 
-  // On checkout.html, we show finalTotal (subtotal + tax + shipping) via that page’s script
+  // ✅ Save subtotal, tax, and total for use in checkout/thankyou
+  localStorage.setItem('cartSummary', JSON.stringify({
+    subtotal: subtotal.toFixed(2),
+    tax: taxAmount.toFixed(2),
+    total: finalTotal.toFixed(2)
+  }));
 });
 
 function removeItem(index) {
