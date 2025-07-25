@@ -44,12 +44,11 @@
       <div id="cart-items"></div>
 
       <div class="cart-summary" style="margin-top: 10px;">
-        <div class="cart-total-wrapper">
-          <p><strong>Subtotal:</strong> $<span id="cart-total">0.00</span></p>
-          <p id="shipping-cost"><strong>Shipping:</strong> $<span id="shipping-amount">0.00</span></p>
-          <p id="cart-tax"><strong>Tax:</strong> $0.00</p>
-          <p><strong>Total:</strong> $<span id="final-total">0.00</span></p>
-        </div>
+        <p><strong>Subtotal:</strong> $<span id="subtotal">0.00</span></p>
+        <p><strong>Shipping:</strong> $<span id="shipping-amount">0.00</span></p>
+        <p><strong>Tax:</strong> $<span id="tax">0.00</span></p>
+        <p><strong>Total:</strong> $<span id="cart-total">0.00</span></p>
+        <p><strong>Final Total:</strong> $<span id="final-total">0.00</span></p>
       </div>
 
       <form id="checkout-form" class="checkout-form">
@@ -120,6 +119,17 @@
 
 <script src="js/cart.js"></script>
 <script>
+  // Load cart summary from localStorage and display it
+  const cartSummary = JSON.parse(localStorage.getItem('cartSummary')) || { subtotal: "0.00", tax: "0.00", total: "0.00" };
+
+  document.getElementById('subtotal').textContent = cartSummary.subtotal;
+  document.getElementById('tax').textContent = cartSummary.tax;
+  document.getElementById('shipping-amount').textContent = "0.00"; // default until user picks
+  document.getElementById('cart-total').textContent = cartSummary.total;
+  document.getElementById('final-total').textContent = cartSummary.total;
+</script>
+
+<script>
   const stripe = Stripe("pk_live_51O5HvsG4lCkKqAxdeefJRoaHWQ1vzAJlOJvZCAMsorL3J3pSyD1cqomDKW4P2PTbXKMih08ej613DJ6JtslJmt6900OjlCC376");
   const elements = stripe.elements();
   const card = elements.create('card');
@@ -158,10 +168,12 @@
       alert("Only Credit/Debit Card is supported at the moment.");
       return;
     }
+
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const address = document.getElementById('address').value;
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
     const shippingFee = parseFloat(selectedShipping.value);
     const total = cartTotal + shippingFee;
@@ -213,9 +225,8 @@
             timestamp: new Date().toISOString()
           }));
           setTimeout(() => {
-          window.location.href = 'thankyou.html';
-        }, 5000); // 5 seconds
-
+            window.location.href = 'thankyou.html';
+          }, 5000); // 5 seconds
         })
         .catch(err => {
           console.error('❌ Failed to save order:', err);
@@ -231,6 +242,7 @@
   const cartCount = document.getElementById('cart-count');
   if (cartCount) cartCount.textContent = cart.length;
 </script>
+
 
 </body>
 </html>
