@@ -51,22 +51,22 @@
   <script>
     const order = JSON.parse(localStorage.getItem('latestOrder'));
     if (order) {
-      const subtotal = parseFloat(order.subtotal) || 0;
-      const shipping = parseFloat(order.shipping) || 0;
-      const tax = parseFloat(order.tax) || 0;
-      const grandTotal = parseFloat(order.total) || (subtotal + tax + shipping);
-  
+      const cartTotal = parseFloat(order.total); // Subtotal of items
+      const shipping = parseFloat(order.shipping) || 0; // Shipping fee
+      const tax = 0.00; // If you want to add tax in future
+
+      const grandTotal = cartTotal + shipping + tax;
+
       document.getElementById('name').textContent = order.customer.name;
       document.getElementById('email').textContent = order.customer.email;
       document.getElementById('address').textContent = order.customer.address;
-      document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+      document.getElementById('subtotal').textContent = cartTotal.toFixed(2);
       document.getElementById('shipping').textContent = shipping.toFixed(2);
       document.getElementById('tax').textContent = tax.toFixed(2);
       document.getElementById('total').textContent = grandTotal.toFixed(2);
       document.getElementById('time').textContent = new Date(order.timestamp).toLocaleString();
     }
   </script>
-  
   
 </body>
 </html>
