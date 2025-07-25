@@ -193,12 +193,15 @@
         localStorage.removeItem('cart');
 
         const orderData = {
-          customer: { name, email, address },
-          items: cart,
-          total: total.toFixed(2),
-          shipping: shippingFee.toFixed(2),
-          paymentId: result.paymentIntent.id
-        };
+        customer: { name, email, address },
+        items: cart,
+        subtotal: cartTotal.toFixed(2),
+        tax: tax.toFixed(2),
+        shipping: shippingFee.toFixed(2),
+        total: total.toFixed(2),
+        paymentId: result.paymentIntent.id
+      };
+
 
         fetch('https://my-website-e5d1.onrender.com/save-order', {
           method: 'POST',
