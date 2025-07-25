@@ -1,4 +1,3 @@
-<!-- FULL FILE STARTS HERE -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +47,7 @@
         <div class="cart-total-wrapper">
           <p><strong>Subtotal:</strong> $<span id="cart-total">0.00</span></p>
           <p id="shipping-cost"><strong>Shipping:</strong> $<span id="shipping-amount">0.00</span></p>
-          <p id="cart-tax"><strong>Tax:</strong> $<span id="tax-amount">0.00</span></p>
+          <p id="cart-tax"><strong>Tax:</strong> $0.00</p>
           <p><strong>Total:</strong> $<span id="final-total">0.00</span></p>
         </div>
       </div>
@@ -141,12 +140,7 @@
     } else {
       document.getElementById('shipping-amount').textContent = "0.00";
     }
-
-    const taxRate = 0.1; // 10%
-    const tax = cartTotal * taxRate;
-    document.getElementById('tax-amount').textContent = tax.toFixed(2);
-
-    const final = cartTotal + tax + shippingFee;
+    const final = cartTotal + shippingFee;
     document.getElementById('final-total').textContent = final.toFixed(2);
   }
 
@@ -158,29 +152,19 @@
 
   document.getElementById('checkout-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const selectedShipping = document.querySelector('input[name="shipping"]:checked');
-    if (!selectedShipping) {
-      alert("Please select a shipping option.");
-      return;
-    }
-
     const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
     if (selectedPayment !== 'credit-card') {
       alert("Only Credit/Debit Card is supported at the moment.");
       return;
     }
-
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const address = document.getElementById('address').value;
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
     const shippingFee = parseFloat(selectedShipping.value);
-    const taxRate = 0.1;
-    const tax = cartTotal * taxRate;
-    const total = cartTotal + tax + shippingFee;
+    const total = cartTotal + shippingFee;
 
     const response = await fetch('https://my-website-e5d1.onrender.com/create-payment-intent', {
       method: 'POST',
@@ -211,10 +195,8 @@
         const orderData = {
           customer: { name, email, address },
           items: cart,
-          subtotal: cartTotal.toFixed(2),
-          tax: tax.toFixed(2),
-          shipping: shippingFee.toFixed(2),
           total: total.toFixed(2),
+          shipping: shippingFee.toFixed(2),
           paymentId: result.paymentIntent.id
         };
 
@@ -231,8 +213,9 @@
             timestamp: new Date().toISOString()
           }));
           setTimeout(() => {
-            window.location.href = 'thankyou.html';
-          }, 5000); // 5 seconds
+          window.location.href = 'thankyou.html';
+        }, 5000); // 5 seconds
+
         })
         .catch(err => {
           console.error('❌ Failed to save order:', err);
@@ -251,4 +234,3 @@
 
 </body>
 </html>
-<!-- FULL FILE ENDS HERE -->
