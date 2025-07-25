@@ -1,3 +1,4 @@
+<!-- FULL FILE STARTS HERE -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,16 +158,24 @@
 
   document.getElementById('checkout-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const selectedShipping = document.querySelector('input[name="shipping"]:checked');
+    if (!selectedShipping) {
+      alert("Please select a shipping option.");
+      return;
+    }
+
     const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
     if (selectedPayment !== 'credit-card') {
       alert("Only Credit/Debit Card is supported at the moment.");
       return;
     }
+
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const address = document.getElementById('address').value;
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
     const shippingFee = parseFloat(selectedShipping.value);
     const taxRate = 0.1;
@@ -242,3 +251,4 @@
 
 </body>
 </html>
+<!-- FULL FILE ENDS HERE -->
