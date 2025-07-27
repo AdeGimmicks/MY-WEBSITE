@@ -273,14 +273,15 @@
     paymentRequest: paymentRequest,
   });
 
-  // Check if the wallet method is available (Apple Pay/Google Pay)
   paymentRequest.canMakePayment().then(function(result) {
-    if (result) {
-      prButton.mount('#payment-request-button');
-    } else {
-      document.getElementById('wallet-section').style.display = 'none';
-    }
-  });
+  if (result) {
+    prButton.mount('#payment-request-button');
+  } else {
+    document.getElementById('wallet-errors').textContent =
+      'Apple Pay or Google Pay is not available on this browser/device.';
+    document.getElementById('wallet-section').style.display = 'none';
+  }
+});
 
   // Handle payment confirmation
   paymentRequest.on('paymentmethod', async (ev) => {
