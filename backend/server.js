@@ -55,33 +55,37 @@ app.post('/save-order', (req, res) => {
     timestamp: new Date().toISOString()
   };
 
-  // Add to list and save
-  existingOrders.push(newOrder);
-  fs.writeFileSync(filePath, JSON.stringify(existingOrders, null, 2));
+    // Add to list and save
+existingOrders.push(newOrder);
+fs.writeFileSync(filePath, JSON.stringify(existingOrders, null, 2));
 
-  // ✅ Send confirmation email
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS
-    }
-  });
+// ✅ Log the email before sending
+console.log('📧 Sending email to:', newOrder.customer.email);
 
-  const mailOptions = {
-    from: `"ElectronicsOnly" <${process.env.GMAIL_USER}>`,
-    to: newOrder.customer.email,
-    subject: '✅ Order Confirmation – ElectronicsOnly',
-    html: `
-      <h2>Thank You for Your Order!</h2>
-      <p><strong>Name:</strong> ${newOrder.customer.name}</p>
-      <p><strong>Email:</strong> ${newOrder.customer.email}</p>
-      <p><strong>Shipping Address:</strong> ${newOrder.customer.address}</p>
-      <p><strong>Total Paid:</strong> $${newOrder.total}</p>
-      <p><strong>Order Time:</strong> ${new Date(newOrder.timestamp).toLocaleString()}</p>
-      <p>We’ve received your order and it is being processed.</p>
-    `
-  };
+// ✅ Send confirmation email
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS
+  }
+});
+
+const mailOptions = {
+  from: `"ElectronicsOnly" <${process.env.GMAIL_USER}>`,
+  to: newOrder.customer.email,
+  subject: '✅ Order Confirmation – ElectronicsOnly',
+  html: `
+    <h2>Thank You for Your Order!</h2>
+    <p><strong>Name:</strong> ${newOrder.customer.name}</p>
+    <p><strong>Email:</strong> ${newOrder.customer.email}</p>
+    <p><strong>Shipping Address:</strong> ${newOrder.customer.address}</p>
+    <p><strong>Total Paid:</strong> $${newOrder.total}</p>
+    <p><strong>Order Time:</strong> ${new Date(newOrder.timestamp).toLocaleString()}</p>
+    <p>We’ve received your order and it is being processed.</p>
+  `
+};
+
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
