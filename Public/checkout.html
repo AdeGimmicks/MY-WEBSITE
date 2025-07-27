@@ -50,7 +50,6 @@
           <p><strong>Tax:</strong> $<span id="tax">0.00</span></p>
           <p><strong>Total:</strong> $<span id="cart-total">0.00</span></p>
           <p><strong>Final Total:</strong> $<span id="final-total">0.00</span></p>
-
         </div>
       </div>
 
@@ -121,16 +120,25 @@
 </footer>
 
 <script src="js/cart.js"></script>
-<script>
-  // Load cart summary from localStorage and display it
-  const cartSummary = JSON.parse(localStorage.getItem('cartSummary')) || { subtotal: "0.00", tax: "0.00", total: "0.00" };
 
-  document.getElementById('subtotal').textContent = cartSummary.subtotal;
-  document.getElementById('tax').textContent = cartSummary.tax;
-  document.getElementById('shipping-amount').textContent = "0.00"; // default until user picks
-  document.getElementById('cart-total').textContent = cartSummary.total;
-  document.getElementById('final-total').textContent = cartSummary.total;
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cartSummary = JSON.parse(localStorage.getItem('cartSummary')) || {
+      subtotal: "0.00",
+      tax: "0.00",
+      total: "0.00"
+    };
+
+    document.getElementById('subtotal').textContent = cartSummary.subtotal;
+    document.getElementById('tax').textContent = cartSummary.tax;
+    document.getElementById('shipping-amount').textContent = "0.00"; // default until user picks
+    document.getElementById('cart-total').textContent = cartSummary.total;
+    document.getElementById('final-total').textContent = cartSummary.total;
+
+    updateTotalWithShipping(); // Ensure totals refresh with selected shipping
+  });
 </script>
+
 
 <script>
   const stripe = Stripe("pk_live_51O5HvsG4lCkKqAxdeefJRoaHWQ1vzAJlOJvZCAMsorL3J3pSyD1cqomDKW4P2PTbXKMih08ej613DJ6JtslJmt6900OjlCC376");
