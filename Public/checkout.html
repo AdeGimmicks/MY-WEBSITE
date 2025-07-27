@@ -291,7 +291,7 @@
     const res = await fetch('https://my-website-e5d1.onrender.com/create-payment-intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: finalAmount * 100 })
+      body: JSON.stringify({ amount: Math.round(finalAmount * 100) })
     });
 
     const { clientSecret } = await res.json();
