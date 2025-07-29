@@ -181,4 +181,32 @@ app.post('/update-status', (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 4242;
+
+// Add this block before app.listen
+app.post('/save-order', (req, res) => {
+    const order = req.body;
+    const filePath = path.join(__dirname, 'orders.json');
+  
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      let orders = [];
+      if (!err && data) {
+        try {
+          orders = JSON.parse(data);
+        } catch (e) {
+          console.error("Invalid JSON in orders.json");
+        }
+      }
+  
+      orders.push(order);
+  
+      fs.writeFile(filePath, JSON.stringify(orders, null, 2), (err) => {
+        if (err) {
+          console.error("Failed to save order:", err);
+          return res.status(500).json({ message: 'Failed to save order' });
+        }
+        res.status(200).json({ message: 'Order saved successfully' });
+      });
+    });
+  });
+  
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
