@@ -91,18 +91,18 @@
       try {
         const response = await fetch('/orders.json');
         const orders = await response.json();
-
+  
         const container = document.getElementById('orders-container');
-
+  
         if (orders.length === 0) {
           container.innerHTML = '<p class="no-orders">No orders found.</p>';
           return;
         }
-
+  
         orders.reverse().forEach(order => {
           const card = document.createElement('div');
           card.className = 'order-card';
-
+  
           card.innerHTML = `
             <h3>🧾 Order from ${order.customer.name}</h3>
             <p><strong>Email:</strong> ${order.customer.email}</p>
@@ -111,12 +111,22 @@
             <p><strong>Shipping Fee:</strong> $${order.shipping}</p>
             <p><strong>Payment ID:</strong> ${order.paymentId}</p>
             <p><strong>Date:</strong> ${new Date(order.timestamp).toLocaleString()}</p>
+            <p><strong>Status:</strong> <span class="current-status">${order.status || 'pending'}</span></p>
+  
+            <label for="status-select-${order.paymentId}"><strong>Update Status:</strong></label>
+            <select id="status-select-${order.paymentId}">
+              <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+              <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+              <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+            </select>
+            <button onclick="updateStatus('${order.paymentId}')">Send Update</button>
+  
             <h4>Items:</h4>
             <ul class="items-list">
               ${order.items.map(item => `<li>${item.name} - $${item.price}</li>`).join('')}
             </ul>
           `;
-
+  
           container.appendChild(card);
         });
       } catch (error) {
@@ -125,8 +135,27 @@
         console.error('Error loading orders:', error);
       }
     }
-
+  
+    async function updateStatus(paymentId) {
+      const select = document.getElementById(`status-select-${paymentId}`);
+      const newStatus = select.value;
+  
+      const res = await fetch('/update-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId, newStatus })
+      });
+  
+      const data = await res.json();
+      alert(data.message || 'Status updated.');
+  
+      // Refresh the page or just reload the orders if you want
+      loadOrders();
+    }
+  
     loadOrders();
   </script>
+  
+  
 </body>
 </html>
