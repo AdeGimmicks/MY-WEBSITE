@@ -119,10 +119,3 @@ function changeQuantity(index, value) {
   localStorage.setItem('cart', JSON.stringify(cart));
   location.reload();
 }
-
-fetch('/save-order', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(orderData)
-});
-
