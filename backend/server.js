@@ -12,27 +12,31 @@ const { MongoClient } = require('mongodb');
 app.use(cors());
 app.use(express.json());
 
-// ✅ Connect to MongoDB Atlas
 const uri = process.env.MONGO_URI;
 let ordersCollection;
 
+// ✅ Connect to MongoDB first, then start the server
 async function startServer() {
-    try {
-      const client = await MongoClient.connect(uri, { useUnifiedTopology: true });
-      const db = client.db("electronicsonly");
-      ordersCollection = db.collection("orders");
-      console.log("✅ Connected to MongoDB Atlas");
-  
-      const PORT = process.env.PORT || 4242;
-      app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
-    } catch (err) {
-      console.error("❌ MongoDB connection failed:", err);
-      process.exit(1); // Exit app if DB fails
-    }
+  try {
+    const client = await MongoClient.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+
+    const db = client.db("electronicsonly");
+    ordersCollection = db.collection("orders");
+    console.log("✅ Connected to MongoDB Atlas");
+
+    const PORT = process.env.PORT || 4242;
+    app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+  } catch (err) {
+    console.error("❌ MongoDB connection failed:", err);
+    process.exit(1);
   }
-  
-  startServer();
-  
+}
+
+startServer(); // ✅ Only this runs the server after DB connects
+
 
 // ✅ Serve frontend files
 app.use(express.static(path.join(__dirname, 'Public')));
@@ -192,7 +196,3 @@ app.post('/update-status', async (req, res) => {
     res.status(500).send({ message: 'Failed to update status' });
   }
 });
-
-// ✅ Start the server
-const PORT = process.env.PORT || 4242;
-app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
