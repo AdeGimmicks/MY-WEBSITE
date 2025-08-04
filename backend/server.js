@@ -65,6 +65,8 @@ app.post('/save-order', async (req, res) => {
     };
 
     await ordersCollection.insertOne(orderData);
+    console.log("✅ Order saved to MongoDB:", orderData);
+
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
