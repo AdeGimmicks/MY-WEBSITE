@@ -144,7 +144,7 @@ app.post('/update-status', async (req, res) => {
     let html = '';
 
     if (newStatus === 'shipped') {
-      subject = '📦 Your Order is On the Way!';
+      subject = '🚞 Your Order is On the Way!';
       html = `
         <h2>Your Order Has Been Shipped!</h2>
         <p>Hi ${order.customer.name},</p>
@@ -162,6 +162,15 @@ app.post('/update-status', async (req, res) => {
         <p>We hope you’re satisfied. Feel free to contact us if you have any questions.</p>
         <p><strong>Total:</strong> $${order.total}</p>
         <p>Thank you for choosing ElectronicsOnly!</p>
+      `;
+    } else if (newStatus === 'cancelled') {
+      subject = '❌ Your Order Has Been Cancelled';
+      html = `
+        <h2>Order Cancelled</h2>
+        <p>Hi ${order.customer.name},</p>
+        <p>Your order with ElectronicsOnly has been cancelled as requested or due to a payment issue.</p>
+        <p>If you believe this was a mistake, please contact our support team.</p>
+        <p>We hope to serve you again soon.</p>
       `;
     } else {
       return res.status(400).send({ message: 'Invalid status.' });
