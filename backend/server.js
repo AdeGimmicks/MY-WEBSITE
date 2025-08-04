@@ -15,15 +15,17 @@ app.use(express.json());
 const uri = process.env.MONGO_URI;
 let ordersCollection;
 
-// ✅ Connect to MongoDB first, then start the server
 async function startServer() {
   try {
     const client = await MongoClient.connect(uri, {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      ssl: true,
+      tlsAllowInvalidCertificates: false,
+      tlsInsecure: false
     });
 
-    const db = client.db("electronicsonly");
+    const db = client.db(); // No need to re-specify name if it's in the URI
     ordersCollection = db.collection("orders");
     console.log("✅ Connected to MongoDB Atlas");
 
@@ -35,7 +37,7 @@ async function startServer() {
   }
 }
 
-startServer(); // ✅ Only this runs the server after DB connects
+startServer();
 
 
 // ✅ Serve frontend files
