@@ -16,15 +16,23 @@ app.use(express.json());
 const uri = process.env.MONGO_URI;
 let ordersCollection;
 
-MongoClient.connect(uri, { useUnifiedTopology: true })
-  .then(client => {
-    const db = client.db("electronicsonly");
-    ordersCollection = db.collection("orders");
-    console.log("✅ Connected to MongoDB Atlas");
-  })
-  .catch(err => {
-    console.error("❌ MongoDB connection failed:", err);
-  });
+async function startServer() {
+    try {
+      const client = await MongoClient.connect(uri, { useUnifiedTopology: true });
+      const db = client.db("electronicsonly");
+      ordersCollection = db.collection("orders");
+      console.log("✅ Connected to MongoDB Atlas");
+  
+      const PORT = process.env.PORT || 4242;
+      app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+    } catch (err) {
+      console.error("❌ MongoDB connection failed:", err);
+      process.exit(1); // Exit app if DB fails
+    }
+  }
+  
+  startServer();
+  
 
 // ✅ Serve frontend files
 app.use(express.static(path.join(__dirname, 'Public')));
