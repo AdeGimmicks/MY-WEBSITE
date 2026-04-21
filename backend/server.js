@@ -7,17 +7,11 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const { MongoClient } = require('mongodb');
-const rateLimit = require('express-rate-limit');
 
 app.use(cors());
 app.use(express.json());
 
 // Rate limit protection
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100
-});
-app.use(limiter);
 
 // Serve frontend files
 app.use(express.static(path.join(__dirname, 'Public')));
