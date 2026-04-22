@@ -11,6 +11,14 @@ const { MongoClient } = require('mongodb');
 app.use(cors());
 app.use(express.json());
 
+app.get("/robots.txt", (req, res) => {
+  res.type("text/plain");
+  res.send(`User-agent: *
+Allow: /
+
+Sitemap: https://www.electronicsonly.com/sitemap.xml`);
+});
+
 // Rate limit protection
 
 // Serve frontend files
