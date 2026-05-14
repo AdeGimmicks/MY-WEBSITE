@@ -126,7 +126,7 @@ body {
 .product-card {
   background: #fafafa;
   padding: 25px;
-  border: 2px solid #ddd;
+  border: 0px solid #ddd;
   border-radius: 10px;
   text-align: center;
   transition: transform 0.3s;
@@ -143,6 +143,16 @@ body {
   .product-card:hover {
     transform: translateY(-5px);
   }
+
+  .product-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.product-card {
+  cursor: pointer;
+}
   
   footer {
     background: #1a1a2e;
