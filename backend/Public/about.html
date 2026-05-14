@@ -6,22 +6,29 @@
   <title>About Us | Electroniconly</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="Product images/Favicon image/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-  <header>
+<header>
     <div class="container">
-      <h1 class="logo"> ElectronicsOnly.com</h1>
+      <h1 class="logo">ElectronicsOnly.com</h1>
       <nav>
         <ul>
-          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html" class="active">Home</a></li>
           <li><a href="products.html">Products</a></li>
-          <li><a href="about.html" class="active">About</a></li>
+          <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
+            <li>
+  <a href="cart.html" class="cart-icon">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count">0</span>
+  </a>
+</li>        
         </ul>
       </nav>
     </div>
-  </header>
+</header>
 
   <section class="hero">
     <div class="container">
@@ -62,10 +69,27 @@
   
 
   <footer>
-    <div class="container">
-      <p>&copy; 2026 ElectronicsOnly. All rights reserved.</p>
+  <div class="container">
+
+    <div class="footer-links">
+      <a href="privacy-policy.html">Privacy Policy</a> |
+      <a href="terms-and-conditions.html">Terms & Conditions</a> |
+      <a href="return-policy.html">Return & Refund Policy</a> |
+      <a href="shipping-policy.html">Shipping Policy</a>
     </div>
-  </footer>
+
+    <p>&copy; 2026 ElectronicsOnly. All rights reserved.</p>
+
+      <script src="script.js"></script>
+
+  <script>
+    // Show total cart item count
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    document.getElementById('cart-count').textContent = cart.length;
+  </script>
+
+  </div>
+</footer>
 
 </body>
 </html>
