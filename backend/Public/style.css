@@ -11,6 +11,15 @@ body {
     margin: auto;
     max-width: 1200px;
   }
+
+  * {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
   
   header {
     background: #1a1a2e;
