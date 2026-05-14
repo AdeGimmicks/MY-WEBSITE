@@ -138,17 +138,17 @@ body {
     margin-bottom: 15px;
     border-radius: 6px;
   }
-  
-  
-  .product-card:hover {
-    transform: translateY(-5px);
-  }
 
   .product-link {
   text-decoration: none;
   color: inherit;
   display: block;
 }
+  
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
 
 .product-card {
   cursor: pointer;
