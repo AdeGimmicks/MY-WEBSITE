@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const path = require('path');
+const fs = require('fs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const nodemailer = require('nodemailer');
@@ -25,6 +26,44 @@ Sitemap: https://www.electronicsonly.com/sitemap.xml`);
 app.use(express.static(path.join(__dirname, 'Public')));
 
 let ordersCollection;
+let productsCollection;
+
+const seedProductsPath = path.join(__dirname, 'Public', 'data', 'products.json');
+
+function requireAdmin(req, res, next) {
+  const adminKey = req.headers['admin-key'];
+
+  if (!process.env.ADMIN_SECRET || adminKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).send({
+      message: "Unauthorized"
+    });
+  }
+
+  next();
+}
+
+function readSeedProducts() {
+  return JSON.parse(fs.readFileSync(seedProductsPath, 'utf8'));
+}
+
+function normalizeProduct(product) {
+  return {
+    id: String(product.id || product.name || '').trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, ''),
+    name: String(product.name || '').trim(),
+    description: String(product.description || '').trim(),
+    price: Number(product.price || 0),
+    image: String(product.image || '').trim(),
+    page: String(product.page || '').trim(),
+    category: String(product.category || 'Remote Controls').trim(),
+    stock: Number(product.stock || 0),
+    active: product.active !== false,
+    featured: product.featured !== false,
+    updatedAt: new Date().toISOString()
+  };
+}
 
 // Create email transporter once
 const transporter = nodemailer.createTransport({
@@ -42,6 +81,17 @@ async function startServer() {
 
     const db = client.db("electronicsonly");
     ordersCollection = db.collection("orders");
+    productsCollection = db.collection("products");
+
+    const productCount = await productsCollection.countDocuments();
+    if (productCount === 0) {
+      const seedProducts = readSeedProducts().map(product => ({
+        ...normalizeProduct(product),
+        createdAt: new Date().toISOString()
+      }));
+      await productsCollection.insertMany(seedProducts);
+      console.log(`✅ Seeded ${seedProducts.length} products`);
+    }
 
     console.log("✅ Connected to MongoDB Atlas");
 
@@ -61,7 +111,197 @@ startServer();
 
 // Home route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Public/index.html'));
+  res.sendFile(path.join(__dirname, 'Public', 'index.html'));
+});
+
+
+// ==============================
+// Public Products
+// ==============================
+
+app.get('/api/products', async (req, res) => {
+  try {
+    if (!productsCollection) {
+      return res.json(readSeedProducts().filter(product => product.active !== false));
+    }
+
+    const products = await productsCollection
+      .find({ active: { $ne: false } })
+      .sort({ featured: -1, name: 1 })
+      .toArray();
+
+    res.json(products);
+  } catch (err) {
+    console.error("❌ Failed to fetch products:", err);
+    res.status(500).send({
+      message: "Failed to fetch products"
+    });
+  }
+});
+
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const product = await productsCollection.findOne({
+      id: req.params.id,
+      active: { $ne: false }
+    });
+
+    if (!product) {
+      return res.status(404).send({
+        message: "Product not found"
+      });
+    }
+
+    res.json(product);
+  } catch (err) {
+    console.error("❌ Failed to fetch product:", err);
+    res.status(500).send({
+      message: "Failed to fetch product"
+    });
+  }
+});
+
+
+// ==============================
+// Admin Products + Store Stats
+// ==============================
+
+app.get('/api/admin/products', requireAdmin, async (req, res) => {
+  try {
+    const products = await productsCollection
+      .find()
+      .sort({ name: 1 })
+      .toArray();
+
+    res.json(products);
+  } catch (err) {
+    console.error("❌ Failed to fetch admin products:", err);
+    res.status(500).send({
+      message: "Failed to fetch products"
+    });
+  }
+});
+
+app.post('/api/admin/products', requireAdmin, async (req, res) => {
+  try {
+    const product = {
+      ...normalizeProduct(req.body),
+      createdAt: new Date().toISOString()
+    };
+
+    if (!product.id || !product.name || !product.image || !product.page || product.price < 0) {
+      return res.status(400).send({
+        message: "Product name, image, page, id, and valid price are required"
+      });
+    }
+
+    const existing = await productsCollection.findOne({ id: product.id });
+    if (existing) {
+      return res.status(409).send({
+        message: "A product with this id already exists"
+      });
+    }
+
+    await productsCollection.insertOne(product);
+    res.status(201).json(product);
+  } catch (err) {
+    console.error("❌ Failed to create product:", err);
+    res.status(500).send({
+      message: "Failed to create product"
+    });
+  }
+});
+
+app.put('/api/admin/products/:id', requireAdmin, async (req, res) => {
+  try {
+    const product = normalizeProduct({
+      ...req.body,
+      id: req.params.id
+    });
+
+    if (!product.name || !product.image || !product.page || product.price < 0) {
+      return res.status(400).send({
+        message: "Product name, image, page, and valid price are required"
+      });
+    }
+
+    const updatedProduct = await productsCollection.findOneAndUpdate(
+      { id: req.params.id },
+      { $set: product },
+      { returnDocument: "after" }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).send({
+        message: "Product not found"
+      });
+    }
+
+    res.json(updatedProduct);
+  } catch (err) {
+    console.error("❌ Failed to update product:", err);
+    res.status(500).send({
+      message: "Failed to update product"
+    });
+  }
+});
+
+app.delete('/api/admin/products/:id', requireAdmin, async (req, res) => {
+  try {
+    const updatedProduct = await productsCollection.findOneAndUpdate(
+      { id: req.params.id },
+      {
+        $set: {
+          active: false,
+          updatedAt: new Date().toISOString()
+        }
+      },
+      { returnDocument: "after" }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).send({
+        message: "Product not found"
+      });
+    }
+
+    res.json(updatedProduct);
+  } catch (err) {
+    console.error("❌ Failed to remove product:", err);
+    res.status(500).send({
+      message: "Failed to remove product"
+    });
+  }
+});
+
+app.get('/api/admin/stats', requireAdmin, async (req, res) => {
+  try {
+    const [orders, productCount, activeProductCount] = await Promise.all([
+      ordersCollection.find().toArray(),
+      productsCollection.countDocuments(),
+      productsCollection.countDocuments({ active: { $ne: false } })
+    ]);
+
+    const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+    const pendingOrders = orders.filter(order => order.status === 'pending').length;
+    const shippedOrders = orders.filter(order => order.status === 'shipped').length;
+    const deliveredOrders = orders.filter(order => order.status === 'delivered').length;
+
+    res.json({
+      totalOrders: orders.length,
+      totalRevenue: totalRevenue.toFixed(2),
+      pendingOrders,
+      shippedOrders,
+      deliveredOrders,
+      productCount,
+      activeProductCount
+    });
+  } catch (err) {
+    console.error("❌ Failed to load store stats:", err);
+    res.status(500).send({
+      message: "Failed to load store stats"
+    });
+  }
 });
 
 
@@ -191,18 +431,7 @@ app.post('/save-order', async (req, res) => {
 // Get Orders (Admin Panel)
 // ==============================
 
-app.get('/get-orders', async (req, res) => {
-
-  const adminKey = req.headers['admin-key'];
-
-  if (adminKey !== process.env.ADMIN_SECRET) {
-
-    return res.status(403).send({
-      message: "Unauthorized"
-    });
-
-  }
-
+app.get('/get-orders', requireAdmin, async (req, res) => {
   try {
 
     const orders = await ordersCollection
@@ -221,7 +450,6 @@ app.get('/get-orders', async (req, res) => {
     });
 
   }
-
 });
 
 
@@ -229,19 +457,17 @@ app.get('/get-orders', async (req, res) => {
 // Update Order Status
 // ==============================
 
-app.post('/update-status', async (req, res) => {
+app.post('/update-status', requireAdmin, async (req, res) => {
 
   const { paymentId, newStatus } = req.body;
 
   try {
 
-    const result = await ordersCollection.findOneAndUpdate(
+    const order = await ordersCollection.findOneAndUpdate(
       { paymentId },
       { $set: { status: newStatus } },
       { returnDocument: "after" }
     );
-
-    const order = result.value;
 
     if (!order) {
       return res.status(404).send({

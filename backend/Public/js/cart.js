@@ -49,39 +49,36 @@ function buyNow(name, price, image) {
   window.location.href = "checkout.html";
 }
 
+let cartEventsBound = false;
+
+function bindCartButtons() {
+  if (cartEventsBound) return;
+  cartEventsBound = true;
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest('.add-to-cart, .buy-now');
+    if (!button) return;
+
+    event.preventDefault();
+    if (button.classList.contains('disabled')) return;
+
+    const name = button.dataset.name;
+    const price = button.dataset.price;
+    const image = button.dataset.image;
+
+    if (button.classList.contains('buy-now')) {
+      buyNow(name, price, image);
+      return;
+    }
+
+    addToCart(name, price, image);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
   updateCartCount();
-
-  // Add to Cart buttons
-  document.querySelectorAll('.add-to-cart').forEach(button => {
-
-    button.addEventListener('click', function () {
-
-      const name = this.dataset.name;
-      const price = this.dataset.price;
-      const image = this.dataset.image;
-
-      addToCart(name, price, image);
-
-    });
-
-  });
-
-  // Buy Now buttons
-  document.querySelectorAll('.buy-now').forEach(button => {
-
-    button.addEventListener('click', function () {
-
-      const name = this.dataset.name;
-      const price = this.dataset.price;
-      const image = this.dataset.image;
-
-      buyNow(name, price, image);
-
-    });
-
-  });
+  bindCartButtons();
 
   // Load Cart Items
   const cartItemsDiv = document.getElementById('cart-items');
