@@ -322,6 +322,29 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .product-select-row {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      gap: 8px;
+      grid-template-columns: minmax(220px, 1fr) auto auto;
+      margin-bottom: 16px;
+      padding: 12px;
+    }
+
+    .product-select-row label {
+      display: grid;
+      gap: 7px;
+    }
+
+    .product-select-row span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
     .field {
       display: grid;
       gap: 7px;
@@ -441,6 +464,7 @@
 
       .manager-stats,
       .manager-grid,
+      .product-select-row,
       .manager-gallery-preview {
         grid-template-columns: 1fr;
       }
@@ -503,6 +527,12 @@
             <button class="text-button" id="resetProductButton" type="button">Reset product</button>
           </div>
 
+          <div class="product-select-row">
+            <label><span>Select product to edit</span><select id="managerProductSelect"><option value="">Loading products...</option></select></label>
+            <button class="gold-button" id="loadSelectedProductButton" type="button">Edit selected</button>
+            <button class="ghost-button" id="addNewProductButton" type="button">Add new product</button>
+          </div>
+
           <div class="manager-grid">
             <label class="field"><span>Product name</span><input id="managerName" type="text" required /></label>
             <label class="field"><span>Category</span><select id="managerCategory"></select></label>
@@ -543,11 +573,100 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
+    const DEFAULT_PRODUCTS = [
+      {
+        id: "samsung-smart-remote",
+        name: "Samsung Smart TV Remote",
+        description: "Compatible with most Samsung smart TVs.",
+        price: 0.99,
+        image: "Product images/Samsung Remote Pix/14.png",
+        page: "samsung-remote.html",
+        category: "Samsung",
+        stock: 25,
+        active: true,
+        featured: true
+      },
+      {
+        id: "samsung-solar-remote",
+        name: "Samsung Solar TV Remote Replacement",
+        description: "BN59-01455A Solar Voice Remote Replacement.",
+        price: 18.99,
+        image: "Product images/Samsung Solar Remotes/1.png",
+        page: "samsungSolar-remote Replacement.html",
+        category: "Samsung",
+        stock: 20,
+        active: true,
+        featured: true
+      },
+      {
+        id: "roku-streaming-remote",
+        name: "Roku Streaming Remote",
+        description: "Works with all Roku streaming devices.",
+        price: 12.49,
+        image: "Product images/Roku Remote control/26.png",
+        page: "Roku-remote.html",
+        category: "Roku",
+        stock: 20,
+        active: true,
+        featured: true
+      },
+      {
+        id: "fire-tv-voice-remote",
+        name: "Fire TV Voice Remote",
+        description: "Alexa-enabled with voice control features.",
+        price: 18.99,
+        image: "Product images/Alexa Remote Pix/1.png",
+        page: "Alexatv-remote.html",
+        category: "Amazon Fire TV",
+        stock: 18,
+        active: true,
+        featured: true
+      },
+      {
+        id: "vizio-tv-remote",
+        name: "Vizio TV Replacement Remote",
+        description: "Ready to use out of the box, no setup required.",
+        price: 16.50,
+        image: "Product images/Visio TV Remote/8.png",
+        page: "vizio-remote.html",
+        category: "Vizio",
+        stock: 18,
+        active: true,
+        featured: true
+      },
+      {
+        id: "lg-magic-remote",
+        name: "LG Magic Remote",
+        description: "Smart pointer remote compatible with LG Smart TV.",
+        price: 16.50,
+        image: "Product images/LG Remotes Pix/1.png",
+        page: "lg tv-remote.html",
+        category: "LG",
+        stock: 20,
+        active: true,
+        featured: true
+      },
+      {
+        id: "philips-tv-remote",
+        name: "Philips TV Remote Replacement",
+        description: "Compatible with Philips Smart TV.",
+        price: 13.99,
+        image: "Product images/Philip TV remote/22.png",
+        page: "philips tv-remote.html",
+        category: "Philips",
+        stock: 16,
+        active: true,
+        featured: true
+      }
+    ];
+
     const storageKey = "electronics-manager-key";
     const catalogBackupKey = "electronics-manager-catalog-backup";
     let products = [];
     let selectedProductId = "";
     let unlocked = false;
+    let isNewProduct = false;
+    let draftGallery = [];
 
     const els = {
       adminKey: document.querySelector("#adminKey"),
@@ -563,6 +682,9 @@
       managerUpdated: document.querySelector("#managerUpdated"),
       managerSearch: document.querySelector("#managerSearch"),
       managerProductList: document.querySelector("#managerProductList"),
+      managerProductSelect: document.querySelector("#managerProductSelect"),
+      loadSelectedProductButton: document.querySelector("#loadSelectedProductButton"),
+      addNewProductButton: document.querySelector("#addNewProductButton"),
       managerForm: document.querySelector("#managerForm"),
       managerSelectedName: document.querySelector("#managerSelectedName"),
       managerName: document.querySelector("#managerName"),
@@ -598,6 +720,7 @@
     }
 
     function productGallery(product) {
+      if (!product) return draftGallery;
       const gallery = Array.isArray(product.gallery) ? product.gallery.filter(Boolean) : [];
       return gallery.length ? gallery.slice(0, 6) : [product.image].filter(Boolean);
     }
@@ -627,8 +750,13 @@
 
         return await fetchJson("/api/products");
       } catch {
-        const fallback = await fetch("data/products.json");
-        return fallback.json();
+        try {
+          const fallback = await fetch("data/products.json");
+          if (!fallback.ok) throw new Error("Fallback unavailable");
+          return fallback.json();
+        } catch {
+          return DEFAULT_PRODUCTS;
+        }
       }
     }
 
@@ -653,6 +781,14 @@
     function updateCategories() {
       const categories = Array.from(new Set([...products.map(product => product.category).filter(Boolean), "Samsung", "Roku", "Amazon Fire TV", "LG", "Philips", "Vizio"])).sort();
       els.managerCategory.innerHTML = categories.map(category => `<option value="${category}">${category}</option>`).join("");
+    }
+
+    function renderProductDropdown() {
+      const current = selectedProductId;
+      els.managerProductSelect.innerHTML = '<option value="">Choose product from website</option>' + (products.length ? products.map(product => `
+        <option value="${product.id}">${product.name}</option>
+      `).join("") : '<option value="" disabled>No products found</option>');
+      els.managerProductSelect.value = current || products[0]?.id || "";
     }
 
     function renderProductList() {
@@ -681,6 +817,8 @@
 
     function fillForm(product) {
       if (!product) return;
+      isNewProduct = false;
+      draftGallery = [];
       selectedProductId = product.id;
       els.managerSelectedName.textContent = product.name || "Selected product";
       els.managerName.value = product.name || "";
@@ -693,7 +831,36 @@
       els.managerImagePreview.style.backgroundImage = product.image ? `url("${safeImage(product.image)}")` : "";
       els.managerProductLink.href = product.page || "products.html";
       renderGallery(product);
+      renderProductDropdown();
       renderProductList();
+    }
+
+    function slugifyProductName(name) {
+      return String(name || "new-product")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    function startNewProduct() {
+      isNewProduct = true;
+      selectedProductId = "";
+      draftGallery = [];
+      els.managerProductSelect.value = "";
+      els.managerSelectedName.textContent = "New product";
+      els.managerName.value = "";
+      els.managerCategory.value = els.managerCategory.value || "Samsung";
+      els.managerPrice.value = "0.00";
+      els.managerStock.value = "0";
+      els.managerPage.value = "";
+      els.managerImage.value = "";
+      els.managerDescription.value = "";
+      els.managerImagePreview.style.backgroundImage = "";
+      els.managerProductLink.href = "products.html";
+      renderGallery(null);
+      renderProductList();
+      showToast("New product mode. Add details and photos, then save.");
     }
 
     async function refreshManager() {
@@ -703,21 +870,23 @@
       if (!selectedProductId && products[0]) selectedProductId = products[0].id;
       updateCategories();
       updateStats();
+      renderProductDropdown();
       renderProductList();
       fillForm(currentProduct());
       renderStatus("Catalog loaded. Unlock saving before publishing changes.");
     }
 
     function productPayload() {
-      const product = currentProduct() || {};
-      const gallery = productGallery(product);
+      const product = isNewProduct ? {} : currentProduct() || {};
+      const gallery = isNewProduct ? draftGallery : productGallery(product);
       const manualImage = els.managerImage.value.trim();
       const image = manualImage || gallery[0] || product.image || "";
+      const name = els.managerName.value.trim();
 
       return {
         ...product,
-        id: product.id,
-        name: els.managerName.value.trim(),
+        id: isNewProduct ? slugifyProductName(name) : product.id,
+        name,
         category: els.managerCategory.value,
         price: Number(els.managerPrice.value) || 0,
         stock: Math.max(Number(els.managerStock.value) || 0, 0),
@@ -731,7 +900,13 @@
     }
 
     function saveLocalCopy(product) {
-      products = products.map(item => item.id === product.id ? product : item);
+      const exists = products.some(item => item.id === product.id);
+      products = exists
+        ? products.map(item => item.id === product.id ? product : item)
+        : [...products, product];
+      isNewProduct = false;
+      draftGallery = [];
+      selectedProductId = product.id;
       localStorage.setItem(catalogBackupKey, JSON.stringify(products));
       localStorage.setItem("electronics-manager-updated", new Date().toLocaleString());
       updateStats();
@@ -750,8 +925,8 @@
       }
 
       try {
-        const saved = await fetchJson(`/api/admin/products/${product.id}`, {
-          method: "PUT",
+        const saved = await fetchJson(isNewProduct ? "/api/admin/products" : `/api/admin/products/${product.id}`, {
+          method: isNewProduct ? "POST" : "PUT",
           headers: { "Content-Type": "application/json", "admin-key": els.adminKey.value },
           body: JSON.stringify(product)
         });
@@ -859,7 +1034,7 @@
       const files = Array.from(event.target.files || []).slice(0, 6);
       if (!files.length) return;
       const product = currentProduct();
-      if (!product) return;
+      if (!product && !isNewProduct) return;
 
       Promise.all(files.map(file => new Promise((resolve, reject) => {
         if (!file.type.startsWith("image/")) return reject(new Error("Please choose image files only."));
@@ -870,8 +1045,14 @@
         reader.readAsDataURL(file);
       }))).then(images => {
         const gallery = [...images, ...productGallery(product)].slice(0, 6);
-        const updated = { ...product, image: gallery[0], gallery };
-        saveLocalCopy(updated);
+        if (isNewProduct) {
+          draftGallery = gallery;
+          els.managerImagePreview.style.backgroundImage = gallery[0] ? `url("${safeImage(gallery[0])}")` : "";
+          renderGallery(null);
+        } else {
+          const updated = { ...product, image: gallery[0], gallery };
+          saveLocalCopy(updated);
+        }
         els.managerImage.value = "";
         showToast("Photos loaded. Press Save product to publish.");
       }).catch(error => showToast(error.message));
@@ -879,7 +1060,13 @@
 
     function removeGalleryImage(index) {
       const product = currentProduct();
-      const gallery = productGallery(product).filter((_, galleryIndex) => galleryIndex !== Number(index));
+      const gallery = productGallery(isNewProduct ? null : product).filter((_, galleryIndex) => galleryIndex !== Number(index));
+      if (isNewProduct) {
+        draftGallery = gallery;
+        els.managerImagePreview.style.backgroundImage = gallery[0] ? `url("${safeImage(gallery[0])}")` : "";
+        renderGallery(null);
+        return;
+      }
       const updated = { ...product, gallery, image: gallery[0] || product.image };
       saveLocalCopy(updated);
     }
@@ -903,6 +1090,23 @@
       selectedProductId = button.dataset.productId;
       fillForm(currentProduct());
     });
+    els.managerProductSelect.addEventListener("change", event => {
+      if (!event.target.value) {
+        startNewProduct();
+        return;
+      }
+      selectedProductId = event.target.value;
+      fillForm(currentProduct());
+    });
+    els.loadSelectedProductButton.addEventListener("click", () => {
+      if (!els.managerProductSelect.value) {
+        startNewProduct();
+        return;
+      }
+      selectedProductId = els.managerProductSelect.value;
+      fillForm(currentProduct());
+    });
+    els.addNewProductButton.addEventListener("click", startNewProduct);
     els.managerForm.addEventListener("submit", saveProduct);
     els.managerImage.addEventListener("input", () => {
       const product = currentProduct();
