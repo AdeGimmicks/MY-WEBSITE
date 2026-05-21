@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product | ElectronicsOnly</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="Product images/Favicon image/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .product-detail {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      padding: 60px 0;
+    }
+
+    .main-image {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .main-image img {
+      background: #fff;
+      border-radius: 8px;
+      object-fit: contain;
+      width: 100%;
+    }
+
+    .thumbnails {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .thumbnails img {
+      background: #fff;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      height: 70px;
+      object-fit: contain;
+      width: 70px;
+    }
+
+    .thumbnails img:hover {
+      border-color: #f9c80e;
+    }
+
+    .product-info {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .product-info h2 {
+      margin-top: 0;
+    }
+
+    .product-meta {
+      color: #667085;
+      font-weight: 700;
+    }
+
+    .product-description {
+      margin-top: 28px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1 class="logo">ElectronicsOnly.com</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li>
+            <a href="cart.html" class="cart-icon">
+              <i class="fas fa-shopping-cart"></i>
+              <span id="cart-count">0</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="container product-detail" id="dynamic-product-detail">
+    <div class="main-image">
+      <img id="mainProductImage" src="" alt="Product image">
+      <div class="thumbnails" id="dynamicThumbnails"></div>
+    </div>
+
+    <div class="product-info">
+      <p class="product-meta" id="productCategory"></p>
+      <h2 id="productTitle">Loading product...</h2>
+      <p id="productSummary"></p>
+      <p><strong>Price:</strong> $<span id="productPrice">0.00</span></p>
+      <p class="stock-note product-stock-note" id="productStock"></p>
+
+      <div class="buy-btn">
+        <a href="#" class="btn small buy-now" id="buyNowButton">Buy Now</a>
+        <a href="#" class="btn small add-to-cart" id="addToCartButton">Add to Cart</a>
+      </div>
+
+      <div class="product-description">
+        <h3>Product Description</h3>
+        <p id="longDescription"></p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a> |
+        <a href="terms-and-conditions.html">Terms & Conditions</a> |
+        <a href="return-policy.html">Return & Refund Policy</a> |
+        <a href="shipping-policy.html">Shipping Policy</a>
+      </div>
+      <p>&copy; 2026 ElectronicsOnly. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/products.js?v=store-manager-2"></script>
+  <script src="js/cart.js?v=store-manager-1"></script>
+  <script>
+    function changeImage(src) {
+      document.getElementById("mainProductImage").src = src;
+    }
+
+    function productIdFromUrl() {
+      return new URLSearchParams(window.location.search).get('id');
+    }
+
+    function renderDynamicProduct(product) {
+      const price = Number(product.price || 0).toFixed(2);
+      const gallery = Array.isArray(product.gallery) && product.gallery.length
+        ? product.gallery
+        : [product.image].filter(Boolean);
+      const image = gallery[0] || product.image || '';
+      const stock = Number(product.stock || 0);
+
+      document.title = `${product.name} | ElectronicsOnly`;
+      document.getElementById('productCategory').textContent = product.category || 'Remote Control';
+      document.getElementById('productTitle').textContent = product.name;
+      document.getElementById('productSummary').textContent = product.description || '';
+      document.getElementById('productPrice').textContent = price;
+      document.getElementById('longDescription').textContent = product.description || '';
+      document.getElementById('productStock').textContent = stock > 0 ? `${stock} in stock` : 'Out of stock';
+
+      const mainImage = document.getElementById('mainProductImage');
+      mainImage.src = image;
+      mainImage.alt = product.name;
+
+      document.getElementById('dynamicThumbnails').innerHTML = gallery.slice(0, 6).map(item => `
+        <img src="${item}" alt="${product.name}" onclick="changeImage(this.src)">
+      `).join('');
+
+      document.querySelectorAll('.buy-now, .add-to-cart').forEach(button => {
+        button.dataset.name = product.name;
+        button.dataset.price = price;
+        button.dataset.image = image;
+        button.dataset.productId = product.id;
+        button.classList.toggle('disabled', stock <= 0 || product.active === false);
+      });
+
+      if (typeof bindCartButtons === 'function') {
+        bindCartButtons();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const productId = productIdFromUrl();
+      const products = await loadProducts();
+      const product = products.find(item => item.id === productId);
+
+      if (!product) {
+        document.getElementById('productTitle').textContent = 'Product not found';
+        document.getElementById('productSummary').textContent = 'This product is not available right now.';
+        document.querySelectorAll('.buy-now, .add-to-cart').forEach(button => button.classList.add('disabled'));
+        return;
+      }
+
+      renderDynamicProduct(product);
+    });
+
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    document.getElementById('cart-count').textContent = cart.length;
+  </script>
+</body>
+</html>

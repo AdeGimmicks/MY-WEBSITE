@@ -843,6 +843,19 @@
         .replace(/^-|-$/g, "");
     }
 
+    function uniqueProductId(name) {
+      const base = slugifyProductName(name);
+      let candidate = base;
+      let count = 2;
+
+      while (products.some(product => product.id === candidate)) {
+        candidate = `${base}-${count}`;
+        count += 1;
+      }
+
+      return candidate;
+    }
+
     function startNewProduct() {
       isNewProduct = true;
       selectedProductId = "";
@@ -863,6 +876,12 @@
       showToast("New product mode. Add details and photos, then save.");
     }
 
+    els.managerName.addEventListener("input", () => {
+      if (!isNewProduct || els.managerPage.value.trim()) return;
+      const id = uniqueProductId(els.managerName.value);
+      els.managerPage.placeholder = `product.html?id=${encodeURIComponent(id)}`;
+    });
+
     async function refreshManager() {
       products = await loadProducts();
       const backup = JSON.parse(localStorage.getItem(catalogBackupKey) || "null");
@@ -882,15 +901,16 @@
       const manualImage = els.managerImage.value.trim();
       const image = manualImage || gallery[0] || product.image || "";
       const name = els.managerName.value.trim();
+      const id = isNewProduct ? uniqueProductId(name) : product.id;
 
       return {
         ...product,
-        id: isNewProduct ? slugifyProductName(name) : product.id,
+        id,
         name,
         category: els.managerCategory.value,
         price: Number(els.managerPrice.value) || 0,
         stock: Math.max(Number(els.managerStock.value) || 0, 0),
-        page: els.managerPage.value.trim(),
+        page: els.managerPage.value.trim() || `product.html?id=${encodeURIComponent(id)}`,
         description: els.managerDescription.value.trim(),
         image,
         gallery: [image, ...gallery.filter(item => item !== image)].slice(0, 6),

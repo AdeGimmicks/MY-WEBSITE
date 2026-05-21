@@ -106,10 +106,11 @@ function renderProductCard(product) {
   const stock = Number(product.stock || 0);
   const stockText = stock > 0 ? `${stock} in stock` : 'Out of stock';
   const disabledClass = stock > 0 ? '' : ' disabled';
+  const productUrl = product.page || `product.html?id=${encodeURIComponent(product.id)}`;
 
   return `
     <div class="product-card">
-      <a href="${product.page}" class="product-link">
+      <a href="${productUrl}" class="product-link">
         <img src="${product.image}" alt="${product.name}">
         <h4>${product.name}</h4>
         <p>${product.description}</p>
