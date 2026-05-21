@@ -87,6 +87,10 @@ function validateProduct(product) {
     return "Uploaded image is too large. Please use an image under about 6 MB.";
   }
 
+  if (Array.isArray(product.gallery) && product.gallery.some(image => !requireProductImage(image))) {
+    return "One uploaded gallery image is too large. Please use images under about 6 MB.";
+  }
+
   return "";
 }
 
@@ -141,6 +145,10 @@ function readSeedProducts() {
 }
 
 function normalizeProduct(product) {
+  const gallery = Array.isArray(product.gallery)
+    ? product.gallery.filter(Boolean).slice(0, 6).map(image => String(image).trim())
+    : [];
+
   return {
     id: String(product.id || product.name || '').trim()
       .toLowerCase()
@@ -155,6 +163,7 @@ function normalizeProduct(product) {
     stock: Number(product.stock || 0),
     active: product.active !== false,
     featured: product.featured !== false,
+    gallery,
     updatedAt: new Date().toISOString()
   };
 }

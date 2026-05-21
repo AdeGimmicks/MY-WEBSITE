@@ -100,6 +100,16 @@ function updateProductDetail(product) {
     mainImage.alt = product.name;
   }
 
+  const gallery = Array.isArray(product.gallery) && product.gallery.length
+    ? product.gallery
+    : [product.image].filter(Boolean);
+  const thumbnailWrap = document.querySelector('.thumbnails');
+  if (thumbnailWrap && gallery.length) {
+    thumbnailWrap.innerHTML = gallery.slice(0, 6).map(image => `
+      <img src="${image}" alt="${product.name}" onclick="changeImage(this.src)">
+    `).join('');
+  }
+
   document.querySelectorAll('.buy-now, .add-to-cart').forEach(button => {
     button.dataset.name = product.name;
     button.dataset.price = price;

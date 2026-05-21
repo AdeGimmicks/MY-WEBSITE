@@ -1,785 +1,929 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Store Manager | ElectronicsOnly</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
+    :root {
+      --ink: #172033;
+      --muted: #697386;
+      --line: #dfe5ee;
+      --panel: #ffffff;
+      --soft: #f4f7fb;
+      --gold: #f9c80e;
+      --navy: #151b33;
+      --danger: #b42318;
+      --ok: #067647;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      background: #f4f6f8;
-      color: #1f2937;
-      font-family: Arial, sans-serif;
+      background: var(--soft);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
       margin: 0;
     }
 
-    .manager-shell {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 24px;
-    }
+    a { color: inherit; }
 
-    .manager-header,
-    .top-controls,
-    .setup-row {
+    .site-header {
       align-items: center;
+      background: var(--panel);
+      border-bottom: 1px solid var(--line);
       display: flex;
-      gap: 12px;
       justify-content: space-between;
+      padding: 16px 6vw;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    .manager-title h1 {
-      margin: 0 0 5px;
+    .brand {
+      align-items: center;
+      display: inline-flex;
+      font-weight: 800;
+      gap: 10px;
+      text-decoration: none;
     }
 
-    .manager-title p,
-    .help-text {
-      color: #667085;
-      margin: 0;
-    }
-
-    .setup-panel,
-    .manager-panel,
-    .stat-card {
-      background: white;
-      border: 1px solid #e4e7ec;
-      border-radius: 8px;
-    }
-
-    .setup-panel {
-      margin: 18px 0;
-      padding: 16px;
-    }
-
-    .setup-panel.hidden,
-    .locked .manager-content {
-      display: none;
-    }
-
-    input,
-    select,
-    textarea {
-      border: 1px solid #ccd2da;
+    .brand-mark {
+      background: var(--navy);
       border-radius: 6px;
-      box-sizing: border-box;
+      color: var(--gold);
+      display: inline-grid;
+      height: 38px;
+      place-items: center;
+      width: 38px;
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 18px;
+      font-weight: 700;
+    }
+
+    .main-nav a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    main {
+      padding: 34px 6vw 50px;
+    }
+
+    .section-heading {
+      align-items: end;
+      display: grid;
+      gap: 22px;
+      grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.75fr);
+      margin-bottom: 20px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 0.95;
+      margin-bottom: 10px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .section-heading > p,
+    .help-text {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .auth-strip {
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr auto auto;
+      margin-bottom: 18px;
+      padding: 14px;
+    }
+
+    .setup-box {
+      background: #fff8d7;
+      border: 1px solid #f5d65b;
+      border-radius: 10px;
+      display: none;
+      margin-bottom: 18px;
+      padding: 14px;
+    }
+
+    .setup-box.show { display: block; }
+
+    .setup-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr 1fr auto;
+      margin-top: 12px;
+    }
+
+    input, select, textarea {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      color: var(--ink);
       font: inherit;
-      padding: 10px;
+      padding: 12px;
       width: 100%;
     }
 
-    .top-controls input,
-    .setup-row input {
-      width: 260px;
-    }
+    textarea { resize: vertical; }
 
-    .manager-btn {
-      background: #1a1a2e;
+    button, .button-link, .file-button {
       border: 0;
-      border-radius: 6px;
-      color: white;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: 700;
-      padding: 11px 14px;
+      display: inline-flex;
+      font: inherit;
+      font-weight: 800;
+      justify-content: center;
+      padding: 12px 16px;
+      text-decoration: none;
       white-space: nowrap;
     }
 
-    .manager-btn.secondary {
-      background: #f9c80e;
+    .primary-button {
+      background: var(--navy);
+      color: white;
+    }
+
+    .ghost-button {
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+
+    .gold-button {
+      background: var(--gold);
       color: #111827;
     }
 
-    .manager-btn.danger {
-      background: #b42318;
+    .text-button {
+      background: transparent;
+      color: var(--muted);
+      padding: 8px;
     }
 
-    .stats-grid {
-      display: grid;
-      gap: 14px;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      margin: 20px 0;
-    }
+    .danger-button { color: var(--danger); }
 
-    .stat-card {
-      padding: 16px;
-    }
-
-    .stat-card span {
-      color: #667085;
-      display: block;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .stat-card strong {
-      display: block;
-      font-size: 26px;
-    }
-
-    .manager-panel {
-      margin-bottom: 20px;
+    .file-button {
       overflow: hidden;
+      position: relative;
     }
 
-    .panel-header {
-      align-items: center;
-      border-bottom: 1px solid #e4e7ec;
-      display: flex;
-      gap: 14px;
-      justify-content: space-between;
-      padding: 16px;
+    .file-button input {
+      inset: 0;
+      opacity: 0;
+      position: absolute;
     }
 
-    .panel-header h2 {
-      font-size: 20px;
-      margin: 0;
-    }
-
-    .product-picker {
-      display: grid;
-      gap: 8px;
-      grid-template-columns: 1fr auto;
-      min-width: 420px;
-    }
-
-    .product-form {
+    .manager-stats {
       display: grid;
       gap: 14px;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      padding: 16px;
+      margin-bottom: 18px;
     }
 
-    .product-form label {
-      color: #344054;
-      display: grid;
+    .manager-stats div,
+    .manager-list,
+    .manager-form,
+    .manager-activity section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(23, 32, 51, 0.05);
+    }
+
+    .manager-stats div {
+      padding: 18px;
+    }
+
+    .manager-stats strong {
+      display: block;
+      font-size: 28px;
+    }
+
+    .manager-stats span {
+      color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
-      gap: 6px;
     }
 
-    .wide {
-      grid-column: span 2;
-    }
-
-    .image-tools {
+    .manager-layout {
+      align-items: start;
       display: grid;
-      gap: 10px;
-      grid-column: span 2;
-      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      grid-template-columns: 330px minmax(0, 1fr);
     }
 
-    .image-preview {
-      align-items: center;
-      background: #f8fafc;
-      border: 1px solid #e4e7ec;
-      border-radius: 8px;
-      display: flex;
-      height: 120px;
-      justify-content: center;
+    .manager-list {
+      max-height: calc(100vh - 130px);
       overflow: hidden;
-      width: 120px;
+      padding: 16px;
+      position: sticky;
+      top: 86px;
     }
 
-    .image-preview img {
-      height: 100%;
-      object-fit: contain;
-      width: 100%;
+    .search-box {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .checks,
-    .actions {
+    .search-box span,
+    .field span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .manager-product-list {
+      display: grid;
+      gap: 8px;
+      max-height: calc(100vh - 245px);
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .manager-product-button {
       align-items: center;
-      display: flex;
-      gap: 14px;
-      grid-column: span 2;
-    }
-
-    .checks label {
-      align-items: center;
-      display: flex;
-      gap: 7px;
-    }
-
-    .checks input {
-      width: auto;
-    }
-
-    .message {
-      color: #475467;
-      min-height: 22px;
-      padding: 0 16px 16px;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    th,
-    td {
-      border-bottom: 1px solid #e4e7ec;
-      padding: 11px;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
       background: #f8fafc;
-      color: #475467;
-      font-size: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 48px 1fr;
+      padding: 9px;
+      text-align: left;
+      white-space: normal;
     }
 
-    .product-thumb {
+    .manager-product-button.active {
+      background: var(--navy);
+      color: white;
+    }
+
+    .manager-product-button img {
+      background: white;
+      border-radius: 6px;
       height: 48px;
       object-fit: contain;
       width: 48px;
     }
 
-    .status-pill {
-      border-radius: 999px;
-      display: inline-block;
+    .manager-product-button span {
+      color: var(--muted);
+      display: block;
       font-size: 12px;
-      font-weight: 700;
-      padding: 4px 9px;
+      margin-top: 4px;
     }
 
-    .status-pill.active {
-      background: #dcfae6;
-      color: #067647;
+    .manager-product-button.active span { color: #c9d4e6; }
+
+    .manager-form {
+      padding: 18px;
     }
 
-    .status-pill.inactive {
-      background: #fee4e2;
-      color: #b42318;
+    .manager-form-head,
+    .manager-actions {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 16px;
     }
 
-    @media (max-width: 900px) {
-      .manager-header,
-      .top-controls,
-      .setup-row,
-      .panel-header {
+    .manager-form h3 {
+      font-size: 28px;
+      margin-bottom: 0;
+    }
+
+    .manager-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    .manager-image-preview {
+      background: #f8fafc center / contain no-repeat;
+      border: 1px dashed #b8c2d1;
+      border-radius: 10px;
+      min-height: 260px;
+      margin: 14px 0;
+    }
+
+    .manager-gallery-preview {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(6, minmax(80px, 1fr));
+      margin: 12px 0 18px;
+    }
+
+    .manager-gallery-item {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .manager-gallery-item img {
+      display: block;
+      height: 86px;
+      object-fit: contain;
+      width: 100%;
+    }
+
+    .manager-gallery-item button {
+      border-radius: 0;
+      font-size: 12px;
+      width: 100%;
+    }
+
+    .manager-activity {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .manager-activity section {
+      padding: 16px;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .activity-item {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .toast {
+      background: var(--navy);
+      border-radius: 999px;
+      bottom: 22px;
+      color: white;
+      left: 50%;
+      opacity: 0;
+      padding: 12px 18px;
+      pointer-events: none;
+      position: fixed;
+      transform: translate(-50%, 20px);
+      transition: 0.2s ease;
+      z-index: 20;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 980px) {
+      .section-heading,
+      .auth-strip,
+      .setup-grid,
+      .manager-layout,
+      .manager-activity {
+        grid-template-columns: 1fr;
+      }
+
+      .manager-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .manager-list {
+        max-height: none;
+        position: static;
+      }
+
+      .manager-product-list {
+        max-height: 360px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .site-header,
+      .main-nav,
+      .manager-form-head,
+      .manager-actions {
         align-items: stretch;
         flex-direction: column;
       }
 
-      .top-controls input,
-      .setup-row input,
-      .product-picker {
-        min-width: 0;
-        width: 100%;
-      }
-
-      .product-form,
-      .product-picker,
-      .image-tools {
+      .manager-stats,
+      .manager-grid,
+      .manager-gallery-preview {
         grid-template-columns: 1fr;
-      }
-
-      .wide,
-      .image-tools,
-      .checks,
-      .actions {
-        grid-column: span 1;
       }
     }
   </style>
 </head>
-<body class="locked">
-  <main class="manager-shell">
-    <section class="manager-header">
-      <div class="manager-title">
-        <h1>Store Manager</h1>
-        <p>Pick a product, edit it, upload a picture, and save it to the live store.</p>
-      </div>
-      <div class="top-controls">
-        <input id="admin-key" type="password" placeholder="Enter your owner key" />
-        <button class="manager-btn" id="unlock">Unlock</button>
-        <button class="manager-btn secondary" id="refresh">Refresh</button>
-      </div>
-    </section>
+<body data-page="manager">
+  <header class="site-header" id="top">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">EO</span><span>ElectronicsOnly</span></a>
+    <nav class="main-nav" aria-label="Manager navigation">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="admin.html">Store Manager</a>
+    </nav>
+  </header>
 
-    <section class="setup-panel hidden" id="setup-panel">
-      <h2>Create Your Owner Key</h2>
-      <p class="help-text">This store does not have an owner key yet. Create one now, keep it private, and use it anytime you open this page.</p>
-      <div class="setup-row" style="margin-top: 12px;">
-        <input id="new-admin-key" type="password" placeholder="Create owner key" />
-        <input id="confirm-admin-key" type="password" placeholder="Confirm owner key" />
-        <button class="manager-btn" id="create-key">Create Key</button>
-      </div>
-    </section>
-
-    <section class="manager-content">
-      <section class="stats-grid" id="stats-grid">
-        <div class="stat-card"><span>Total orders</span><strong>--</strong></div>
-        <div class="stat-card"><span>Revenue</span><strong>--</strong></div>
-        <div class="stat-card"><span>Active products</span><strong>--</strong></div>
-        <div class="stat-card"><span>Pending orders</span><strong>--</strong></div>
-      </section>
-
-      <section class="manager-panel">
-        <div class="panel-header">
-          <div>
-            <h2>Product Editor</h2>
-            <p class="help-text">Choose Samsung, Alexa, Roku, LG, Philips, Vizio, or any product you add later.</p>
-          </div>
-          <div class="product-picker">
-            <select id="product-select">
-              <option value="">Choose a product to edit</option>
-            </select>
-            <button class="manager-btn secondary" id="new-product">New Product</button>
-          </div>
+  <main>
+    <section class="manager-section" id="manager">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Store Manager</p>
+          <h1>Edit products without touching code</h1>
         </div>
+        <p>Update Samsung, Alexa, Roku, LG, Philips, Vizio, or any future product. Change names, prices, stock, descriptions, and up to six product photos. Saving on the live Render site writes to MongoDB and updates the public store.</p>
+      </div>
 
-        <form class="product-form" id="product-form">
-          <input type="hidden" id="editing-id" />
+      <div class="auth-strip">
+        <input id="adminKey" type="password" placeholder="Enter your owner key to save changes" autocomplete="current-password" />
+        <button class="primary-button" id="unlockButton" type="button">Unlock saving</button>
+        <button class="gold-button" id="refreshButton" type="button">Refresh</button>
+      </div>
 
-          <label>
-            Product ID
-            <input id="product-id" placeholder="samsung-smart-remote" required />
-          </label>
+      <div class="setup-box" id="setupBox">
+        <p class="eyebrow">First time setup</p>
+        <h2>Create your owner key</h2>
+        <p class="help-text">Create this once on your live Render site. Keep it private. After that, use it anytime you open this manager.</p>
+        <div class="setup-grid">
+          <input id="newAdminKey" type="password" placeholder="Create owner key" autocomplete="new-password" />
+          <input id="confirmAdminKey" type="password" placeholder="Confirm owner key" autocomplete="new-password" />
+          <button class="primary-button" id="createKeyButton" type="button">Create key</button>
+        </div>
+      </div>
 
-          <label class="wide">
-            Product name
-            <input id="product-name" placeholder="Samsung Smart TV Remote" required />
-          </label>
+      <div class="manager-stats" aria-label="Catalog statistics">
+        <div><strong id="managerProductCount">0</strong><span>products</span></div>
+        <div><strong id="managerInStockCount">0</strong><span>in stock</span></div>
+        <div><strong id="managerCategoryCount">0</strong><span>categories</span></div>
+        <div><strong id="managerUpdated">Not edited</strong><span>last saved</span></div>
+      </div>
 
-          <label>
-            Price
-            <input id="product-price" type="number" min="0" step="0.01" required />
-          </label>
+      <div class="manager-layout">
+        <aside class="manager-list" aria-label="Product list">
+          <label class="search-box"><span>Find product</span><input id="managerSearch" type="search" placeholder="Search Samsung, Roku, LG..." autocomplete="off" /></label>
+          <div id="managerProductList" class="manager-product-list"></div>
+        </aside>
 
-          <label class="wide">
-            Description
-            <textarea id="product-description" rows="3" required></textarea>
-          </label>
-
-          <div class="image-tools">
-            <div class="image-preview">
-              <img id="image-preview" alt="Product preview" />
-            </div>
-            <div>
-              <label>
-                Upload product picture
-                <input id="product-upload" type="file" accept="image/*" />
-              </label>
-              <label style="margin-top: 10px;">
-                Image path or uploaded image data
-                <input id="product-image" placeholder="Product images/Samsung Remote Pix/14.png" required />
-              </label>
-              <p class="help-text" style="margin-top: 6px;">Uploading a picture saves it directly with the product in MongoDB.</p>
-            </div>
+        <form class="manager-form" id="managerForm">
+          <div class="manager-form-head">
+            <div><p class="eyebrow">Selected product</p><h3 id="managerSelectedName">Choose a product</h3></div>
+            <button class="text-button" id="resetProductButton" type="button">Reset product</button>
           </div>
 
-          <label>
-            Product page
-            <input id="product-page" placeholder="samsung-remote.html" required />
-          </label>
-
-          <label>
-            Category
-            <input id="product-category" placeholder="Samsung" />
-          </label>
-
-          <label>
-            Stock
-            <input id="product-stock" type="number" min="0" step="1" />
-          </label>
-
-          <div class="checks">
-            <label><input id="product-active" type="checkbox" checked /> Active</label>
-            <label><input id="product-featured" type="checkbox" checked /> Featured</label>
+          <div class="manager-grid">
+            <label class="field"><span>Product name</span><input id="managerName" type="text" required /></label>
+            <label class="field"><span>Category</span><select id="managerCategory"></select></label>
+            <label class="field"><span>Price</span><input id="managerPrice" type="number" min="0" step="0.01" required /></label>
+            <label class="field"><span>Stock quantity</span><input id="managerStock" type="number" min="0" step="1" required /></label>
+            <label class="field"><span>Product page</span><input id="managerPage" type="text" placeholder="samsung-remote.html" required /></label>
+            <label class="field"><span>Main image URL/path</span><input id="managerImage" type="text" placeholder="Product images/..." /></label>
+            <label class="field full"><span>Description</span><textarea id="managerDescription" rows="4" required></textarea></label>
           </div>
 
-          <div class="actions">
-            <button class="manager-btn" type="submit">Save Product</button>
-            <button class="manager-btn secondary" type="button" id="reset-form">Clear</button>
+          <div id="managerImagePreview" class="manager-image-preview" role="img" aria-label="Selected product image preview"></div>
+          <label class="field"><span>Upload product gallery photos</span><input id="managerImageUpload" type="file" accept="image/*" multiple /></label>
+          <div id="managerGalleryPreview" class="manager-gallery-preview" aria-label="Product gallery preview"></div>
+
+          <div class="manager-actions">
+            <button class="primary-button" type="submit">Save product</button>
+            <a class="ghost-button button-link" id="managerProductLink" href="products.html">Open product page</a>
+            <button class="ghost-button" id="exportCatalogButton" type="button">Export catalog</button>
+            <label class="ghost-button file-button">Import catalog<input id="importCatalogInput" type="file" accept="application/json" /></label>
+            <button class="text-button danger-button" id="hideProductButton" type="button">Hide product</button>
           </div>
         </form>
-        <div class="message" id="product-message"></div>
+      </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="product-list">
-              <tr><td colspan="6">Unlock the manager to load products.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="manager-panel">
-        <div class="panel-header">
-          <h2>Recent Orders</h2>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Customer</th>
-                <th>Email</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody id="order-list">
-              <tr><td colspan="6">Unlock the manager to load orders.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <div class="manager-activity">
+        <section>
+          <div class="manager-form-head"><div><p class="eyebrow">Purchases</p><h3>Orders</h3></div><button class="text-button" id="refreshOrdersButton" type="button">Refresh</button></div>
+          <div id="ordersList" class="activity-list"></div>
+        </section>
+        <section>
+          <div class="manager-form-head"><div><p class="eyebrow">Catalog</p><h3>Status</h3></div></div>
+          <div id="statusList" class="activity-list"></div>
+        </section>
+      </div>
     </section>
   </main>
 
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script>
+    const storageKey = "electronics-manager-key";
+    const catalogBackupKey = "electronics-manager-catalog-backup";
     let products = [];
+    let selectedProductId = "";
+    let unlocked = false;
 
-    const body = document.body;
-    const setupPanel = document.getElementById('setup-panel');
-    const productSelect = document.getElementById('product-select');
-    const imagePreview = document.getElementById('image-preview');
-
-    const fields = {
-      editingId: document.getElementById('editing-id'),
-      id: document.getElementById('product-id'),
-      name: document.getElementById('product-name'),
-      description: document.getElementById('product-description'),
-      price: document.getElementById('product-price'),
-      image: document.getElementById('product-image'),
-      page: document.getElementById('product-page'),
-      category: document.getElementById('product-category'),
-      stock: document.getElementById('product-stock'),
-      active: document.getElementById('product-active'),
-      featured: document.getElementById('product-featured')
+    const els = {
+      adminKey: document.querySelector("#adminKey"),
+      unlockButton: document.querySelector("#unlockButton"),
+      refreshButton: document.querySelector("#refreshButton"),
+      setupBox: document.querySelector("#setupBox"),
+      newAdminKey: document.querySelector("#newAdminKey"),
+      confirmAdminKey: document.querySelector("#confirmAdminKey"),
+      createKeyButton: document.querySelector("#createKeyButton"),
+      managerProductCount: document.querySelector("#managerProductCount"),
+      managerInStockCount: document.querySelector("#managerInStockCount"),
+      managerCategoryCount: document.querySelector("#managerCategoryCount"),
+      managerUpdated: document.querySelector("#managerUpdated"),
+      managerSearch: document.querySelector("#managerSearch"),
+      managerProductList: document.querySelector("#managerProductList"),
+      managerForm: document.querySelector("#managerForm"),
+      managerSelectedName: document.querySelector("#managerSelectedName"),
+      managerName: document.querySelector("#managerName"),
+      managerCategory: document.querySelector("#managerCategory"),
+      managerPrice: document.querySelector("#managerPrice"),
+      managerStock: document.querySelector("#managerStock"),
+      managerPage: document.querySelector("#managerPage"),
+      managerImage: document.querySelector("#managerImage"),
+      managerDescription: document.querySelector("#managerDescription"),
+      managerImageUpload: document.querySelector("#managerImageUpload"),
+      managerImagePreview: document.querySelector("#managerImagePreview"),
+      managerGalleryPreview: document.querySelector("#managerGalleryPreview"),
+      resetProductButton: document.querySelector("#resetProductButton"),
+      managerProductLink: document.querySelector("#managerProductLink"),
+      exportCatalogButton: document.querySelector("#exportCatalogButton"),
+      importCatalogInput: document.querySelector("#importCatalogInput"),
+      hideProductButton: document.querySelector("#hideProductButton"),
+      ordersList: document.querySelector("#ordersList"),
+      statusList: document.querySelector("#statusList"),
+      refreshOrdersButton: document.querySelector("#refreshOrdersButton"),
+      toast: document.querySelector("#toast")
     };
 
-    function getAdminKey() {
-      return localStorage.getItem('adminKey') || '';
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => els.toast.classList.remove("show"), 2400);
     }
 
-    function setAdminKey(value) {
-      localStorage.setItem('adminKey', value);
-      document.getElementById('admin-key').value = value;
+    function safeImage(image) {
+      return String(image || "").replace(/["\\\n\r]/g, "");
     }
 
-    function setMessage(message) {
-      document.getElementById('product-message').textContent = message;
+    function productGallery(product) {
+      const gallery = Array.isArray(product.gallery) ? product.gallery.filter(Boolean) : [];
+      return gallery.length ? gallery.slice(0, 6) : [product.image].filter(Boolean);
     }
 
-    function updatePreview(src) {
-      imagePreview.src = src || '';
-      imagePreview.style.display = src ? 'block' : 'none';
+    function currentProduct() {
+      return products.find(product => product.id === selectedProductId) || products[0];
     }
 
-    async function adminFetch(url, options = {}) {
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          'admin-key': getAdminKey(),
-          ...(options.headers || {})
+    async function fetchJson(url, options = {}) {
+      const response = await fetch(url, options);
+      const text = await response.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error("This page needs the live Render server to save. Static file preview can only show the manager.");
+      }
+      if (!response.ok) throw new Error(data.message || "Request failed");
+      return data;
+    }
+
+    async function loadProducts() {
+      try {
+        if (unlocked) {
+          return await fetchJson("/api/admin/products", { headers: { "admin-key": els.adminKey.value } });
         }
+
+        return await fetchJson("/api/products");
+      } catch {
+        const fallback = await fetch("data/products.json");
+        return fallback.json();
+      }
+    }
+
+    async function checkSetup() {
+      try {
+        const status = await fetchJson("/api/admin/setup-status");
+        els.setupBox.classList.toggle("show", !status.hasAdminKey);
+      } catch {
+        els.setupBox.classList.remove("show");
+      }
+    }
+
+    function updateStats() {
+      const categories = new Set(products.map(product => product.category).filter(Boolean));
+      const stock = products.reduce((sum, product) => sum + Number(product.stock || 0), 0);
+      els.managerProductCount.textContent = products.length;
+      els.managerInStockCount.textContent = stock;
+      els.managerCategoryCount.textContent = categories.size;
+      els.managerUpdated.textContent = localStorage.getItem("electronics-manager-updated") || "Not edited";
+    }
+
+    function updateCategories() {
+      const categories = Array.from(new Set([...products.map(product => product.category).filter(Boolean), "Samsung", "Roku", "Amazon Fire TV", "LG", "Philips", "Vizio"])).sort();
+      els.managerCategory.innerHTML = categories.map(category => `<option value="${category}">${category}</option>`).join("");
+    }
+
+    function renderProductList() {
+      const query = els.managerSearch.value.trim().toLowerCase();
+      const visible = products.filter(product => {
+        return !query || [product.name, product.category, product.description].join(" ").toLowerCase().includes(query);
       });
 
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.message || 'Request failed');
-      }
-
-      return response.json();
+      els.managerProductList.innerHTML = visible.length ? visible.map(product => `
+        <button class="manager-product-button ${product.id === selectedProductId ? "active" : ""}" type="button" data-product-id="${product.id}">
+          <img src="${safeImage(product.image)}" alt="${product.name}">
+          <strong>${product.name}<span>${product.category || "Remote Controls"} - $${Number(product.price || 0).toFixed(2)} - ${Number(product.stock || 0)} in stock</span></strong>
+        </button>
+      `).join("") : "<p class='help-text'>No matching products.</p>";
     }
 
-    async function checkSetupStatus() {
-      let status;
-
-      try {
-        const response = await fetch('/api/admin/setup-status');
-        status = await response.json();
-      } catch (error) {
-        setupPanel.classList.add('hidden');
-        setMessage('Admin tools need the Render/Node server to run. Static preview can show the page, but cannot unlock the manager.');
-        return { hasAdminKey: true };
-      }
-
-      setupPanel.classList.toggle('hidden', status.hasAdminKey);
-      if (!status.hasAdminKey) {
-        body.classList.add('locked');
-        setMessage('Create your owner key first.');
-      }
-
-      return status;
+    function renderGallery(product) {
+      const gallery = productGallery(product);
+      els.managerGalleryPreview.innerHTML = gallery.length ? gallery.map((image, index) => `
+        <div class="manager-gallery-item">
+          <img src="${safeImage(image)}" alt="Gallery image ${index + 1}">
+          <button class="text-button danger-button" type="button" data-remove-gallery="${index}">Remove</button>
+        </div>
+      `).join("") : "<p class='help-text'>No photos uploaded yet.</p>";
     }
 
-    function resetForm() {
-      document.getElementById('product-form').reset();
-      productSelect.value = '';
-      fields.editingId.value = '';
-      fields.active.checked = true;
-      fields.featured.checked = true;
-      fields.id.disabled = false;
-      updatePreview('');
-      setMessage('');
+    function fillForm(product) {
+      if (!product) return;
+      selectedProductId = product.id;
+      els.managerSelectedName.textContent = product.name || "Selected product";
+      els.managerName.value = product.name || "";
+      els.managerCategory.value = product.category || "Remote Controls";
+      els.managerPrice.value = Number(product.price || 0).toFixed(2);
+      els.managerStock.value = Number(product.stock || 0);
+      els.managerPage.value = product.page || "";
+      els.managerImage.value = product.image && !product.image.startsWith("data:") ? product.image : "";
+      els.managerDescription.value = product.description || "";
+      els.managerImagePreview.style.backgroundImage = product.image ? `url("${safeImage(product.image)}")` : "";
+      els.managerProductLink.href = product.page || "products.html";
+      renderGallery(product);
+      renderProductList();
+    }
+
+    async function refreshManager() {
+      products = await loadProducts();
+      const backup = JSON.parse(localStorage.getItem(catalogBackupKey) || "null");
+      if ((!products || products.length === 0) && Array.isArray(backup)) products = backup;
+      if (!selectedProductId && products[0]) selectedProductId = products[0].id;
+      updateCategories();
+      updateStats();
+      renderProductList();
+      fillForm(currentProduct());
+      renderStatus("Catalog loaded. Unlock saving before publishing changes.");
     }
 
     function productPayload() {
+      const product = currentProduct() || {};
+      const gallery = productGallery(product);
+      const manualImage = els.managerImage.value.trim();
+      const image = manualImage || gallery[0] || product.image || "";
+
       return {
-        id: fields.id.value,
-        name: fields.name.value,
-        description: fields.description.value,
-        price: Number(fields.price.value),
-        image: fields.image.value,
-        page: fields.page.value,
-        category: fields.category.value,
-        stock: Number(fields.stock.value || 0),
-        active: fields.active.checked,
-        featured: fields.featured.checked
+        ...product,
+        id: product.id,
+        name: els.managerName.value.trim(),
+        category: els.managerCategory.value,
+        price: Number(els.managerPrice.value) || 0,
+        stock: Math.max(Number(els.managerStock.value) || 0, 0),
+        page: els.managerPage.value.trim(),
+        description: els.managerDescription.value.trim(),
+        image,
+        gallery: [image, ...gallery.filter(item => item !== image)].slice(0, 6),
+        active: product.active !== false,
+        featured: product.featured !== false
       };
     }
 
-    function fillProduct(product) {
-      fields.editingId.value = product.id;
-      fields.id.value = product.id;
-      fields.id.disabled = true;
-      fields.name.value = product.name || '';
-      fields.description.value = product.description || '';
-      fields.price.value = product.price || 0;
-      fields.image.value = product.image || '';
-      fields.page.value = product.page || '';
-      fields.category.value = product.category || '';
-      fields.stock.value = product.stock || 0;
-      fields.active.checked = product.active !== false;
-      fields.featured.checked = product.featured !== false;
-      updatePreview(product.image || '');
-      setMessage(`Editing ${product.name}`);
+    function saveLocalCopy(product) {
+      products = products.map(item => item.id === product.id ? product : item);
+      localStorage.setItem(catalogBackupKey, JSON.stringify(products));
+      localStorage.setItem("electronics-manager-updated", new Date().toLocaleString());
+      updateStats();
+      renderProductList();
+      fillForm(product);
     }
 
-    function editProduct(id) {
-      const product = products.find(item => item.id === id);
-      if (!product) return;
+    async function saveProduct(event) {
+      event.preventDefault();
+      const product = productPayload();
 
-      productSelect.value = id;
-      fillProduct(product);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    async function removeProduct(id) {
-      if (!confirm('Hide this product from the storefront?')) return;
-      await adminFetch(`/api/admin/products/${id}`, { method: 'DELETE' });
-      setMessage('Product hidden from the storefront.');
-      await loadDashboard();
-    }
-
-    function renderProductDropdown() {
-      const current = productSelect.value;
-      productSelect.innerHTML = '<option value="">Choose a product to edit</option>' + products.map(product => `
-        <option value="${product.id}">${product.name}</option>
-      `).join('');
-      productSelect.value = current;
-    }
-
-    function renderProducts() {
-      const tbody = document.getElementById('product-list');
-
-      if (products.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6">No products found.</td></tr>';
+      if (!unlocked) {
+        saveLocalCopy(product);
+        showToast("Preview saved locally. Unlock on the live site to publish to MongoDB.");
         return;
       }
 
-      tbody.innerHTML = products.map(product => `
-        <tr>
-          <td><img class="product-thumb" src="${product.image}" alt="${product.name}"></td>
-          <td>
-            <strong>${product.name}</strong><br>
-            <small>${product.id}</small><br>
-            <small>${product.description || ''}</small>
-          </td>
-          <td>$${Number(product.price || 0).toFixed(2)}</td>
-          <td>${Number(product.stock || 0)}</td>
-          <td>
-            <span class="status-pill ${product.active !== false ? 'active' : 'inactive'}">
-              ${product.active !== false ? 'Active' : 'Hidden'}
-            </span>
-          </td>
-          <td>
-            <button class="manager-btn secondary" onclick="editProduct('${product.id}')">Edit</button>
-            <button class="manager-btn danger" onclick="removeProduct('${product.id}')">Hide</button>
-          </td>
-        </tr>
-      `).join('');
+      try {
+        const saved = await fetchJson(`/api/admin/products/${product.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", "admin-key": els.adminKey.value },
+          body: JSON.stringify(product)
+        });
+        saveLocalCopy(saved);
+        showToast("Product saved to MongoDB. Refresh the store to see it.");
+      } catch (error) {
+        showToast(error.message);
+      }
     }
 
-    function renderStats(stats) {
-      document.getElementById('stats-grid').innerHTML = `
-        <div class="stat-card"><span>Total orders</span><strong>${stats.totalOrders}</strong></div>
-        <div class="stat-card"><span>Revenue</span><strong>$${stats.totalRevenue}</strong></div>
-        <div class="stat-card"><span>Active products</span><strong>${stats.activeProductCount}</strong></div>
-        <div class="stat-card"><span>Pending orders</span><strong>${stats.pendingOrders}</strong></div>
+    async function unlockSaving() {
+      localStorage.setItem(storageKey, els.adminKey.value);
+      try {
+        await fetchJson("/api/admin/stats", { headers: { "admin-key": els.adminKey.value } });
+        unlocked = true;
+        showToast("Saving unlocked.");
+        await Promise.all([refreshManager(), loadOrders()]);
+      } catch (error) {
+        unlocked = false;
+        showToast(error.message);
+      }
+    }
+
+    async function createKey() {
+      const key = els.newAdminKey.value.trim();
+      const confirm = els.confirmAdminKey.value.trim();
+      if (key !== confirm) return showToast("Owner keys do not match.");
+
+      try {
+        await fetchJson("/api/admin/setup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ adminKey: key })
+        });
+        els.adminKey.value = key;
+        localStorage.setItem(storageKey, key);
+        unlocked = true;
+        els.setupBox.classList.remove("show");
+        showToast("Owner key created.");
+        await Promise.all([refreshManager(), loadOrders()]);
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    function renderStatus(message) {
+      els.statusList.innerHTML = `
+        <div class="activity-item"><strong>Saving</strong><p>${unlocked ? "Unlocked. Saves publish to MongoDB." : "Locked. Edits stay in this browser until you unlock."}</p></div>
+        <div class="activity-item"><strong>Current product</strong><p>${currentProduct()?.name || "None selected"}</p></div>
+        <div class="activity-item"><strong>Message</strong><p>${message}</p></div>
       `;
     }
 
-    function renderOrders(orders) {
-      const tbody = document.getElementById('order-list');
-
-      if (!orders.length) {
-        tbody.innerHTML = '<tr><td colspan="6">No orders found.</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = orders.map(order => {
-        const items = (order.items || []).map(item => `${item.name} (x${item.quantity || 1})`).join(', ');
-        return `
-          <tr>
-            <td>${order.customer?.name || ''}</td>
-            <td>${order.customer?.email || ''}</td>
-            <td>${items}</td>
-            <td>$${order.total || '0.00'}</td>
-            <td>${order.status || 'pending'}</td>
-            <td>${order.timestamp ? new Date(order.timestamp).toLocaleString() : ''}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    async function loadDashboard() {
-      try {
-        setMessage('Loading store manager...');
-        const [stats, productData, orders] = await Promise.all([
-          adminFetch('/api/admin/stats'),
-          adminFetch('/api/admin/products'),
-          adminFetch('/get-orders')
-        ]);
-
-        products = productData;
-        body.classList.remove('locked');
-        setupPanel.classList.add('hidden');
-        renderStats(stats);
-        renderProductDropdown();
-        renderProducts();
-        renderOrders(orders);
-        setMessage('Store manager loaded. Pick a product from the dropdown.');
-      } catch (error) {
-        body.classList.add('locked');
-        setMessage(error.message);
-      }
-    }
-
-    document.getElementById('create-key').addEventListener('click', async () => {
-      const key = document.getElementById('new-admin-key').value.trim();
-      const confirmKey = document.getElementById('confirm-admin-key').value.trim();
-
-      if (key !== confirmKey) {
-        setMessage('The two owner keys do not match.');
+    async function loadOrders() {
+      if (!unlocked) {
+        els.ordersList.innerHTML = "<p class='help-text'>Unlock saving to view live orders.</p>";
         return;
       }
 
       try {
-        const response = await fetch('/api/admin/setup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ adminKey: key })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Could not create key.');
-
-        setAdminKey(key);
-        setMessage('Owner key created. Loading manager...');
-        await loadDashboard();
+        const orders = await fetchJson("/get-orders", { headers: { "admin-key": els.adminKey.value } });
+        els.ordersList.innerHTML = orders.length ? orders.slice(0, 10).map(order => {
+          const items = (order.items || []).map(item => `${item.name} x${item.quantity || 1}`).join(", ");
+          return `<div class="activity-item"><strong>${order.customer?.name || "Customer"} - $${order.total || "0.00"}</strong><p>${items || "No items listed"}</p><p>${order.status || "pending"} - ${order.timestamp ? new Date(order.timestamp).toLocaleString() : ""}</p></div>`;
+        }).join("") : "<p class='help-text'>No orders yet.</p>";
       } catch (error) {
-        setMessage(error.message);
+        els.ordersList.innerHTML = `<p class="help-text">${error.message}</p>`;
       }
-    });
+    }
 
-    document.getElementById('unlock').addEventListener('click', () => {
-      setAdminKey(document.getElementById('admin-key').value);
-      loadDashboard();
-    });
+    function exportCatalog() {
+      const blob = new Blob([JSON.stringify(products, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "electronics-products.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
 
-    document.getElementById('refresh').addEventListener('click', loadDashboard);
-    document.getElementById('new-product').addEventListener('click', resetForm);
-    document.getElementById('reset-form').addEventListener('click', resetForm);
-
-    productSelect.addEventListener('change', () => {
-      if (!productSelect.value) {
-        resetForm();
-        return;
-      }
-
-      editProduct(productSelect.value);
-    });
-
-    document.getElementById('product-upload').addEventListener('change', event => {
+    function importCatalog(event) {
       const file = event.target.files[0];
       if (!file) return;
-
-      if (!file.type.startsWith('image/')) {
-        setMessage('Please choose an image file.');
-        return;
-      }
-
-      if (file.size > 6 * 1024 * 1024) {
-        setMessage('Please choose an image under 6 MB.');
-        return;
-      }
-
       const reader = new FileReader();
       reader.onload = () => {
-        fields.image.value = reader.result;
-        updatePreview(reader.result);
-        setMessage('Image uploaded. Save the product to publish it.');
-      };
-      reader.readAsDataURL(file);
-    });
-
-    fields.image.addEventListener('input', () => updatePreview(fields.image.value));
-
-    document.getElementById('product-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const editingId = fields.editingId.value;
-      const payload = productPayload();
-
-      try {
-        if (editingId) {
-          await adminFetch(`/api/admin/products/${editingId}`, {
-            method: 'PUT',
-            body: JSON.stringify(payload)
-          });
-          setMessage('Product updated. The storefront will show the new values.');
-        } else {
-          await adminFetch('/api/admin/products', {
-            method: 'POST',
-            body: JSON.stringify(payload)
-          });
-          setMessage('Product created.');
+        try {
+          const imported = JSON.parse(reader.result);
+          if (!Array.isArray(imported)) throw new Error("Catalog must be a product array.");
+          products = imported;
+          selectedProductId = products[0]?.id || "";
+          localStorage.setItem(catalogBackupKey, JSON.stringify(products));
+          updateCategories();
+          updateStats();
+          renderProductList();
+          fillForm(currentProduct());
+          showToast("Catalog imported for preview. Save products to publish.");
+        } catch (error) {
+          showToast(error.message);
         }
+      };
+      reader.readAsText(file);
+    }
 
-        await loadDashboard();
-        if (payload.id) editProduct(payload.id);
-      } catch (error) {
-        setMessage(error.message);
-      }
-    });
+    function uploadImages(event) {
+      const files = Array.from(event.target.files || []).slice(0, 6);
+      if (!files.length) return;
+      const product = currentProduct();
+      if (!product) return;
 
-    document.getElementById('admin-key').value = getAdminKey();
-    checkSetupStatus().then(status => {
-      if (status.hasAdminKey && getAdminKey()) {
-        loadDashboard();
-      }
+      Promise.all(files.map(file => new Promise((resolve, reject) => {
+        if (!file.type.startsWith("image/")) return reject(new Error("Please choose image files only."));
+        if (file.size > 6 * 1024 * 1024) return reject(new Error("Please use images under 6 MB."));
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      }))).then(images => {
+        const gallery = [...images, ...productGallery(product)].slice(0, 6);
+        const updated = { ...product, image: gallery[0], gallery };
+        saveLocalCopy(updated);
+        els.managerImage.value = "";
+        showToast("Photos loaded. Press Save product to publish.");
+      }).catch(error => showToast(error.message));
+    }
+
+    function removeGalleryImage(index) {
+      const product = currentProduct();
+      const gallery = productGallery(product).filter((_, galleryIndex) => galleryIndex !== Number(index));
+      const updated = { ...product, gallery, image: gallery[0] || product.image };
+      saveLocalCopy(updated);
+    }
+
+    function hideProduct() {
+      const product = currentProduct();
+      if (!product) return;
+      const updated = { ...product, active: false };
+      saveLocalCopy(updated);
+      showToast("Product hidden in preview. Save product to publish this status.");
+    }
+
+    els.adminKey.value = localStorage.getItem(storageKey) || "";
+    els.unlockButton.addEventListener("click", unlockSaving);
+    els.refreshButton.addEventListener("click", () => Promise.all([refreshManager(), loadOrders()]));
+    els.createKeyButton.addEventListener("click", createKey);
+    els.managerSearch.addEventListener("input", renderProductList);
+    els.managerProductList.addEventListener("click", event => {
+      const button = event.target.closest("[data-product-id]");
+      if (!button) return;
+      selectedProductId = button.dataset.productId;
+      fillForm(currentProduct());
     });
+    els.managerForm.addEventListener("submit", saveProduct);
+    els.managerImage.addEventListener("input", () => {
+      const product = currentProduct();
+      if (!product) return;
+      const updated = { ...product, image: els.managerImage.value.trim() || product.image };
+      els.managerImagePreview.style.backgroundImage = updated.image ? `url("${safeImage(updated.image)}")` : "";
+    });
+    els.managerImageUpload.addEventListener("change", uploadImages);
+    els.managerGalleryPreview.addEventListener("click", event => {
+      const button = event.target.closest("[data-remove-gallery]");
+      if (button) removeGalleryImage(button.dataset.removeGallery);
+    });
+    els.resetProductButton.addEventListener("click", () => fillForm(currentProduct()));
+    els.exportCatalogButton.addEventListener("click", exportCatalog);
+    els.importCatalogInput.addEventListener("change", importCatalog);
+    els.hideProductButton.addEventListener("click", hideProduct);
+    els.refreshOrdersButton.addEventListener("click", loadOrders);
+
+    checkSetup();
+    refreshManager();
+    loadOrders();
   </script>
 </body>
 </html>
