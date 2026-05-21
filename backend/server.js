@@ -4,13 +4,14 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const { MongoClient } = require('mongodb');
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '12mb' }));
 
 app.get("/robots.txt", (req, res) => {
   res.type("text/plain");
@@ -27,19 +28,112 @@ app.use(express.static(path.join(__dirname, 'Public')));
 
 let ordersCollection;
 let productsCollection;
+let settingsCollection;
 
 const seedProductsPath = path.join(__dirname, 'Public', 'data', 'products.json');
 
-function requireAdmin(req, res, next) {
+function hashAdminKey(adminKey, salt = crypto.randomBytes(16).toString('hex')) {
+  const hash = crypto.pbkdf2Sync(adminKey, salt, 100000, 64, 'sha512').toString('hex');
+  return { salt, hash };
+}
+
+function verifyAdminKey(adminKey, stored) {
+  if (!adminKey || !stored?.salt || !stored?.hash) return false;
+  const check = hashAdminKey(adminKey, stored.salt);
+  return crypto.timingSafeEqual(Buffer.from(check.hash, 'hex'), Buffer.from(stored.hash, 'hex'));
+}
+
+async function hasStoredAdminKey() {
+  if (process.env.ADMIN_SECRET) return true;
+  if (!settingsCollection) return false;
+  const setting = await settingsCollection.findOne({ key: 'adminAuth' });
+  return Boolean(setting?.auth?.hash);
+}
+
+async function requireAdmin(req, res, next) {
   const adminKey = req.headers['admin-key'];
 
-  if (!process.env.ADMIN_SECRET || adminKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).send({
-      message: "Unauthorized"
-    });
+  if (process.env.ADMIN_SECRET && adminKey === process.env.ADMIN_SECRET) {
+    return next();
   }
 
-  next();
+  const setting = await settingsCollection.findOne({ key: 'adminAuth' });
+  if (verifyAdminKey(adminKey, setting?.auth)) {
+    return next();
+  }
+
+  return res.status(403).send({
+    message: "Unauthorized"
+  });
+}
+
+function requireProductImage(image) {
+  if (image.startsWith('data:image/')) {
+    const sizeInBytes = Buffer.byteLength(image, 'utf8');
+    if (sizeInBytes > 8 * 1024 * 1024) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function validateProduct(product) {
+  if (!product.id || !product.name || !product.image || !product.page || product.price < 0) {
+    return "Product name, image, page, id, and valid price are required";
+  }
+
+  if (!requireProductImage(product.image)) {
+    return "Uploaded image is too large. Please use an image under about 6 MB.";
+  }
+
+  return "";
+}
+
+async function setupAdminKey(req, res) {
+  try {
+    if (process.env.ADMIN_SECRET) {
+      return res.status(409).send({
+        message: "This store already uses the Render ADMIN_SECRET environment variable."
+      });
+    }
+
+    const alreadySetup = await hasStoredAdminKey();
+    if (alreadySetup) {
+      return res.status(409).send({
+        message: "Admin key already exists."
+      });
+    }
+
+    const adminKey = String(req.body.adminKey || '').trim();
+    if (adminKey.length < 8) {
+      return res.status(400).send({
+        message: "Create a key with at least 8 characters."
+      });
+    }
+
+    await settingsCollection.updateOne(
+      { key: 'adminAuth' },
+      {
+        $set: {
+          key: 'adminAuth',
+          auth: hashAdminKey(adminKey),
+          createdAt: new Date().toISOString()
+        }
+      },
+      { upsert: true }
+    );
+
+    res.json({
+      success: true,
+      message: "Admin key created."
+    });
+  } catch (err) {
+    console.error("❌ Failed to setup admin key:", err);
+    return res.status(403).send({
+      message: "Could not create admin key."
+    });
+  }
 }
 
 function readSeedProducts() {
@@ -82,6 +176,7 @@ async function startServer() {
     const db = client.db("electronicsonly");
     ordersCollection = db.collection("orders");
     productsCollection = db.collection("products");
+    settingsCollection = db.collection("settings");
 
     const productCount = await productsCollection.countDocuments();
     if (productCount === 0) {
@@ -113,6 +208,27 @@ startServer();
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'Public', 'index.html'));
 });
+
+
+// ==============================
+// Admin Setup
+// ==============================
+
+app.get('/api/admin/setup-status', async (req, res) => {
+  try {
+    res.json({
+      hasAdminKey: await hasStoredAdminKey(),
+      usesRenderSecret: Boolean(process.env.ADMIN_SECRET)
+    });
+  } catch (err) {
+    console.error("❌ Failed to check admin setup:", err);
+    res.status(500).send({
+      message: "Failed to check admin setup"
+    });
+  }
+});
+
+app.post('/api/admin/setup', setupAdminKey);
 
 
 // ==============================
@@ -189,9 +305,10 @@ app.post('/api/admin/products', requireAdmin, async (req, res) => {
       createdAt: new Date().toISOString()
     };
 
-    if (!product.id || !product.name || !product.image || !product.page || product.price < 0) {
+    const validationError = validateProduct(product);
+    if (validationError) {
       return res.status(400).send({
-        message: "Product name, image, page, id, and valid price are required"
+        message: validationError
       });
     }
 
@@ -219,9 +336,10 @@ app.put('/api/admin/products/:id', requireAdmin, async (req, res) => {
       id: req.params.id
     });
 
-    if (!product.name || !product.image || !product.page || product.price < 0) {
+    const validationError = validateProduct(product);
+    if (validationError) {
       return res.status(400).send({
-        message: "Product name, image, page, and valid price are required"
+        message: validationError
       });
     }
 

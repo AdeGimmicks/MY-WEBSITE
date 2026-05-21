@@ -19,34 +19,57 @@
       padding: 24px;
     }
 
-    .manager-header {
+    .manager-header,
+    .top-controls,
+    .setup-row {
       align-items: center;
       display: flex;
-      gap: 16px;
+      gap: 12px;
       justify-content: space-between;
-      margin-bottom: 20px;
     }
 
     .manager-title h1 {
-      margin: 0 0 4px;
+      margin: 0 0 5px;
     }
 
-    .manager-title p {
+    .manager-title p,
+    .help-text {
       color: #667085;
       margin: 0;
     }
 
-    .admin-key-box {
-      align-items: center;
-      display: flex;
-      gap: 8px;
+    .setup-panel,
+    .manager-panel,
+    .stat-card {
+      background: white;
+      border: 1px solid #e4e7ec;
+      border-radius: 8px;
     }
 
-    .admin-key-box input {
+    .setup-panel {
+      margin: 18px 0;
+      padding: 16px;
+    }
+
+    .setup-panel.hidden,
+    .locked .manager-content {
+      display: none;
+    }
+
+    input,
+    select,
+    textarea {
       border: 1px solid #ccd2da;
       border-radius: 6px;
-      padding: 11px;
-      width: 220px;
+      box-sizing: border-box;
+      font: inherit;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .top-controls input,
+    .setup-row input {
+      width: 260px;
     }
 
     .manager-btn {
@@ -57,6 +80,7 @@
       cursor: pointer;
       font-weight: 700;
       padding: 11px 14px;
+      white-space: nowrap;
     }
 
     .manager-btn.secondary {
@@ -72,13 +96,10 @@
       display: grid;
       gap: 14px;
       grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      margin-bottom: 20px;
+      margin: 20px 0;
     }
 
     .stat-card {
-      background: white;
-      border: 1px solid #e4e7ec;
-      border-radius: 8px;
       padding: 16px;
     }
 
@@ -95,9 +116,6 @@
     }
 
     .manager-panel {
-      background: white;
-      border: 1px solid #e4e7ec;
-      border-radius: 8px;
       margin-bottom: 20px;
       overflow: hidden;
     }
@@ -106,6 +124,7 @@
       align-items: center;
       border-bottom: 1px solid #e4e7ec;
       display: flex;
+      gap: 14px;
       justify-content: space-between;
       padding: 16px;
     }
@@ -115,9 +134,16 @@
       margin: 0;
     }
 
+    .product-picker {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr auto;
+      min-width: 420px;
+    }
+
     .product-form {
       display: grid;
-      gap: 12px;
+      gap: 14px;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       padding: 16px;
     }
@@ -130,31 +156,57 @@
       gap: 6px;
     }
 
-    .product-form input,
-    .product-form textarea {
-      border: 1px solid #ccd2da;
-      border-radius: 6px;
-      font: inherit;
-      padding: 10px;
-    }
-
-    .product-form textarea,
-    .product-form .wide {
+    .wide {
       grid-column: span 2;
     }
 
-    .product-form .checks {
+    .image-tools {
+      display: grid;
+      gap: 10px;
+      grid-column: span 2;
+      grid-template-columns: 120px 1fr;
+    }
+
+    .image-preview {
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #e4e7ec;
+      border-radius: 8px;
+      display: flex;
+      height: 120px;
+      justify-content: center;
+      overflow: hidden;
+      width: 120px;
+    }
+
+    .image-preview img {
+      height: 100%;
+      object-fit: contain;
+      width: 100%;
+    }
+
+    .checks,
+    .actions {
       align-items: center;
       display: flex;
       gap: 14px;
       grid-column: span 2;
     }
 
-    .product-form .actions {
-      align-items: end;
+    .checks label {
+      align-items: center;
       display: flex;
-      gap: 8px;
-      grid-column: span 2;
+      gap: 7px;
+    }
+
+    .checks input {
+      width: auto;
+    }
+
+    .message {
+      color: #475467;
+      min-height: 22px;
+      padding: 0 16px 16px;
     }
 
     .table-wrap {
@@ -204,161 +256,201 @@
       color: #b42318;
     }
 
-    .message {
-      color: #475467;
-      min-height: 22px;
-      padding: 0 16px 16px;
-    }
-
-    @media (max-width: 820px) {
+    @media (max-width: 900px) {
       .manager-header,
-      .admin-key-box {
+      .top-controls,
+      .setup-row,
+      .panel-header {
         align-items: stretch;
         flex-direction: column;
       }
 
-      .admin-key-box input {
-        width: auto;
+      .top-controls input,
+      .setup-row input,
+      .product-picker {
+        min-width: 0;
+        width: 100%;
       }
 
       .product-form,
-      .product-form textarea,
-      .product-form .wide,
-      .product-form .checks,
-      .product-form .actions {
-        grid-column: span 1;
+      .product-picker,
+      .image-tools {
         grid-template-columns: 1fr;
+      }
+
+      .wide,
+      .image-tools,
+      .checks,
+      .actions {
+        grid-column: span 1;
       }
     }
   </style>
 </head>
-<body>
+<body class="locked">
   <main class="manager-shell">
     <section class="manager-header">
       <div class="manager-title">
         <h1>Store Manager</h1>
-        <p>Edit products, monitor orders, and keep the storefront in sync.</p>
+        <p>Pick a product, edit it, upload a picture, and save it to the live store.</p>
       </div>
-      <div class="admin-key-box">
-        <input id="admin-key" type="password" placeholder="Admin secret key" />
-        <button class="manager-btn" id="save-key">Unlock</button>
+      <div class="top-controls">
+        <input id="admin-key" type="password" placeholder="Enter your owner key" />
+        <button class="manager-btn" id="unlock">Unlock</button>
         <button class="manager-btn secondary" id="refresh">Refresh</button>
       </div>
     </section>
 
-    <section class="stats-grid" id="stats-grid">
-      <div class="stat-card"><span>Total orders</span><strong>--</strong></div>
-      <div class="stat-card"><span>Revenue</span><strong>--</strong></div>
-      <div class="stat-card"><span>Active products</span><strong>--</strong></div>
-      <div class="stat-card"><span>Pending orders</span><strong>--</strong></div>
-    </section>
-
-    <section class="manager-panel">
-      <div class="panel-header">
-        <h2>Product Editor</h2>
-        <button class="manager-btn secondary" id="new-product">New Product</button>
-      </div>
-
-      <form class="product-form" id="product-form">
-        <input type="hidden" id="editing-id" />
-
-        <label>
-          Product ID
-          <input id="product-id" placeholder="samsung-smart-remote" required />
-        </label>
-
-        <label class="wide">
-          Name
-          <input id="product-name" placeholder="Samsung Smart TV Remote" required />
-        </label>
-
-        <label>
-          Price
-          <input id="product-price" type="number" min="0" step="0.01" required />
-        </label>
-
-        <label class="wide">
-          Description
-          <textarea id="product-description" rows="3" required></textarea>
-        </label>
-
-        <label class="wide">
-          Image path
-          <input id="product-image" placeholder="Product images/Samsung Remote Pix/14.png" required />
-        </label>
-
-        <label>
-          Product page
-          <input id="product-page" placeholder="samsung-remote.html" required />
-        </label>
-
-        <label>
-          Category
-          <input id="product-category" placeholder="Samsung" />
-        </label>
-
-        <label>
-          Stock
-          <input id="product-stock" type="number" min="0" step="1" />
-        </label>
-
-        <div class="checks">
-          <label><input id="product-active" type="checkbox" checked /> Active</label>
-          <label><input id="product-featured" type="checkbox" checked /> Featured</label>
-        </div>
-
-        <div class="actions">
-          <button class="manager-btn" type="submit">Save Product</button>
-          <button class="manager-btn secondary" type="button" id="reset-form">Clear</button>
-        </div>
-      </form>
-      <div class="message" id="product-message"></div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="product-list">
-            <tr><td colspan="6">Enter your admin key and click Unlock.</td></tr>
-          </tbody>
-        </table>
+    <section class="setup-panel hidden" id="setup-panel">
+      <h2>Create Your Owner Key</h2>
+      <p class="help-text">This store does not have an owner key yet. Create one now, keep it private, and use it anytime you open this page.</p>
+      <div class="setup-row" style="margin-top: 12px;">
+        <input id="new-admin-key" type="password" placeholder="Create owner key" />
+        <input id="confirm-admin-key" type="password" placeholder="Confirm owner key" />
+        <button class="manager-btn" id="create-key">Create Key</button>
       </div>
     </section>
 
-    <section class="manager-panel">
-      <div class="panel-header">
-        <h2>Recent Orders</h2>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Customer</th>
-              <th>Email</th>
-              <th>Items</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="order-list">
-            <tr><td colspan="6">Enter your admin key and click Unlock.</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <section class="manager-content">
+      <section class="stats-grid" id="stats-grid">
+        <div class="stat-card"><span>Total orders</span><strong>--</strong></div>
+        <div class="stat-card"><span>Revenue</span><strong>--</strong></div>
+        <div class="stat-card"><span>Active products</span><strong>--</strong></div>
+        <div class="stat-card"><span>Pending orders</span><strong>--</strong></div>
+      </section>
+
+      <section class="manager-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Product Editor</h2>
+            <p class="help-text">Choose Samsung, Alexa, Roku, LG, Philips, Vizio, or any product you add later.</p>
+          </div>
+          <div class="product-picker">
+            <select id="product-select">
+              <option value="">Choose a product to edit</option>
+            </select>
+            <button class="manager-btn secondary" id="new-product">New Product</button>
+          </div>
+        </div>
+
+        <form class="product-form" id="product-form">
+          <input type="hidden" id="editing-id" />
+
+          <label>
+            Product ID
+            <input id="product-id" placeholder="samsung-smart-remote" required />
+          </label>
+
+          <label class="wide">
+            Product name
+            <input id="product-name" placeholder="Samsung Smart TV Remote" required />
+          </label>
+
+          <label>
+            Price
+            <input id="product-price" type="number" min="0" step="0.01" required />
+          </label>
+
+          <label class="wide">
+            Description
+            <textarea id="product-description" rows="3" required></textarea>
+          </label>
+
+          <div class="image-tools">
+            <div class="image-preview">
+              <img id="image-preview" alt="Product preview" />
+            </div>
+            <div>
+              <label>
+                Upload product picture
+                <input id="product-upload" type="file" accept="image/*" />
+              </label>
+              <label style="margin-top: 10px;">
+                Image path or uploaded image data
+                <input id="product-image" placeholder="Product images/Samsung Remote Pix/14.png" required />
+              </label>
+              <p class="help-text" style="margin-top: 6px;">Uploading a picture saves it directly with the product in MongoDB.</p>
+            </div>
+          </div>
+
+          <label>
+            Product page
+            <input id="product-page" placeholder="samsung-remote.html" required />
+          </label>
+
+          <label>
+            Category
+            <input id="product-category" placeholder="Samsung" />
+          </label>
+
+          <label>
+            Stock
+            <input id="product-stock" type="number" min="0" step="1" />
+          </label>
+
+          <div class="checks">
+            <label><input id="product-active" type="checkbox" checked /> Active</label>
+            <label><input id="product-featured" type="checkbox" checked /> Featured</label>
+          </div>
+
+          <div class="actions">
+            <button class="manager-btn" type="submit">Save Product</button>
+            <button class="manager-btn secondary" type="button" id="reset-form">Clear</button>
+          </div>
+        </form>
+        <div class="message" id="product-message"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="product-list">
+              <tr><td colspan="6">Unlock the manager to load products.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="manager-panel">
+        <div class="panel-header">
+          <h2>Recent Orders</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Email</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="order-list">
+              <tr><td colspan="6">Unlock the manager to load orders.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </section>
   </main>
 
   <script>
     let products = [];
+
+    const body = document.body;
+    const setupPanel = document.getElementById('setup-panel');
+    const productSelect = document.getElementById('product-select');
+    const imagePreview = document.getElementById('image-preview');
 
     const fields = {
       editingId: document.getElementById('editing-id'),
@@ -378,8 +470,18 @@
       return localStorage.getItem('adminKey') || '';
     }
 
+    function setAdminKey(value) {
+      localStorage.setItem('adminKey', value);
+      document.getElementById('admin-key').value = value;
+    }
+
     function setMessage(message) {
       document.getElementById('product-message').textContent = message;
+    }
+
+    function updatePreview(src) {
+      imagePreview.src = src || '';
+      imagePreview.style.display = src ? 'block' : 'none';
     }
 
     async function adminFetch(url, options = {}) {
@@ -400,12 +502,35 @@
       return response.json();
     }
 
+    async function checkSetupStatus() {
+      let status;
+
+      try {
+        const response = await fetch('/api/admin/setup-status');
+        status = await response.json();
+      } catch (error) {
+        setupPanel.classList.add('hidden');
+        setMessage('Admin tools need the Render/Node server to run. Static preview can show the page, but cannot unlock the manager.');
+        return { hasAdminKey: true };
+      }
+
+      setupPanel.classList.toggle('hidden', status.hasAdminKey);
+      if (!status.hasAdminKey) {
+        body.classList.add('locked');
+        setMessage('Create your owner key first.');
+      }
+
+      return status;
+    }
+
     function resetForm() {
       document.getElementById('product-form').reset();
+      productSelect.value = '';
       fields.editingId.value = '';
       fields.active.checked = true;
       fields.featured.checked = true;
       fields.id.disabled = false;
+      updatePreview('');
       setMessage('');
     }
 
@@ -424,10 +549,7 @@
       };
     }
 
-    function editProduct(id) {
-      const product = products.find(item => item.id === id);
-      if (!product) return;
-
+    function fillProduct(product) {
       fields.editingId.value = product.id;
       fields.id.value = product.id;
       fields.id.disabled = true;
@@ -440,7 +562,16 @@
       fields.stock.value = product.stock || 0;
       fields.active.checked = product.active !== false;
       fields.featured.checked = product.featured !== false;
+      updatePreview(product.image || '');
       setMessage(`Editing ${product.name}`);
+    }
+
+    function editProduct(id) {
+      const product = products.find(item => item.id === id);
+      if (!product) return;
+
+      productSelect.value = id;
+      fillProduct(product);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -449,6 +580,14 @@
       await adminFetch(`/api/admin/products/${id}`, { method: 'DELETE' });
       setMessage('Product hidden from the storefront.');
       await loadDashboard();
+    }
+
+    function renderProductDropdown() {
+      const current = productSelect.value;
+      productSelect.innerHTML = '<option value="">Choose a product to edit</option>' + products.map(product => `
+        <option value="${product.id}">${product.name}</option>
+      `).join('');
+      productSelect.value = current;
     }
 
     function renderProducts() {
@@ -524,23 +663,88 @@
         ]);
 
         products = productData;
+        body.classList.remove('locked');
+        setupPanel.classList.add('hidden');
         renderStats(stats);
+        renderProductDropdown();
         renderProducts();
         renderOrders(orders);
-        setMessage('Store manager loaded.');
+        setMessage('Store manager loaded. Pick a product from the dropdown.');
       } catch (error) {
+        body.classList.add('locked');
         setMessage(error.message);
       }
     }
 
-    document.getElementById('save-key').addEventListener('click', () => {
-      localStorage.setItem('adminKey', document.getElementById('admin-key').value);
+    document.getElementById('create-key').addEventListener('click', async () => {
+      const key = document.getElementById('new-admin-key').value.trim();
+      const confirmKey = document.getElementById('confirm-admin-key').value.trim();
+
+      if (key !== confirmKey) {
+        setMessage('The two owner keys do not match.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/admin/setup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminKey: key })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Could not create key.');
+
+        setAdminKey(key);
+        setMessage('Owner key created. Loading manager...');
+        await loadDashboard();
+      } catch (error) {
+        setMessage(error.message);
+      }
+    });
+
+    document.getElementById('unlock').addEventListener('click', () => {
+      setAdminKey(document.getElementById('admin-key').value);
       loadDashboard();
     });
 
     document.getElementById('refresh').addEventListener('click', loadDashboard);
     document.getElementById('new-product').addEventListener('click', resetForm);
     document.getElementById('reset-form').addEventListener('click', resetForm);
+
+    productSelect.addEventListener('change', () => {
+      if (!productSelect.value) {
+        resetForm();
+        return;
+      }
+
+      editProduct(productSelect.value);
+    });
+
+    document.getElementById('product-upload').addEventListener('change', event => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        setMessage('Please choose an image file.');
+        return;
+      }
+
+      if (file.size > 6 * 1024 * 1024) {
+        setMessage('Please choose an image under 6 MB.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        fields.image.value = reader.result;
+        updatePreview(reader.result);
+        setMessage('Image uploaded. Save the product to publish it.');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    fields.image.addEventListener('input', () => updatePreview(fields.image.value));
 
     document.getElementById('product-form').addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -563,15 +767,19 @@
           setMessage('Product created.');
         }
 
-        resetForm();
         await loadDashboard();
+        if (payload.id) editProduct(payload.id);
       } catch (error) {
         setMessage(error.message);
       }
     });
 
     document.getElementById('admin-key').value = getAdminKey();
-    if (getAdminKey()) loadDashboard();
+    checkSetupStatus().then(status => {
+      if (status.hasAdminKey && getAdminKey()) {
+        loadDashboard();
+      }
+    });
   </script>
 </body>
 </html>
