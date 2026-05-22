@@ -3,7 +3,7 @@ const DEFAULT_PRODUCTS = [
     id: "samsung-smart-remote",
     name: "Samsung Smart TV Remote",
     description: "Compatible with most Samsung smart TVs.",
-    price: 0.99,
+    price: 0.05,
     image: "Product images/Samsung Remote Pix/14.png",
     page: "samsung-remote.html",
     category: "Samsung",

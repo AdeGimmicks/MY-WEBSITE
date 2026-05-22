@@ -306,6 +306,15 @@ async function startServer() {
       console.log(`✅ Seeded ${seedProducts.length} products`);
     } else {
       await backfillProductGalleries();
+      await productsCollection.updateOne(
+        { id: "samsung-smart-remote" },
+        {
+          $set: {
+            price: 0.05,
+            updatedAt: new Date().toISOString()
+          }
+        }
+      );
       console.log("✅ Product galleries checked");
     }
 
