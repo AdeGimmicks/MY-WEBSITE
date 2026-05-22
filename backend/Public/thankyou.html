@@ -47,8 +47,8 @@
   </div>
 
   <p style="margin-top: 40px;">
-    We’ve also sent you an email confirmation (if provided).<br>
-    <strong>If you don’t see it in your inbox, please check your Spam or Promotions folder and mark it as “Not Spam.”</strong><br>
+    <span id="email-status-message">We’re sending your email confirmation.</span><br>
+    <strong>If it says sent but you don’t see it, please check your Spam or Promotions folder and mark it as “Not Spam.”</strong><br>
     If you have any questions, feel free to <a href="contact.html">contact us</a>.
   </p>
   
@@ -73,6 +73,30 @@
       document.getElementById('tax').textContent = tax.toFixed(2);
       document.getElementById('total').textContent = grandTotal.toFixed(2);
       document.getElementById('time').textContent = new Date(order.timestamp).toLocaleString();
+      updateEmailStatus(order.orderNumber, order.emailStatus);
+    }
+
+    function emailStatusText(status, error) {
+      if (status === 'sent') return 'Email confirmation sent.';
+      if (status === 'failed') return `Email confirmation failed${error ? `: ${error}` : '.'}`;
+      if (status === 'pending') return 'Email confirmation is still sending.';
+      return 'Email confirmation status is being checked.';
+    }
+
+    async function updateEmailStatus(orderNumber, fallbackStatus) {
+      const message = document.getElementById('email-status-message');
+      message.textContent = emailStatusText(fallbackStatus || 'pending');
+
+      if (!orderNumber) return;
+
+      try {
+        const response = await fetch(`/api/orders/${encodeURIComponent(orderNumber)}/status`);
+        const status = await response.json();
+        if (!response.ok) throw new Error(status.message || 'Could not check email status.');
+        message.textContent = emailStatusText(status.emailStatus, status.emailError);
+      } catch (error) {
+        message.textContent = `${message.textContent} Store Manager can show the latest email status after you unlock it.`;
+      }
     }
   </script>
   

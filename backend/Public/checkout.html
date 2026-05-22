@@ -242,6 +242,7 @@
     localStorage.setItem("latestOrder", JSON.stringify({
       ...orderData,
       orderNumber: savedOrder.orderNumber,
+      emailStatus: savedOrder.emailStatus || "pending",
       timestamp: savedOrder.timestamp || new Date().toISOString()
     }));
   }

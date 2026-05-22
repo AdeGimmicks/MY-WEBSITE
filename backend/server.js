@@ -675,6 +675,40 @@ app.get('/get-orders', requireAdmin, async (req, res) => {
 });
 
 
+app.get('/api/orders/:orderNumber/status', async (req, res) => {
+  try {
+    const order = await ordersCollection.findOne(
+      { orderNumber: req.params.orderNumber },
+      {
+        projection: {
+          _id: 0,
+          orderNumber: 1,
+          status: 1,
+          emailStatus: 1,
+          emailSentAt: 1,
+          emailFailedAt: 1,
+          emailError: 1,
+          timestamp: 1
+        }
+      }
+    );
+
+    if (!order) {
+      return res.status(404).send({
+        message: "Order not found"
+      });
+    }
+
+    res.json(order);
+  } catch (err) {
+    console.error("❌ Failed to load order status:", err);
+    res.status(500).send({
+      message: "Failed to load order status"
+    });
+  }
+});
+
+
 app.post('/api/admin/orders/:orderNumber/resend-email', requireAdmin, async (req, res) => {
   try {
     const order = await ordersCollection.findOne({ orderNumber: req.params.orderNumber });
