@@ -267,10 +267,36 @@ async function sendOrderEmail(orderData, mailOptions) {
     });
 
   const timeoutPromise = new Promise(resolve => {
-    setTimeout(() => resolve({ emailSent: "pending", emailStatus: "pending" }), 6000);
+    setTimeout(() => resolve({ emailSent: "pending", emailStatus: "pending" }), 500);
   });
 
   return Promise.race([sendPromise, timeoutPromise]);
+}
+
+function orderMailOptions(orderData) {
+  return {
+    from: `"ElectronicsOnly" <${process.env.GMAIL_USER}>`,
+    to: orderData.customer.email,
+    subject: '✅ Order Confirmation – ElectronicsOnly',
+    html: `
+      <h2>Thank You for Your Order!</h2>
+
+      <p><strong>Order Number:</strong> ${orderData.orderNumber}</p>
+
+      <p><strong>Name:</strong> ${orderData.customer.name}</p>
+
+      <p><strong>Email:</strong> ${orderData.customer.email}</p>
+
+      <p><strong>Shipping Address:</strong> ${orderData.customer.address}</p>
+
+      <p><strong>Total Paid:</strong> $${orderData.total}</p>
+
+      <p><strong>Order Time:</strong>
+      ${new Date(orderData.timestamp).toLocaleString()}</p>
+
+      <p>We’ve received your order and it is being processed.</p>
+    `
+  };
 }
 
 async function startServer() {
@@ -597,33 +623,7 @@ app.post('/save-order', async (req, res) => {
 
     await ordersCollection.insertOne(orderData);
 
-    // Email confirmation
-    const mailOptions = {
-      from: `"ElectronicsOnly" <${process.env.GMAIL_USER}>`,
-      to: orderData.customer.email,
-      subject: '✅ Order Confirmation – ElectronicsOnly',
-
-      html: `
-        <h2>Thank You for Your Order!</h2>
-
-        <p><strong>Order Number:</strong> ${orderData.orderNumber}</p>
-
-        <p><strong>Name:</strong> ${orderData.customer.name}</p>
-
-        <p><strong>Email:</strong> ${orderData.customer.email}</p>
-
-        <p><strong>Shipping Address:</strong> ${orderData.customer.address}</p>
-
-        <p><strong>Total Paid:</strong> $${orderData.total}</p>
-
-        <p><strong>Order Time:</strong>
-        ${new Date(orderData.timestamp).toLocaleString()}</p>
-
-        <p>We’ve received your order and it is being processed.</p>
-      `
-    };
-
-    const emailResult = await sendOrderEmail(orderData, mailOptions);
+    const emailResult = await sendOrderEmail(orderData, orderMailOptions(orderData));
 
     res.send({
       success: true,
@@ -671,6 +671,47 @@ app.get('/get-orders', requireAdmin, async (req, res) => {
       message: "Failed to fetch orders"
     });
 
+  }
+});
+
+
+app.post('/api/admin/orders/:orderNumber/resend-email', requireAdmin, async (req, res) => {
+  try {
+    const order = await ordersCollection.findOne({ orderNumber: req.params.orderNumber });
+    if (!order) {
+      return res.status(404).send({
+        message: "Order not found"
+      });
+    }
+
+    await ordersCollection.updateOne(
+      { orderNumber: order.orderNumber },
+      {
+        $set: {
+          emailStatus: "pending",
+          emailRetryAt: new Date().toISOString()
+        },
+        $unset: {
+          emailError: "",
+          emailFailedAt: ""
+        }
+      }
+    );
+
+    const emailResult = await sendOrderEmail(order, orderMailOptions(order));
+
+    res.send({
+      success: true,
+      message: emailResult.emailStatus === "sent"
+        ? "Confirmation email sent."
+        : "Confirmation email is still sending.",
+      emailStatus: emailResult.emailStatus
+    });
+  } catch (err) {
+    console.error("❌ Failed to resend order email:", err);
+    res.status(500).send({
+      message: "Failed to resend confirmation email"
+    });
   }
 });
 
