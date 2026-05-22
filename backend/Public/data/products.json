@@ -9,7 +9,14 @@
     "category": "Samsung",
     "stock": 25,
     "active": true,
-    "featured": true
+    "featured": true,
+    "gallery": [
+      "Product images/Samsung Remote Pix/15.png",
+      "Product images/Samsung Remote Pix/14.png",
+      "Product images/Samsung Remote Pix/17.png",
+      "Product images/Samsung Remote Pix/18.png",
+      "Product images/Samsung Remote Pix/19.png"
+    ]
   },
   {
     "id": "samsung-solar-remote",
@@ -21,7 +28,15 @@
     "category": "Samsung",
     "stock": 20,
     "active": true,
-    "featured": true
+    "featured": true,
+    "gallery": [
+      "Product images/Samsung Solar Remotes/1.png",
+      "Product images/Samsung Solar Remotes/2.png",
+      "Product images/Samsung Solar Remotes/3.jpg",
+      "Product images/Samsung Solar Remotes/4.jpg",
+      "Product images/Samsung Solar Remotes/5.jpg",
+      "Product images/Samsung Solar Remotes/6.jpg"
+    ]
   },
   {
     "id": "roku-streaming-remote",
@@ -33,7 +48,15 @@
     "category": "Roku",
     "stock": 20,
     "active": true,
-    "featured": true
+    "featured": true,
+    "gallery": [
+      "Product images/Roku Remote control/26.png",
+      "Product images/Roku Remote control/27.png",
+      "Product images/Roku Remote control/28.png",
+      "Product images/Roku Remote control/29.png",
+      "Product images/Roku Remote control/30.png",
+      "Product images/Roku Remote control/31.png"
+    ]
   },
   {
     "id": "fire-tv-voice-remote",
@@ -45,7 +68,15 @@
     "category": "Amazon Fire TV",
     "stock": 18,
     "active": true,
-    "featured": true
+    "featured": true,
+    "gallery": [
+      "Product images/Alexa Remote Pix/1.png",
+      "Product images/Alexa Remote Pix/2.png",
+      "Product images/Alexa Remote Pix/3.png",
+      "Product images/Alexa Remote Pix/4.png",
+      "Product images/Alexa Remote Pix/5.png",
+      "Product images/Alexa Remote Pix/6.png"
+    ]
   },
   {
     "id": "vizio-tv-remote",
@@ -57,7 +88,15 @@
     "category": "Vizio",
     "stock": 18,
     "active": true,
-    "featured": true
+    "featured": true,
+    "gallery": [
+      "Product images/Visio TV Remote/7.png",
+      "Product images/Visio TV Remote/8.png",
+      "Product images/Visio TV Remote/9.png",
+      "Product images/Visio TV Remote/10.png",
+      "Product images/Visio TV Remote/11.png",
+      "Product images/Visio TV Remote/12.png"
+    ]
   },
   {
     "id": "lg-magic-remote",
@@ -69,7 +108,15 @@
     "category": "LG",
     "stock": 20,
     "active": true,
-    "featured": true
+    "featured": true,
+    "gallery": [
+      "Product images/LG Remotes Pix/1.png",
+      "Product images/LG Remotes Pix/2.png",
+      "Product images/LG Remotes Pix/3.png",
+      "Product images/LG Remotes Pix/4.png",
+      "Product images/LG Remotes Pix/5.png",
+      "Product images/LG Remotes Pix/6.png"
+    ]
   },
   {
     "id": "philips-tv-remote",
@@ -81,6 +128,13 @@
     "category": "Philips",
     "stock": 16,
     "active": true,
-    "featured": true
+    "featured": true,
+    "gallery": [
+      "Product images/Philip TV remote/21.png",
+      "Product images/Philip TV remote/22.png",
+      "Product images/Philip TV remote/23.png",
+      "Product images/Philip TV remote/24.png",
+      "Product images/Philip TV remote/25.png"
+    ]
   }
 ]
