@@ -144,6 +144,25 @@ function readSeedProducts() {
   return JSON.parse(fs.readFileSync(seedProductsPath, 'utf8'));
 }
 
+function seedProductFor(id) {
+  return readSeedProducts().find(product => product.id === id);
+}
+
+function hydrateProductGallery(product) {
+  const seedProduct = seedProductFor(product.id);
+  if (!seedProduct) return product;
+
+  const hasManagedGallery = Boolean(product.galleryUpdatedAt);
+  const hasGallery = Array.isArray(product.gallery) && product.gallery.length > 1;
+  const hasBadImagePath = String(product.image || '').includes('NewDesign');
+
+  return {
+    ...product,
+    image: hasBadImagePath ? seedProduct.image : product.image,
+    gallery: hasGallery || hasManagedGallery ? product.gallery : seedProduct.gallery || []
+  };
+}
+
 async function backfillProductGalleries() {
   const seedProducts = readSeedProducts();
 
@@ -153,9 +172,10 @@ async function backfillProductGalleries() {
     const currentProduct = await productsCollection.findOne({ id: seedProduct.id });
     if (!currentProduct) continue;
 
+    const hasManagedGallery = Boolean(currentProduct.galleryUpdatedAt);
     const hasGallery = Array.isArray(currentProduct.gallery) && currentProduct.gallery.length > 1;
     const hasBadImagePath = String(currentProduct.image || '').includes('NewDesign');
-    if (hasGallery && !hasBadImagePath) continue;
+    if ((hasGallery || hasManagedGallery) && !hasBadImagePath) continue;
     const image = hasBadImagePath
       ? seedProduct.image
       : currentProduct.image || seedProduct.image;
@@ -166,6 +186,7 @@ async function backfillProductGalleries() {
         $set: {
           gallery: seedProduct.gallery,
           image,
+          galleryUpdatedAt: currentProduct.galleryUpdatedAt || null,
           updatedAt: new Date().toISOString()
         }
       }
@@ -193,6 +214,9 @@ function normalizeProduct(product) {
     active: product.active !== false,
     featured: product.featured !== false,
     gallery,
+    galleryUpdatedAt: Array.isArray(product.gallery)
+      ? product.galleryUpdatedAt || new Date().toISOString()
+      : product.galleryUpdatedAt,
     updatedAt: new Date().toISOString()
   };
 }
@@ -287,7 +311,7 @@ app.get('/api/products', async (req, res) => {
       .sort({ featured: -1, name: 1 })
       .toArray();
 
-    res.json(products);
+    res.json(products.map(hydrateProductGallery));
   } catch (err) {
     console.error("❌ Failed to fetch products:", err);
     res.status(500).send({
@@ -309,7 +333,7 @@ app.get('/api/products/:id', async (req, res) => {
       });
     }
 
-    res.json(product);
+    res.json(hydrateProductGallery(product));
   } catch (err) {
     console.error("❌ Failed to fetch product:", err);
     res.status(500).send({
@@ -330,7 +354,7 @@ app.get('/api/admin/products', requireAdmin, async (req, res) => {
       .sort({ name: 1 })
       .toArray();
 
-    res.json(products);
+    res.json(products.map(hydrateProductGallery));
   } catch (err) {
     console.error("❌ Failed to fetch admin products:", err);
     res.status(500).send({
