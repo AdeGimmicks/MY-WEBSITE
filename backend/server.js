@@ -242,6 +242,44 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+async function sendOrderEmail(orderData, mailOptions) {
+  const sendPromise = transporter.sendMail(mailOptions)
+    .then(async info => {
+      await ordersCollection.updateOne(
+        { orderNumber: orderData.orderNumber },
+        {
+          $set: {
+            emailStatus: "sent",
+            emailSentAt: new Date().toISOString(),
+            emailResponse: info.response || ""
+          }
+        }
+      );
+      console.log("📧 Email sent:", info.response);
+      return { emailSent: true, emailStatus: "sent" };
+    })
+    .catch(async error => {
+      await ordersCollection.updateOne(
+        { orderNumber: orderData.orderNumber },
+        {
+          $set: {
+            emailStatus: "failed",
+            emailError: error.message || "Email failed",
+            emailFailedAt: new Date().toISOString()
+          }
+        }
+      );
+      console.error("❌ Failed to send email:", error);
+      return { emailSent: false, emailStatus: "failed" };
+    });
+
+  const timeoutPromise = new Promise(resolve => {
+    setTimeout(() => resolve({ emailSent: "pending", emailStatus: "pending" }), 6000);
+  });
+
+  return Promise.race([sendPromise, timeoutPromise]);
+}
+
 async function startServer() {
   try {
     const client = new MongoClient(process.env.MONGO_URI);
@@ -560,18 +598,11 @@ app.post('/save-order', async (req, res) => {
       ...req.body,
       orderNumber,
       status: "pending",
+      emailStatus: "pending",
       timestamp: new Date().toISOString()
     };
 
     await ordersCollection.insertOne(orderData);
-
-    res.send({
-      success: true,
-      emailSent: "pending",
-      message: "Order saved. Email confirmation is being sent.",
-      orderNumber,
-      timestamp: orderData.timestamp
-    });
 
     // Email confirmation
     const mailOptions = {
@@ -599,13 +630,17 @@ app.post('/save-order', async (req, res) => {
       `
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("❌ Failed to send email:", error);
-        return;
-      }
+    const emailResult = await sendOrderEmail(orderData, mailOptions);
 
-      console.log("📧 Email sent:", info.response);
+    res.send({
+      success: true,
+      emailSent: emailResult.emailSent,
+      emailStatus: emailResult.emailStatus,
+      message: emailResult.emailStatus === "sent"
+        ? "Order saved and email sent."
+        : "Order saved. Email confirmation is being sent.",
+      orderNumber,
+      timestamp: orderData.timestamp
     });
 
   } catch (err) {

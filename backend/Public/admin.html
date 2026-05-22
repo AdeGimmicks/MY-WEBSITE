@@ -1063,7 +1063,8 @@
         const orders = await fetchJson("/get-orders", { headers: { "admin-key": els.adminKey.value } });
         els.ordersList.innerHTML = orders.length ? orders.slice(0, 10).map(order => {
           const items = (order.items || []).map(item => `${item.name} x${item.quantity || 1}`).join(", ");
-          return `<div class="activity-item"><strong>${order.customer?.name || "Customer"} - $${order.total || "0.00"}</strong><p>${items || "No items listed"}</p><p>${order.status || "pending"} - ${order.timestamp ? new Date(order.timestamp).toLocaleString() : ""}</p></div>`;
+          const emailStatus = order.emailStatus || "unknown";
+          return `<div class="activity-item"><strong>${order.customer?.name || "Customer"} - $${order.total || "0.00"}</strong><p>${items || "No items listed"}</p><p>${order.status || "pending"} - Email: ${emailStatus} - ${order.timestamp ? new Date(order.timestamp).toLocaleString() : ""}</p></div>`;
         }).join("") : "<p class='help-text'>No orders yet.</p>";
       } catch (error) {
         els.ordersList.innerHTML = `<p class="help-text">${error.message}</p>`;
