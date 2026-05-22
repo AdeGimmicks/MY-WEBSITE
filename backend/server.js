@@ -43,8 +43,7 @@ function verifyAdminKey(adminKey, stored) {
   return crypto.timingSafeEqual(Buffer.from(check.hash, 'hex'), Buffer.from(stored.hash, 'hex'));
 }
 
-async function hasStoredAdminKey() {
-  if (process.env.ADMIN_SECRET) return true;
+async function hasSavedAdminKey() {
   if (!settingsCollection) return false;
   const setting = await settingsCollection.findOne({ key: 'adminAuth' });
   return Boolean(setting?.auth?.hash);
@@ -96,16 +95,10 @@ function validateProduct(product) {
 
 async function setupAdminKey(req, res) {
   try {
-    if (process.env.ADMIN_SECRET) {
-      return res.status(409).send({
-        message: "This store already uses the Render ADMIN_SECRET environment variable."
-      });
-    }
-
-    const alreadySetup = await hasStoredAdminKey();
+    const alreadySetup = await hasSavedAdminKey();
     if (alreadySetup) {
       return res.status(409).send({
-        message: "Admin key already exists."
+        message: "Owner key already exists."
       });
     }
 
@@ -332,7 +325,7 @@ app.get('/', (req, res) => {
 app.get('/api/admin/setup-status', async (req, res) => {
   try {
     res.json({
-      hasAdminKey: await hasStoredAdminKey(),
+      hasAdminKey: await hasSavedAdminKey(),
       usesRenderSecret: Boolean(process.env.ADMIN_SECRET)
     });
   } catch (err) {
