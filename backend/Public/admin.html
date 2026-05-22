@@ -668,6 +668,7 @@
     let unlocked = false;
     let isNewProduct = false;
     let draftGallery = [];
+    let catalogProducts = null;
 
     const els = {
       adminKey: document.querySelector("#adminKey"),
@@ -727,6 +728,47 @@
       return gallery.length ? gallery.slice(0, 6) : [product.image].filter(Boolean);
     }
 
+    function uniqueGallery(images) {
+      return Array.from(new Set((images || []).filter(Boolean).map(image => String(image).trim()))).slice(0, 6);
+    }
+
+    async function loadCatalogProducts() {
+      if (catalogProducts) return catalogProducts;
+
+      try {
+        const response = await fetch("data/products.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("Catalog unavailable");
+        catalogProducts = await response.json();
+      } catch {
+        catalogProducts = DEFAULT_PRODUCTS;
+      }
+
+      return catalogProducts;
+    }
+
+    async function mergeWebsiteGalleries(liveProducts) {
+      const catalog = await loadCatalogProducts();
+      return (liveProducts || []).map(product => {
+        const catalogProduct = catalog.find(item => item.id === product.id);
+        const productImages = Array.isArray(product.gallery) ? product.gallery.filter(Boolean) : [];
+        const catalogImages = Array.isArray(catalogProduct?.gallery) ? catalogProduct.gallery.filter(Boolean) : [];
+        const managerHasCompleteGallery = product.galleryManaged === true || productImages.length > 1;
+
+        if (!catalogImages.length || managerHasCompleteGallery) return product;
+
+        const image = String(product.image || "").includes("NewDesign")
+          ? catalogProduct.image
+          : product.image || catalogProduct.image;
+
+        return {
+          ...catalogProduct,
+          ...product,
+          image,
+          gallery: uniqueGallery([image, ...catalogImages])
+        };
+      });
+    }
+
     function currentProduct() {
       return products.find(product => product.id === selectedProductId) || products[0];
     }
@@ -747,10 +789,10 @@
     async function loadProducts() {
       try {
         if (unlocked) {
-          return await fetchJson("/api/admin/products", { headers: { "admin-key": els.adminKey.value } });
+          return await mergeWebsiteGalleries(await fetchJson("/api/admin/products", { headers: { "admin-key": els.adminKey.value } }));
         }
 
-        return await fetchJson("/api/products");
+        return await mergeWebsiteGalleries(await fetchJson("/api/products"));
       } catch {
         try {
           const fallback = await fetch("data/products.json");

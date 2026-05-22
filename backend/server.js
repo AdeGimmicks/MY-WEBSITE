@@ -148,18 +148,27 @@ function seedProductFor(id) {
   return readSeedProducts().find(product => product.id === id);
 }
 
+function uniqueGallery(images) {
+  return Array.from(new Set((images || []).filter(Boolean).map(image => String(image).trim()))).slice(0, 6);
+}
+
 function hydrateProductGallery(product) {
   const seedProduct = seedProductFor(product.id);
   if (!seedProduct) return product;
 
-  const hasManagedGallery = Boolean(product.galleryUpdatedAt);
-  const hasGallery = Array.isArray(product.gallery) && product.gallery.length > 1;
+  const productGallery = Array.isArray(product.gallery) ? product.gallery.filter(Boolean) : [];
+  const seedGallery = Array.isArray(seedProduct.gallery) ? seedProduct.gallery.filter(Boolean) : [];
+  const hasManagedGallery = product.galleryManaged === true;
+  const hasGallery = productGallery.length > 1;
   const hasBadImagePath = String(product.image || '').includes('NewDesign');
+  const gallery = hasGallery || hasManagedGallery
+    ? productGallery
+    : uniqueGallery([product.image, ...seedGallery]);
 
   return {
     ...product,
     image: hasBadImagePath ? seedProduct.image : product.image,
-    gallery: hasGallery || hasManagedGallery ? product.gallery : seedProduct.gallery || []
+    gallery
   };
 }
 
@@ -172,21 +181,23 @@ async function backfillProductGalleries() {
     const currentProduct = await productsCollection.findOne({ id: seedProduct.id });
     if (!currentProduct) continue;
 
-    const hasManagedGallery = Boolean(currentProduct.galleryUpdatedAt);
-    const hasGallery = Array.isArray(currentProduct.gallery) && currentProduct.gallery.length > 1;
+    const currentGallery = Array.isArray(currentProduct.gallery) ? currentProduct.gallery.filter(Boolean) : [];
+    const hasManagedGallery = currentProduct.galleryManaged === true;
+    const hasGallery = currentGallery.length > 1;
     const hasBadImagePath = String(currentProduct.image || '').includes('NewDesign');
     if ((hasGallery || hasManagedGallery) && !hasBadImagePath) continue;
     const image = hasBadImagePath
       ? seedProduct.image
       : currentProduct.image || seedProduct.image;
+    const gallery = uniqueGallery([image, ...(seedProduct.gallery || [])]);
 
     await productsCollection.updateOne(
       { id: seedProduct.id },
       {
         $set: {
-          gallery: seedProduct.gallery,
+          gallery,
           image,
-          galleryUpdatedAt: currentProduct.galleryUpdatedAt || null,
+          galleryManaged: false,
           updatedAt: new Date().toISOString()
         }
       }
@@ -214,6 +225,7 @@ function normalizeProduct(product) {
     active: product.active !== false,
     featured: product.featured !== false,
     gallery,
+    galleryManaged: Array.isArray(product.gallery) ? true : Boolean(product.galleryManaged),
     galleryUpdatedAt: Array.isArray(product.gallery)
       ? product.galleryUpdatedAt || new Date().toISOString()
       : product.galleryUpdatedAt,
