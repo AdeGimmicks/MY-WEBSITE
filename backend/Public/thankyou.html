@@ -35,6 +35,7 @@
   <p>Your order has been received and is being processed.</p>
 
   <div class="summary-box">
+    <p><strong>Order Number:</strong> <span id="order-number"></span></p>
     <p><strong>Name:</strong> <span id="name"></span></p>
     <p><strong>Email:</strong> <span id="email"></span></p>
     <p><strong>Shipping Address:</strong> <span id="address"></span></p>
@@ -56,13 +57,14 @@
     const order = JSON.parse(localStorage.getItem('latestOrder'));
     const summary = JSON.parse(localStorage.getItem('cartSummary'));
   
-    if (order && summary) {
-      const cartTotal = parseFloat(summary.subtotal); // subtotal of items
-      const tax = parseFloat(summary.tax); // tax from cart.js
+    if (order) {
+      const cartTotal = parseFloat(order.subtotal || summary?.subtotal || order.total || 0);
+      const tax = parseFloat(order.tax || summary?.tax || 0);
       const shipping = parseFloat(order.shipping) || 0;
+      const savedTotal = parseFloat(order.total);
+      const grandTotal = Number.isFinite(savedTotal) ? savedTotal : cartTotal + shipping + tax;
   
-      const grandTotal = cartTotal + shipping + tax;
-  
+      document.getElementById('order-number').textContent = order.orderNumber || 'Processing';
       document.getElementById('name').textContent = order.customer.name;
       document.getElementById('email').textContent = order.customer.email;
       document.getElementById('address').textContent = order.customer.address;

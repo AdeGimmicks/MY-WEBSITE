@@ -585,28 +585,25 @@ app.post('/save-order', async (req, res) => {
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
-
       if (error) {
-
         console.error("❌ Failed to send email:", error);
-
-        return res.status(500).json({
-          success: false,
-          message: "Order saved but email failed."
-        });
-
-      } else {
-
-        console.log("📧 Email sent:", info.response);
-
-        return res.send({
+        return res.json({
           success: true,
-          message: "Order saved and email sent.",
-          orderNumber
+          emailSent: false,
+          message: "Order saved, but email failed.",
+          orderNumber,
+          timestamp: orderData.timestamp
         });
-
       }
 
+      console.log("📧 Email sent:", info.response);
+      return res.send({
+        success: true,
+        emailSent: true,
+        message: "Order saved and email sent.",
+        orderNumber,
+        timestamp: orderData.timestamp
+      });
     });
 
   } catch (err) {
