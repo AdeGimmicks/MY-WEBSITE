@@ -507,11 +507,18 @@ app.get('/api/admin/stats', requireAdmin, async (req, res) => {
 app.post('/create-payment-intent', async (req, res) => {
 
   const { amount, currency } = req.body;
+  const chargeAmount = Math.round(Number(amount || 0));
+
+  if (!Number.isFinite(chargeAmount) || chargeAmount < 50) {
+    return res.status(400).send({
+      error: "Invalid payment amount"
+    });
+  }
 
   try {
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount,
+      amount: chargeAmount,
       currency: currency || 'usd',
       automatic_payment_methods: { enabled: true },
     });

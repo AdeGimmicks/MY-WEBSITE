@@ -193,6 +193,16 @@
     return `${API_BASE}${path}`;
   }
 
+  function showOrderSuccess() {
+    const successMessage = document.getElementById('success-message');
+    successMessage.style.display = 'block';
+    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   function currentOrderData(paymentId) {
     const selectedShipping = document.querySelector('input[name="shipping"]:checked');
     const name = document.getElementById('name').value.trim();
@@ -238,10 +248,11 @@
 
   async function finishOrder(paymentId) {
     const orderData = currentOrderData(paymentId);
+    showOrderSuccess();
     const savedOrder = await saveOrder(orderData);
     rememberLatestOrder(orderData, savedOrder);
     localStorage.removeItem('cart');
-    document.getElementById('success-message').style.display = 'block';
+    await wait(2500);
     window.location.href = 'thankyou.html';
   }
 
@@ -265,7 +276,7 @@
     const response = await fetch(apiUrl('/create-payment-intent'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: total * 100 })
+      body: JSON.stringify({ amount: Math.round(total * 100) })
     });
 
     const { clientSecret } = await response.json();
