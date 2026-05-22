@@ -144,6 +144,35 @@ function readSeedProducts() {
   return JSON.parse(fs.readFileSync(seedProductsPath, 'utf8'));
 }
 
+async function backfillProductGalleries() {
+  const seedProducts = readSeedProducts();
+
+  for (const seedProduct of seedProducts) {
+    if (!Array.isArray(seedProduct.gallery) || seedProduct.gallery.length === 0) continue;
+
+    const currentProduct = await productsCollection.findOne({ id: seedProduct.id });
+    if (!currentProduct) continue;
+
+    const hasGallery = Array.isArray(currentProduct.gallery) && currentProduct.gallery.length > 1;
+    const hasBadImagePath = String(currentProduct.image || '').includes('NewDesign');
+    if (hasGallery && !hasBadImagePath) continue;
+    const image = hasBadImagePath
+      ? seedProduct.image
+      : currentProduct.image || seedProduct.image;
+
+    await productsCollection.updateOne(
+      { id: seedProduct.id },
+      {
+        $set: {
+          gallery: seedProduct.gallery,
+          image,
+          updatedAt: new Date().toISOString()
+        }
+      }
+    );
+  }
+}
+
 function normalizeProduct(product) {
   const gallery = Array.isArray(product.gallery)
     ? product.gallery.filter(Boolean).slice(0, 6).map(image => String(image).trim())
@@ -195,6 +224,9 @@ async function startServer() {
       }));
       await productsCollection.insertMany(seedProducts);
       console.log(`✅ Seeded ${seedProducts.length} products`);
+    } else {
+      await backfillProductGalleries();
+      console.log("✅ Product galleries checked");
     }
 
     console.log("✅ Connected to MongoDB Atlas");
