@@ -495,6 +495,7 @@
         <input id="adminKey" type="password" placeholder="Enter your owner key to save changes" autocomplete="current-password" />
         <button class="primary-button" id="unlockButton" type="button">Unlock saving</button>
         <button class="gold-button" id="refreshButton" type="button">Refresh</button>
+        <strong id="saveModeLabel" class="help-text">Preview mode</strong>
       </div>
 
       <div class="setup-box" id="setupBox">
@@ -705,6 +706,7 @@
       ordersList: document.querySelector("#ordersList"),
       statusList: document.querySelector("#statusList"),
       refreshOrdersButton: document.querySelector("#refreshOrdersButton"),
+      saveModeLabel: document.querySelector("#saveModeLabel"),
       toast: document.querySelector("#toast")
     };
 
@@ -962,10 +964,12 @@
       try {
         await fetchJson("/api/admin/stats", { headers: { "admin-key": els.adminKey.value } });
         unlocked = true;
+        els.saveModeLabel.textContent = "Live MongoDB saving";
         showToast("Saving unlocked.");
         await Promise.all([refreshManager(), loadOrders()]);
       } catch (error) {
         unlocked = false;
+        els.saveModeLabel.textContent = "Preview mode";
         showToast(error.message);
       }
     }
@@ -984,6 +988,7 @@
         els.adminKey.value = key;
         localStorage.setItem(storageKey, key);
         unlocked = true;
+        els.saveModeLabel.textContent = "Live MongoDB saving";
         els.setupBox.classList.remove("show");
         showToast("Owner key created.");
         await Promise.all([refreshManager(), loadOrders()]);
@@ -993,6 +998,7 @@
     }
 
     function renderStatus(message) {
+      els.saveModeLabel.textContent = unlocked ? "Live MongoDB saving" : "Preview mode";
       els.statusList.innerHTML = `
         <div class="activity-item"><strong>Saving</strong><p>${unlocked ? "Unlocked. Saves publish to MongoDB." : "Locked. Edits stay in this browser until you unlock."}</p></div>
         <div class="activity-item"><strong>Current product</strong><p>${currentProduct()?.name || "None selected"}</p></div>

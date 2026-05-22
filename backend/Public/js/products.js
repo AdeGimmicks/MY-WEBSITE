@@ -85,12 +85,24 @@ const DEFAULT_PRODUCTS = [
   }
 ];
 
+function loadManagerPreviewProducts() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('electronics-manager-catalog-backup') || 'null');
+    return Array.isArray(saved) && saved.length ? saved : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 async function loadProducts() {
   try {
     const response = await fetch('/api/products');
     if (!response.ok) throw new Error('API unavailable');
     return await response.json();
   } catch (error) {
+    const managerPreviewProducts = loadManagerPreviewProducts();
+    if (managerPreviewProducts) return managerPreviewProducts;
+
     try {
       const fallback = await fetch('data/products.json');
       if (!fallback.ok) throw new Error('Fallback unavailable');
