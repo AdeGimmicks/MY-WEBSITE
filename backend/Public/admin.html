@@ -492,21 +492,8 @@
       </div>
 
       <div class="auth-strip">
-        <input id="adminKey" type="password" placeholder="Enter your owner key to save changes" autocomplete="current-password" />
-        <button class="primary-button" id="unlockButton" type="button">Unlock saving</button>
         <button class="gold-button" id="refreshButton" type="button">Refresh</button>
-        <strong id="saveModeLabel" class="help-text">Preview mode</strong>
-      </div>
-
-      <div class="setup-box" id="setupBox">
-        <p class="eyebrow">First time setup</p>
-        <h2>Create your owner key</h2>
-        <p class="help-text">Create this once on your live Render site. Keep it private. After that, use it anytime you open this manager.</p>
-        <div class="setup-grid">
-          <input id="newAdminKey" type="password" placeholder="Create owner key" autocomplete="new-password" />
-          <input id="confirmAdminKey" type="password" placeholder="Confirm owner key" autocomplete="new-password" />
-          <button class="primary-button" id="createKeyButton" type="button">Create key</button>
-        </div>
+        <strong id="saveModeLabel" class="help-text">Live MongoDB saving</strong>
       </div>
 
       <div class="manager-stats" aria-label="Catalog statistics">
@@ -661,24 +648,16 @@
       }
     ];
 
-    const storageKey = "electronics-manager-key";
     const catalogBackupKey = "electronics-manager-catalog-backup";
     const adminApiBase = window.location.protocol === "file:" ? "https://www.electronicsonly.com" : "";
     let products = [];
     let selectedProductId = "";
-    let unlocked = false;
     let isNewProduct = false;
     let draftGallery = [];
     let catalogProducts = null;
 
     const els = {
-      adminKey: document.querySelector("#adminKey"),
-      unlockButton: document.querySelector("#unlockButton"),
       refreshButton: document.querySelector("#refreshButton"),
-      setupBox: document.querySelector("#setupBox"),
-      newAdminKey: document.querySelector("#newAdminKey"),
-      confirmAdminKey: document.querySelector("#confirmAdminKey"),
-      createKeyButton: document.querySelector("#createKeyButton"),
       managerProductCount: document.querySelector("#managerProductCount"),
       managerInStockCount: document.querySelector("#managerInStockCount"),
       managerCategoryCount: document.querySelector("#managerCategoryCount"),
@@ -793,11 +772,7 @@
 
     async function loadProducts() {
       try {
-        if (unlocked) {
-          return await mergeWebsiteGalleries(await fetchJson("/api/admin/products", { headers: { "admin-key": els.adminKey.value } }));
-        }
-
-        return await mergeWebsiteGalleries(await fetchJson("/api/products"));
+        return await mergeWebsiteGalleries(await fetchJson("/api/admin/products"));
       } catch {
         try {
           const fallback = await fetch("data/products.json");
@@ -810,12 +785,7 @@
     }
 
     async function checkSetup() {
-      try {
-        const status = await fetchJson("/api/admin/setup-status");
-        els.setupBox.classList.toggle("show", !status.hasAdminKey);
-      } catch {
-        els.setupBox.classList.remove("show");
-      }
+      return Promise.resolve();
     }
 
     function updateStats() {
@@ -941,7 +911,7 @@
       renderProductDropdown();
       renderProductList();
       fillForm(currentProduct());
-      renderStatus("Catalog loaded. Unlock saving before publishing changes.");
+      renderStatus("Catalog loaded. Changes save directly to MongoDB.");
     }
 
     function productPayload() {
@@ -987,16 +957,10 @@
       event.preventDefault();
       const product = productPayload();
 
-      if (!unlocked) {
-        saveLocalCopy(product);
-        showToast("Preview saved locally. Unlock on the live site to publish to MongoDB.");
-        return;
-      }
-
       try {
         const saved = await fetchJson(isNewProduct ? "/api/admin/products" : `/api/admin/products/${product.id}`, {
           method: isNewProduct ? "POST" : "PUT",
-          headers: { "Content-Type": "application/json", "admin-key": els.adminKey.value },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(product)
         });
         saveLocalCopy(saved);
@@ -1006,61 +970,18 @@
       }
     }
 
-    async function unlockSaving() {
-      localStorage.setItem(storageKey, els.adminKey.value);
-      try {
-        await fetchJson("/api/admin/stats", { headers: { "admin-key": els.adminKey.value } });
-        unlocked = true;
-        els.saveModeLabel.textContent = "Live MongoDB saving";
-        showToast("Saving unlocked.");
-        await Promise.all([refreshManager(), loadOrders()]);
-      } catch (error) {
-        unlocked = false;
-        els.saveModeLabel.textContent = "Preview mode";
-        showToast(error.message);
-      }
-    }
-
-    async function createKey() {
-      const key = els.newAdminKey.value.trim();
-      const confirm = els.confirmAdminKey.value.trim();
-      if (key !== confirm) return showToast("Owner keys do not match.");
-
-      try {
-        await fetchJson("/api/admin/setup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ adminKey: key })
-        });
-        els.adminKey.value = key;
-        localStorage.setItem(storageKey, key);
-        unlocked = true;
-        els.saveModeLabel.textContent = "Live MongoDB saving";
-        els.setupBox.classList.remove("show");
-        showToast("Owner key created.");
-        await Promise.all([refreshManager(), loadOrders()]);
-      } catch (error) {
-        showToast(error.message);
-      }
-    }
-
     function renderStatus(message) {
-      els.saveModeLabel.textContent = unlocked ? "Live MongoDB saving" : "Preview mode";
+      els.saveModeLabel.textContent = "Live MongoDB saving";
       els.statusList.innerHTML = `
-        <div class="activity-item"><strong>Saving</strong><p>${unlocked ? "Unlocked. Saves publish to MongoDB." : "Locked. Edits stay in this browser until you unlock."}</p></div>
+        <div class="activity-item"><strong>Saving</strong><p>Open manager. Saves publish to MongoDB.</p></div>
         <div class="activity-item"><strong>Current product</strong><p>${currentProduct()?.name || "None selected"}</p></div>
         <div class="activity-item"><strong>Message</strong><p>${message}</p></div>
       `;
     }
 
     async function loadOrders() {
-      if (!unlocked) {
-        els.ordersList.innerHTML = "<p class='help-text'>Enter your owner key and unlock the manager to view live MongoDB orders.</p>";
-        return;
-      }
-
       try {
-        const orders = await fetchJson("/get-orders", { headers: { "admin-key": els.adminKey.value } });
+        const orders = await fetchJson("/get-orders");
         els.ordersList.innerHTML = orders.length ? orders.slice(0, 10).map(order => {
           const items = (order.items || []).map(item => `${item.name} x${item.quantity || 1}`).join(", ");
           const emailStatus = order.emailStatus || "unknown";
@@ -1077,8 +998,7 @@
       if (!orderNumber) return;
       try {
         const result = await fetchJson(`/api/admin/orders/${encodeURIComponent(orderNumber)}/resend-email`, {
-          method: "POST",
-          headers: { "admin-key": els.adminKey.value }
+          method: "POST"
         });
         showToast(result.message || "Confirmation email requested.");
         await loadOrders();
@@ -1169,10 +1089,7 @@
       showToast("Product hidden in preview. Save product to publish this status.");
     }
 
-    els.adminKey.value = localStorage.getItem(storageKey) || "";
-    els.unlockButton.addEventListener("click", unlockSaving);
     els.refreshButton.addEventListener("click", () => Promise.all([refreshManager(), loadOrders()]));
-    els.createKeyButton.addEventListener("click", createKey);
     els.managerSearch.addEventListener("input", renderProductList);
     els.managerProductList.addEventListener("click", event => {
       const button = event.target.closest("[data-product-id]");
