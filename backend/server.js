@@ -565,6 +565,14 @@ app.post('/save-order', async (req, res) => {
 
     await ordersCollection.insertOne(orderData);
 
+    res.send({
+      success: true,
+      emailSent: "pending",
+      message: "Order saved. Email confirmation is being sent.",
+      orderNumber,
+      timestamp: orderData.timestamp
+    });
+
     // Email confirmation
     const mailOptions = {
       from: `"ElectronicsOnly" <${process.env.GMAIL_USER}>`,
@@ -594,23 +602,10 @@ app.post('/save-order', async (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error("❌ Failed to send email:", error);
-        return res.json({
-          success: true,
-          emailSent: false,
-          message: "Order saved, but email failed.",
-          orderNumber,
-          timestamp: orderData.timestamp
-        });
+        return;
       }
 
       console.log("📧 Email sent:", info.response);
-      return res.send({
-        success: true,
-        emailSent: true,
-        message: "Order saved and email sent.",
-        orderNumber,
-        timestamp: orderData.timestamp
-      });
     });
 
   } catch (err) {
