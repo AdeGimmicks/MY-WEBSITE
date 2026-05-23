@@ -321,23 +321,31 @@ async function startServer() {
           { upsert: true }
         );
       }
-      const tclRemoteProduct = seedProducts.find(product => product.id === "tv-remote-starter-1");
-      if (tclRemoteProduct) {
-        const { galleryUpdatedAt, ...tclRemoteUpdate } = tclRemoteProduct;
+      const managedTvRemoteStarterIds = [
+        "tv-remote-starter-1",
+        "tv-remote-starter-2",
+        "tv-remote-starter-3",
+        "tv-remote-starter-4",
+        "tv-remote-starter-5"
+      ];
+      for (const starterId of managedTvRemoteStarterIds) {
+        const starterProduct = seedProducts.find(product => product.id === starterId);
+        if (!starterProduct) continue;
+        const { galleryUpdatedAt, ...starterUpdate } = starterProduct;
         await productsCollection.updateOne(
           {
-            id: "tv-remote-starter-1",
+            id: starterId,
             $or: [
               { name: /^TV Remote Starter Item/ },
               { image: /product-placeholder/ },
-              { page: { $ne: tclRemoteProduct.page } },
-              { image: { $ne: tclRemoteProduct.image } },
-              { description: { $ne: tclRemoteProduct.description } }
+              { page: { $ne: starterProduct.page } },
+              { image: { $ne: starterProduct.image } },
+              { description: { $ne: starterProduct.description } }
             ]
           },
           {
             $set: {
-              ...tclRemoteUpdate,
+              ...starterUpdate,
               updatedAt: new Date().toISOString()
             }
           }
