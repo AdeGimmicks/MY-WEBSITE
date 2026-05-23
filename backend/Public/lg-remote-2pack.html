@@ -10,9 +10,9 @@
   <style>
     .product-detail { display: flex; flex-wrap: wrap; gap: 40px; padding: 60px 0; }
     .main-image { flex: 1; min-width: 300px; }
-    .main-image img { width: 100%; height: 300px; object-fit: contain; background: #fff; border-radius: 8px; }
+    .main-image img { width: 100%; border-radius: 8px; }
     .thumbnails { margin-top: 15px; display: flex; gap: 10px; }
-    .thumbnails img { width: 60px; height: 80px; object-fit: contain; background: #fff; cursor: pointer; border: 2px solid transparent; border-radius: 6px; }
+    .thumbnails img { width: 60px; height: auto; cursor: pointer; border: 2px solid transparent; border-radius: 6px; }
     .thumbnails img:hover { border-color: #f9c80e; }
     .product-info { flex: 1; min-width: 300px; }
     .product-info h2 { margin-top: 0; }
@@ -25,9 +25,9 @@
   <header><div class="container"><h1 class="logo">ElectronicsOnly.com</h1><nav><ul><li><a href="index.html">Home</a></li><li class="nav-dropdown"><a href="products.html">Products</a><div class="dropdown-menu"><a href="products.html?category=TV%20Remotes">TV Remotes</a><a href="products.html?category=Phone%20Accessories">Phone Accessories</a><a href="products.html?category=Chargers%20%26%20Cables">Chargers &amp; Cables</a></div></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li><a href="cart.html" class="cart-icon"><i class="fas fa-shopping-cart"></i><span id="cart-count">0</span></a></li></ul></nav></div></header>
   <section class="container product-detail">
     <div class="main-image">
-      <img id="mainProductImage" src="Product images/Two Pack Remotes/lg-two-pack.svg" alt="LG Magic Remote 2-Pack">
+      <img id="mainProductImage" src="Product images/Two Pack Remotes/lg-two-pack.svg?v=2" alt="LG Magic Remote 2-Pack">
       <div class="thumbnails">
-        <img src="Product images/Two Pack Remotes/lg-two-pack.svg" onclick="changeImage(this.src)" alt="LG Magic Remote 2-Pack">
+        <img src="Product images/Two Pack Remotes/lg-two-pack.svg?v=2" onclick="changeImage(this.src)" alt="LG Magic Remote 2-Pack">
         <img src="Product images/LG Remotes Pix/1.png" onclick="changeImage(this.src)" alt="LG remote">
         <img src="Product images/LG Remotes Pix/2.png" onclick="changeImage(this.src)" alt="LG remote">
         <img src="Product images/LG Remotes Pix/3.png" onclick="changeImage(this.src)" alt="LG remote">
@@ -38,7 +38,7 @@
       <h2>LG Magic Remote 2-Pack</h2>
       <p>Two replacement LG Magic Remotes for compatible LG Smart TVs.</p>
       <p><strong>Price:</strong> $24.99</p>
-      <div class="buy-btn"><a href="#" class="btn small buy-now" data-name="LG Magic Remote 2-Pack" data-price="24.99" data-image="Product images/Two Pack Remotes/lg-two-pack.svg">Buy Now</a><a href="#" class="btn small add-to-cart" data-name="LG Magic Remote 2-Pack" data-price="24.99" data-image="Product images/Two Pack Remotes/lg-two-pack.svg">Add to Cart</a></div>
+      <div class="buy-btn"><a href="#" class="btn small buy-now" data-name="LG Magic Remote 2-Pack" data-price="24.99" data-image="Product images/Two Pack Remotes/lg-two-pack.svg?v=2">Buy Now</a><a href="#" class="btn small add-to-cart" data-name="LG Magic Remote 2-Pack" data-price="24.99" data-image="Product images/Two Pack Remotes/lg-two-pack.svg?v=2">Add to Cart</a></div>
       <div class="product-description">
         <h3>Product Description</h3>
         <p>This LG Magic Remote 2-Pack includes two replacement remotes for compatible LG Smart TVs. Keep a spare remote available for another room or as a backup.</p>
