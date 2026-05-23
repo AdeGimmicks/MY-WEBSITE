@@ -179,22 +179,21 @@ const DEFAULT_PRODUCTS = [
   },
   {
     "id": "tv-remote-starter-1",
-    "name": "TV Remote Starter Item 1",
-    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
-    "price": 14.99,
-    "image": "Product images/product-placeholder.svg?slot=1",
+    "name": "TCL TV Remote Replacement",
+    "description": "Replacement remote for TCL Roku TVs and compatible TCL smart TV models. Easy to use with quick access buttons for everyday streaming.",
+    "price": 10,
+    "image": "Product images/TCL Remote Replacements/81sDAEnRQ3L._AC_SL1500_.jpg",
     "page": "product.html?id=tv-remote-starter-1",
     "category": "TV Remotes",
-    "stock": 10,
+    "stock": 20,
     "active": true,
     "featured": true,
     "gallery": [
-      "Product images/product-placeholder.svg?slot=1",
-      "Product images/product-placeholder.svg?slot=2",
-      "Product images/product-placeholder.svg?slot=3",
-      "Product images/product-placeholder.svg?slot=4",
-      "Product images/product-placeholder.svg?slot=5",
-      "Product images/product-placeholder.svg?slot=6"
+      "Product images/TCL Remote Replacements/81sDAEnRQ3L._AC_SL1500_.jpg",
+      "Product images/TCL Remote Replacements/61LBXnyGryL._AC_SL1500_.jpg",
+      "Product images/TCL Remote Replacements/61aqHxexsWL._AC_SL1500_.jpg",
+      "Product images/TCL Remote Replacements/51ye1Eqak2L._AC_SL1500_.jpg",
+      "Product images/TCL Remote Replacements/71KYtV6lgCL._AC_SL1500_.jpg"
     ]
   },
   {
@@ -747,6 +746,11 @@ function normalizeProducts(products) {
   (Array.isArray(products) ? products : []).forEach(product => {
     if (!product || !product.id) return;
     const seed = merged.get(product.id) || {};
+    const seedHasRealImage = seed.image && !String(seed.image).includes('product-placeholder');
+    const productIsEmptyStarter = /^TV Remote Starter Item/.test(String(product.name || ''))
+      || String(product.image || '').includes('product-placeholder');
+    if (seedHasRealImage && productIsEmptyStarter) return;
+
     merged.set(product.id, {
       ...seed,
       ...product,

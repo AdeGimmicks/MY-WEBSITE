@@ -321,6 +321,27 @@ async function startServer() {
           { upsert: true }
         );
       }
+      const tclRemoteProduct = seedProducts.find(product => product.id === "tv-remote-starter-1");
+      if (tclRemoteProduct) {
+        await productsCollection.updateOne(
+          {
+            id: "tv-remote-starter-1",
+            $or: [
+              { name: /^TV Remote Starter Item/ },
+              { image: /product-placeholder/ }
+            ]
+          },
+          {
+            $set: {
+              ...tclRemoteProduct,
+              updatedAt: new Date().toISOString()
+            },
+            $unset: {
+              galleryUpdatedAt: ""
+            }
+          }
+        );
+      }
       await productsCollection.updateOne(
         { id: "samsung-smart-remote" },
         {
