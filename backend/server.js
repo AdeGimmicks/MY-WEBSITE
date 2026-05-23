@@ -132,6 +132,10 @@ function uniqueGallery(images) {
   return Array.from(new Set((images || []).filter(Boolean).map(image => String(image).trim()))).slice(0, 6);
 }
 
+function starterPlaceholderGallery() {
+  return Array.from({ length: 6 }, (_, index) => `Product images/product-placeholder.svg?slot=${index + 1}`);
+}
+
 function hydrateProductGallery(product) {
   const seedProduct = seedProductFor(product.id);
   if (!seedProduct) return product;
@@ -343,6 +347,25 @@ async function startServer() {
         {
           $set: {
             category: "TV Remotes",
+            updatedAt: new Date().toISOString()
+          }
+        }
+      );
+      const starterGallery = starterPlaceholderGallery();
+      await productsCollection.updateMany(
+        {
+          id: { $regex: "starter" },
+          $or: [
+            { gallery: { $exists: false } },
+            { gallery: { $size: 0 } },
+            { gallery: { $size: 1 } }
+          ]
+        },
+        {
+          $set: {
+            image: starterGallery[0],
+            gallery: starterGallery,
+            galleryManaged: false,
             updatedAt: new Date().toISOString()
           }
         }

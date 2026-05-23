@@ -142,14 +142,19 @@ const DEFAULT_PRODUCTS = [
     name: "Phone Accessory Starter Item",
     description: "Starter phone accessory product. Replace the photo, name, price, and details in Store Manager.",
     price: 9.99,
-    image: "Product images/product-placeholder.svg",
+    image: "Product images/product-placeholder.svg?slot=1",
     page: "product.html?id=phone-accessory-starter",
     category: "Phone Accessories",
     stock: 10,
     active: true,
     featured: true,
     gallery: [
-      "Product images/product-placeholder.svg"
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
     ]
   },
   {
@@ -157,14 +162,19 @@ const DEFAULT_PRODUCTS = [
     name: "Charger & Cable Starter Item",
     description: "Starter charger and cable product. Replace the photo, name, price, and details in Store Manager.",
     price: 7.99,
-    image: "Product images/product-placeholder.svg",
+    image: "Product images/product-placeholder.svg?slot=1",
     page: "product.html?id=charger-cable-starter",
     category: "Chargers & Cables",
     stock: 10,
     active: true,
     featured: true,
     gallery: [
-      "Product images/product-placeholder.svg"
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
     ]
   }
 ];
