@@ -306,6 +306,17 @@ async function startServer() {
       console.log(`✅ Seeded ${seedProducts.length} products`);
     } else {
       await backfillProductGalleries();
+      const seedProducts = readSeedProducts().map(product => ({
+        ...normalizeProduct(product),
+        createdAt: new Date().toISOString()
+      }));
+      for (const product of seedProducts) {
+        await productsCollection.updateOne(
+          { id: product.id },
+          { $setOnInsert: product },
+          { upsert: true }
+        );
+      }
       await productsCollection.updateOne(
         { id: "samsung-smart-remote" },
         {

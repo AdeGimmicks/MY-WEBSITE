@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900" role="img" aria-labelledby="title desc">
+  <title id="title">Product image placeholder</title>
+  <desc id="desc">A neutral ElectronicsOnly placeholder for products awaiting photos.</desc>
+  <rect width="900" height="900" fill="#f4f6fb"/>
+  <rect x="110" y="130" width="680" height="640" rx="32" fill="#ffffff" stroke="#d8deea" stroke-width="8"/>
+  <circle cx="450" cy="360" r="110" fill="#f9c80e"/>
+  <path d="M350 520h200l70 95H280l70-95Z" fill="#1a1a2e"/>
+  <text x="450" y="690" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="700" fill="#1a1a2e">ElectronicsOnly</text>
+</svg>

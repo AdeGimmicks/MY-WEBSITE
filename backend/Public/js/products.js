@@ -136,6 +136,36 @@ const DEFAULT_PRODUCTS = [
       "Product images/Philip TV remote/24.png",
       "Product images/Philip TV remote/25.png"
     ]
+  },
+  {
+    id: "phone-accessory-starter",
+    name: "Phone Accessory Starter Item",
+    description: "Starter phone accessory product. Replace the photo, name, price, and details in Store Manager.",
+    price: 9.99,
+    image: "Product images/product-placeholder.svg",
+    page: "product.html?id=phone-accessory-starter",
+    category: "Phone Accessories",
+    stock: 10,
+    active: true,
+    featured: true,
+    gallery: [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    id: "charger-cable-starter",
+    name: "Charger & Cable Starter Item",
+    description: "Starter charger and cable product. Replace the photo, name, price, and details in Store Manager.",
+    price: 7.99,
+    image: "Product images/product-placeholder.svg",
+    page: "product.html?id=charger-cable-starter",
+    category: "Chargers & Cables",
+    stock: 10,
+    active: true,
+    featured: true,
+    gallery: [
+      "Product images/product-placeholder.svg"
+    ]
   }
 ];
 
@@ -206,6 +236,7 @@ function renderProductCard(product) {
 document.addEventListener('DOMContentLoaded', async () => {
   const productList = document.querySelector('[data-product-list]');
   const categorySelect = document.querySelector('[data-product-category-filter]');
+  const selectedCategoryFromUrl = new URLSearchParams(window.location.search).get('category') || 'all';
   const productId = document.body.dataset.productId;
   const existingProductMarkup = productList ? productList.innerHTML : '';
 
@@ -238,10 +269,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       categorySelect.innerHTML = categoryOptions.map(category => `
         <option value="${category === 'All Products' ? 'all' : category}">${category}</option>
       `).join('');
+      categorySelect.value = selectedCategoryFromUrl;
     }
 
     function renderFilteredProducts() {
-      const selectedCategory = categorySelect ? categorySelect.value : 'all';
+      const selectedCategory = categorySelect ? categorySelect.value : selectedCategoryFromUrl;
       const visibleProducts = selectedCategory === 'all'
         ? activeProducts
         : activeProducts.filter(product => product.category === selectedCategory);
