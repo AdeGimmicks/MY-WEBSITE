@@ -1,16 +1,16 @@
 const DEFAULT_PRODUCTS = [
   {
-    id: "samsung-smart-remote",
-    name: "Samsung Smart TV Remote",
-    description: "Compatible with most Samsung smart TVs.",
-    price: 0.05,
-    image: "Product images/Samsung Remote Pix/14.png",
-    page: "samsung-remote.html",
-    category: "TV Remotes",
-    stock: 25,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "samsung-smart-remote",
+    "name": "Samsung Smart TV Remote",
+    "description": "Compatible with most Samsung smart TVs.",
+    "price": 0.05,
+    "image": "Product images/Samsung Remote Pix/14.png",
+    "page": "samsung-remote.html",
+    "category": "TV Remotes",
+    "stock": 25,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/Samsung Remote Pix/15.png",
       "Product images/Samsung Remote Pix/14.png",
       "Product images/Samsung Remote Pix/17.png",
@@ -19,17 +19,17 @@ const DEFAULT_PRODUCTS = [
     ]
   },
   {
-    id: "samsung-solar-remote",
-    name: "Samsung Solar TV Remote Replacement",
-    description: "BN59-01455A Solar Voice Remote Replacement.",
-    price: 18.99,
-    image: "Product images/Samsung Solar Remotes/1.png",
-    page: "samsungSolar-remote Replacement.html",
-    category: "TV Remotes",
-    stock: 20,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "samsung-solar-remote",
+    "name": "Samsung Solar TV Remote Replacement",
+    "description": "BN59-01455A Solar Voice Remote Replacement.",
+    "price": 18.99,
+    "image": "Product images/Samsung Solar Remotes/1.png",
+    "page": "samsungSolar-remote Replacement.html",
+    "category": "TV Remotes",
+    "stock": 20,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/Samsung Solar Remotes/1.png",
       "Product images/Samsung Solar Remotes/2.png",
       "Product images/Samsung Solar Remotes/3.jpg",
@@ -39,17 +39,17 @@ const DEFAULT_PRODUCTS = [
     ]
   },
   {
-    id: "roku-streaming-remote",
-    name: "Roku Streaming Remote",
-    description: "Works with all Roku streaming devices.",
-    price: 12.49,
-    image: "Product images/Roku Remote control/26.png",
-    page: "Roku-remote.html",
-    category: "TV Remotes",
-    stock: 20,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "roku-streaming-remote",
+    "name": "Roku Streaming Remote",
+    "description": "Works with all Roku streaming devices.",
+    "price": 12.49,
+    "image": "Product images/Roku Remote control/26.png",
+    "page": "Roku-remote.html",
+    "category": "TV Remotes",
+    "stock": 20,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/Roku Remote control/26.png",
       "Product images/Roku Remote control/27.png",
       "Product images/Roku Remote control/28.png",
@@ -59,17 +59,17 @@ const DEFAULT_PRODUCTS = [
     ]
   },
   {
-    id: "fire-tv-voice-remote",
-    name: "Fire TV Voice Remote",
-    description: "Alexa-enabled with voice control features.",
-    price: 18.99,
-    image: "Product images/Alexa Remote Pix/1.png",
-    page: "Alexatv-remote.html",
-    category: "TV Remotes",
-    stock: 18,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "fire-tv-voice-remote",
+    "name": "Fire TV Voice Remote",
+    "description": "Alexa-enabled with voice control features.",
+    "price": 18.99,
+    "image": "Product images/Alexa Remote Pix/1.png",
+    "page": "Alexatv-remote.html",
+    "category": "TV Remotes",
+    "stock": 18,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/Alexa Remote Pix/1.png",
       "Product images/Alexa Remote Pix/2.png",
       "Product images/Alexa Remote Pix/3.png",
@@ -79,17 +79,17 @@ const DEFAULT_PRODUCTS = [
     ]
   },
   {
-    id: "vizio-tv-remote",
-    name: "Vizio TV Replacement Remote",
-    description: "Ready to use out of the box, no setup required.",
-    price: 16.50,
-    image: "Product images/Visio TV Remote/8.png",
-    page: "vizio-remote.html",
-    category: "TV Remotes",
-    stock: 18,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "vizio-tv-remote",
+    "name": "Vizio TV Replacement Remote",
+    "description": "Ready to use out of the box, no setup required.",
+    "price": 16.5,
+    "image": "Product images/Visio TV Remote/8.png",
+    "page": "vizio-remote.html",
+    "category": "TV Remotes",
+    "stock": 18,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/Visio TV Remote/7.png",
       "Product images/Visio TV Remote/8.png",
       "Product images/Visio TV Remote/9.png",
@@ -99,17 +99,17 @@ const DEFAULT_PRODUCTS = [
     ]
   },
   {
-    id: "lg-magic-remote",
-    name: "LG Magic Remote",
-    description: "Smart pointer remote compatible with LG Smart TV.",
-    price: 16.50,
-    image: "Product images/LG Remotes Pix/1.png",
-    page: "lg tv-remote.html",
-    category: "TV Remotes",
-    stock: 20,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "lg-magic-remote",
+    "name": "LG Magic Remote",
+    "description": "Smart pointer remote compatible with LG Smart TV.",
+    "price": 16.5,
+    "image": "Product images/LG Remotes Pix/1.png",
+    "page": "lg tv-remote.html",
+    "category": "TV Remotes",
+    "stock": 20,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/LG Remotes Pix/1.png",
       "Product images/LG Remotes Pix/2.png",
       "Product images/LG Remotes Pix/3.png",
@@ -119,17 +119,17 @@ const DEFAULT_PRODUCTS = [
     ]
   },
   {
-    id: "philips-tv-remote",
-    name: "Philips TV Remote Replacement",
-    description: "Compatible with Philips Smart TV.",
-    price: 13.99,
-    image: "Product images/Philip TV remote/22.png",
-    page: "philips tv-remote.html",
-    category: "TV Remotes",
-    stock: 16,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "philips-tv-remote",
+    "name": "Philips TV Remote Replacement",
+    "description": "Compatible with Philips Smart TV.",
+    "price": 13.99,
+    "image": "Product images/Philip TV remote/22.png",
+    "page": "philips tv-remote.html",
+    "category": "TV Remotes",
+    "stock": 16,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/Philip TV remote/21.png",
       "Product images/Philip TV remote/22.png",
       "Product images/Philip TV remote/23.png",
@@ -138,17 +138,17 @@ const DEFAULT_PRODUCTS = [
     ]
   },
   {
-    id: "phone-accessory-starter",
-    name: "Phone Accessory Starter Item",
-    description: "Starter phone accessory product. Replace the photo, name, price, and details in Store Manager.",
-    price: 9.99,
-    image: "Product images/product-placeholder.svg?slot=1",
-    page: "product.html?id=phone-accessory-starter",
-    category: "Phone Accessories",
-    stock: 10,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "phone-accessory-starter",
+    "name": "Phone Accessory Starter Item 1",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/product-placeholder.svg?slot=1",
       "Product images/product-placeholder.svg?slot=2",
       "Product images/product-placeholder.svg?slot=3",
@@ -158,17 +158,557 @@ const DEFAULT_PRODUCTS = [
     ]
   },
   {
-    id: "charger-cable-starter",
-    name: "Charger & Cable Starter Item",
-    description: "Starter charger and cable product. Replace the photo, name, price, and details in Store Manager.",
-    price: 7.99,
-    image: "Product images/product-placeholder.svg?slot=1",
-    page: "product.html?id=charger-cable-starter",
-    category: "Chargers & Cables",
-    stock: 10,
-    active: true,
-    featured: true,
-    gallery: [
+    "id": "charger-cable-starter",
+    "name": "Charger & Cable Starter Item 1",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-1",
+    "name": "TV Remote Starter Item 1",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=tv-remote-starter-1",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-2",
+    "name": "TV Remote Starter Item 2",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=tv-remote-starter-2",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-3",
+    "name": "TV Remote Starter Item 3",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=tv-remote-starter-3",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-4",
+    "name": "TV Remote Starter Item 4",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=tv-remote-starter-4",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-5",
+    "name": "TV Remote Starter Item 5",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=tv-remote-starter-5",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-2",
+    "name": "Phone Accessory Starter Item 2",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-2",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-3",
+    "name": "Phone Accessory Starter Item 3",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-3",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-4",
+    "name": "Phone Accessory Starter Item 4",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-4",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-5",
+    "name": "Phone Accessory Starter Item 5",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-5",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-6",
+    "name": "Phone Accessory Starter Item 6",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-6",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-7",
+    "name": "Phone Accessory Starter Item 7",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-7",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-8",
+    "name": "Phone Accessory Starter Item 8",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-8",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-9",
+    "name": "Phone Accessory Starter Item 9",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-9",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-10",
+    "name": "Phone Accessory Starter Item 10",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-10",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-11",
+    "name": "Phone Accessory Starter Item 11",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-11",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-12",
+    "name": "Phone Accessory Starter Item 12",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=phone-accessory-starter-12",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-2",
+    "name": "Charger & Cable Starter Item 2",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-2",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-3",
+    "name": "Charger & Cable Starter Item 3",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-3",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-4",
+    "name": "Charger & Cable Starter Item 4",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-4",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-5",
+    "name": "Charger & Cable Starter Item 5",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-5",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-6",
+    "name": "Charger & Cable Starter Item 6",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-6",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-7",
+    "name": "Charger & Cable Starter Item 7",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-7",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-8",
+    "name": "Charger & Cable Starter Item 8",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-8",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-9",
+    "name": "Charger & Cable Starter Item 9",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-9",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-10",
+    "name": "Charger & Cable Starter Item 10",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-10",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-11",
+    "name": "Charger & Cable Starter Item 11",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-11",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg?slot=1",
+      "Product images/product-placeholder.svg?slot=2",
+      "Product images/product-placeholder.svg?slot=3",
+      "Product images/product-placeholder.svg?slot=4",
+      "Product images/product-placeholder.svg?slot=5",
+      "Product images/product-placeholder.svg?slot=6"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-12",
+    "name": "Charger & Cable Starter Item 12",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg?slot=1",
+    "page": "product.html?id=charger-cable-starter-12",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
       "Product images/product-placeholder.svg?slot=1",
       "Product images/product-placeholder.svg?slot=2",
       "Product images/product-placeholder.svg?slot=3",
@@ -188,21 +728,53 @@ function loadManagerPreviewProducts() {
   }
 }
 
+function normalizeCategory(category) {
+  const value = String(category || '').trim();
+  const lower = value.toLowerCase();
+
+  if (!value || lower === 'remote controls' || lower.includes('remote')) return 'TV Remotes';
+  if (lower.includes('phone')) return 'Phone Accessories';
+  if (lower.includes('charger') || lower.includes('cable')) return 'Chargers & Cables';
+  return value;
+}
+
+function normalizeProducts(products) {
+  const merged = new Map(DEFAULT_PRODUCTS.map(product => [
+    product.id,
+    { ...product, category: normalizeCategory(product.category) }
+  ]));
+
+  (Array.isArray(products) ? products : []).forEach(product => {
+    if (!product || !product.id) return;
+    const seed = merged.get(product.id) || {};
+    merged.set(product.id, {
+      ...seed,
+      ...product,
+      category: normalizeCategory(product.category || seed.category),
+      gallery: Array.isArray(product.gallery) && product.gallery.length
+        ? product.gallery
+        : seed.gallery
+    });
+  });
+
+  return Array.from(merged.values());
+}
+
 async function loadProducts() {
   try {
     const response = await fetch('/api/products');
     if (!response.ok) throw new Error('API unavailable');
-    return await response.json();
+    return normalizeProducts(await response.json());
   } catch (error) {
     const managerPreviewProducts = loadManagerPreviewProducts();
-    if (managerPreviewProducts) return managerPreviewProducts;
+    if (managerPreviewProducts) return normalizeProducts(managerPreviewProducts);
 
     try {
       const fallback = await fetch('data/products.json');
       if (!fallback.ok) throw new Error('Fallback unavailable');
-      return await fallback.json();
+      return normalizeProducts(await fallback.json());
     } catch (fallbackError) {
-      return DEFAULT_PRODUCTS;
+      return normalizeProducts(DEFAULT_PRODUCTS);
     }
   }
 }
@@ -309,11 +881,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (categorySelect) categorySelect.addEventListener('change', renderFilteredProducts);
     renderFilteredProducts();
   } catch (error) {
-    if (productList && existingProductMarkup.trim()) {
-      productList.innerHTML = existingProductMarkup;
-    } else if (productList) {
-      productList.innerHTML = '<p>Products could not be loaded right now.</p>';
-    }
+    productLists.forEach(productList => {
+      if (existingProductMarkup.trim()) {
+        productList.innerHTML = existingProductMarkup;
+      } else {
+        productList.innerHTML = '<p>Products could not be loaded right now.</p>';
+      }
+    });
     console.error('Product loading error:', error);
   }
 });
