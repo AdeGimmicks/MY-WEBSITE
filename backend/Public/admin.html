@@ -569,7 +569,7 @@
         price: 0.05,
         image: "Product images/Samsung Remote Pix/14.png",
         page: "samsung-remote.html",
-        category: "Samsung",
+        category: "TV Remotes",
         stock: 25,
         active: true,
         featured: true
@@ -581,7 +581,7 @@
         price: 18.99,
         image: "Product images/Samsung Solar Remotes/1.png",
         page: "samsungSolar-remote Replacement.html",
-        category: "Samsung",
+        category: "TV Remotes",
         stock: 20,
         active: true,
         featured: true
@@ -593,7 +593,7 @@
         price: 12.49,
         image: "Product images/Roku Remote control/26.png",
         page: "Roku-remote.html",
-        category: "Roku",
+        category: "TV Remotes",
         stock: 20,
         active: true,
         featured: true
@@ -605,7 +605,7 @@
         price: 18.99,
         image: "Product images/Alexa Remote Pix/1.png",
         page: "Alexatv-remote.html",
-        category: "Amazon Fire TV",
+        category: "TV Remotes",
         stock: 18,
         active: true,
         featured: true
@@ -617,7 +617,7 @@
         price: 16.50,
         image: "Product images/Visio TV Remote/8.png",
         page: "vizio-remote.html",
-        category: "Vizio",
+        category: "TV Remotes",
         stock: 18,
         active: true,
         featured: true
@@ -629,7 +629,7 @@
         price: 16.50,
         image: "Product images/LG Remotes Pix/1.png",
         page: "lg tv-remote.html",
-        category: "LG",
+        category: "TV Remotes",
         stock: 20,
         active: true,
         featured: true
@@ -641,7 +641,7 @@
         price: 13.99,
         image: "Product images/Philip TV remote/22.png",
         page: "philips tv-remote.html",
-        category: "Philips",
+        category: "TV Remotes",
         stock: 16,
         active: true,
         featured: true
@@ -798,7 +798,7 @@
     }
 
     function updateCategories() {
-      const categories = Array.from(new Set([...products.map(product => product.category).filter(Boolean), "Samsung", "Roku", "Amazon Fire TV", "LG", "Philips", "Vizio"])).sort();
+      const categories = Array.from(new Set(["TV Remotes", "Phone Accessories", "Chargers & Cables", ...products.map(product => product.category).filter(Boolean)])).sort();
       els.managerCategory.innerHTML = categories.map(category => `<option value="${category}">${category}</option>`).join("");
     }
 
@@ -841,7 +841,7 @@
       selectedProductId = product.id;
       els.managerSelectedName.textContent = product.name || "Selected product";
       els.managerName.value = product.name || "";
-      els.managerCategory.value = product.category || "Remote Controls";
+      els.managerCategory.value = product.category || "TV Remotes";
       els.managerPrice.value = Number(product.price || 0).toFixed(2);
       els.managerStock.value = Number(product.stock || 0);
       els.managerPage.value = product.page || "";

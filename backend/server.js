@@ -315,6 +315,27 @@ async function startServer() {
           }
         }
       );
+      await productsCollection.updateMany(
+        {
+          id: {
+            $in: [
+              "samsung-smart-remote",
+              "samsung-solar-remote",
+              "roku-streaming-remote",
+              "fire-tv-voice-remote",
+              "vizio-tv-remote",
+              "lg-magic-remote",
+              "philips-tv-remote"
+            ]
+          }
+        },
+        {
+          $set: {
+            category: "TV Remotes",
+            updatedAt: new Date().toISOString()
+          }
+        }
+      );
       console.log("✅ Product galleries checked");
     }
 

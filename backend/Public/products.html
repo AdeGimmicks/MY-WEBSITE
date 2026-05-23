@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Remote Control Products | Electroniconly</title>
+  <title>Electronics & Accessories | Electroniconly</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="Product images/Favicon image/favicon.png" type="image/png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -16,8 +16,8 @@
       <h1 class="logo">ElectronicsOnly.com</h1>
       <nav>
         <ul>
-          <li><a href="index.html" class="active">Home</a></li>
-          <li><a href="products.html">Products</a></li>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html" class="active">Products</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
             <li>
@@ -33,13 +33,23 @@
 
   <section class="hero">
     <div class="container">
-      <h2>Shop Remote Controls</h2>
-      <p>Explore our best-selling TV and device remote replacements below. Free Shipping on all order.</p>
+      <h2>Shop Electronics & Accessories</h2>
+      <p>Browse TV remotes, phone accessories, chargers, and cables. Free shipping on all orders.</p>
     </div>
   </section>
 
 <section class="highlights">
   <div class="container">
+    <div class="product-filter-bar">
+      <label for="productCategoryFilter">Shop by category</label>
+      <select id="productCategoryFilter" data-product-category-filter>
+        <option value="all">All Products</option>
+        <option value="TV Remotes">TV Remotes</option>
+        <option value="Phone Accessories">Phone Accessories</option>
+        <option value="Chargers & Cables">Chargers & Cables</option>
+      </select>
+    </div>
+
     <div class="products" data-product-list="all">
 
       <!-- Samsung -->

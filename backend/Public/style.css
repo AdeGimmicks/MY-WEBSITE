@@ -128,6 +128,37 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
 }
+
+.product-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.product-filter-bar label {
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.product-filter-bar select {
+  min-width: 220px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 1rem;
+}
+
+.empty-products {
+  grid-column: 1 / -1;
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  text-align: center;
+  color: #555;
+}
   
 .product-card {
   background: #fafafa;

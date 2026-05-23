@@ -6,7 +6,7 @@ const DEFAULT_PRODUCTS = [
     price: 0.05,
     image: "Product images/Samsung Remote Pix/14.png",
     page: "samsung-remote.html",
-    category: "Samsung",
+    category: "TV Remotes",
     stock: 25,
     active: true,
     featured: true,
@@ -25,7 +25,7 @@ const DEFAULT_PRODUCTS = [
     price: 18.99,
     image: "Product images/Samsung Solar Remotes/1.png",
     page: "samsungSolar-remote Replacement.html",
-    category: "Samsung",
+    category: "TV Remotes",
     stock: 20,
     active: true,
     featured: true,
@@ -45,7 +45,7 @@ const DEFAULT_PRODUCTS = [
     price: 12.49,
     image: "Product images/Roku Remote control/26.png",
     page: "Roku-remote.html",
-    category: "Roku",
+    category: "TV Remotes",
     stock: 20,
     active: true,
     featured: true,
@@ -65,7 +65,7 @@ const DEFAULT_PRODUCTS = [
     price: 18.99,
     image: "Product images/Alexa Remote Pix/1.png",
     page: "Alexatv-remote.html",
-    category: "Amazon Fire TV",
+    category: "TV Remotes",
     stock: 18,
     active: true,
     featured: true,
@@ -85,7 +85,7 @@ const DEFAULT_PRODUCTS = [
     price: 16.50,
     image: "Product images/Visio TV Remote/8.png",
     page: "vizio-remote.html",
-    category: "Vizio",
+    category: "TV Remotes",
     stock: 18,
     active: true,
     featured: true,
@@ -105,7 +105,7 @@ const DEFAULT_PRODUCTS = [
     price: 16.50,
     image: "Product images/LG Remotes Pix/1.png",
     page: "lg tv-remote.html",
-    category: "LG",
+    category: "TV Remotes",
     stock: 20,
     active: true,
     featured: true,
@@ -125,7 +125,7 @@ const DEFAULT_PRODUCTS = [
     price: 13.99,
     image: "Product images/Philip TV remote/22.png",
     page: "philips tv-remote.html",
-    category: "Philips",
+    category: "TV Remotes",
     stock: 16,
     active: true,
     featured: true,
@@ -205,6 +205,7 @@ function renderProductCard(product) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const productList = document.querySelector('[data-product-list]');
+  const categorySelect = document.querySelector('[data-product-category-filter]');
   const productId = document.body.dataset.productId;
   const existingProductMarkup = productList ? productList.innerHTML : '';
 
@@ -221,22 +222,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!productList) return;
 
     const mode = productList.dataset.productList;
-    const visibleProducts = products
+    const activeProducts = products
       .filter(product => product.active !== false)
       .filter(product => mode !== 'featured' || product.featured !== false);
 
-    if (visibleProducts.length === 0) {
+    if (activeProducts.length === 0) {
       if (!existingProductMarkup.trim()) {
         productList.innerHTML = '<p>No products are available right now.</p>';
       }
       return;
     }
 
-    productList.innerHTML = visibleProducts.map(renderProductCard).join('');
-
-    if (typeof bindCartButtons === 'function') {
-      bindCartButtons();
+    const categoryOptions = ['All Products', 'TV Remotes', 'Phone Accessories', 'Chargers & Cables'];
+    if (categorySelect) {
+      categorySelect.innerHTML = categoryOptions.map(category => `
+        <option value="${category === 'All Products' ? 'all' : category}">${category}</option>
+      `).join('');
     }
+
+    function renderFilteredProducts() {
+      const selectedCategory = categorySelect ? categorySelect.value : 'all';
+      const visibleProducts = selectedCategory === 'all'
+        ? activeProducts
+        : activeProducts.filter(product => product.category === selectedCategory);
+
+      productList.innerHTML = visibleProducts.length
+        ? visibleProducts.map(renderProductCard).join('')
+        : '<p class="empty-products">No products are available in this category yet.</p>';
+
+      if (typeof bindCartButtons === 'function') {
+        bindCartButtons();
+      }
+    }
+
+    if (categorySelect) categorySelect.addEventListener('change', renderFilteredProducts);
+    renderFilteredProducts();
   } catch (error) {
     if (productList && existingProductMarkup.trim()) {
       productList.innerHTML = existingProductMarkup;
