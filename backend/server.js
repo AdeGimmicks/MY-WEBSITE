@@ -323,6 +323,7 @@ async function startServer() {
       }
       const tclRemoteProduct = seedProducts.find(product => product.id === "tv-remote-starter-1");
       if (tclRemoteProduct) {
+        const { galleryUpdatedAt, ...tclRemoteUpdate } = tclRemoteProduct;
         await productsCollection.updateOne(
           {
             id: "tv-remote-starter-1",
@@ -333,11 +334,8 @@ async function startServer() {
           },
           {
             $set: {
-              ...tclRemoteProduct,
+              ...tclRemoteUpdate,
               updatedAt: new Date().toISOString()
-            },
-            $unset: {
-              galleryUpdatedAt: ""
             }
           }
         );
