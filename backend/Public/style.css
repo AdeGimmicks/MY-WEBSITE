@@ -194,7 +194,9 @@ body {
 
   .product-card img {
     width: 100%;
-    height: auto;
+    height: 220px;
+    object-fit: contain;
+    background: #fff;
     margin-bottom: 15px;
     border-radius: 6px;
   }

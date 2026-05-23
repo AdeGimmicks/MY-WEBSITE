@@ -180,7 +180,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "tv-remote-starter-1",
     "name": "TCL TV Remote Replacement",
-    "description": "Replacement remote for TCL Roku TVs and compatible TCL smart TV models. Easy to use with quick access buttons for everyday streaming.",
+    "description": "Replacement remote for TCL Roku TVs and compatible TCL smart TVs.",
     "price": 10,
     "image": "Product images/TCL Remote Replacements/61LBXnyGryL._AC_SL1500_.jpg",
     "page": "TCL-remote.html",
@@ -774,7 +774,7 @@ async function loadProducts() {
     if (managerPreviewProducts) return normalizeProducts(managerPreviewProducts);
 
     try {
-      const fallback = await fetch('data/products.json');
+      const fallback = await fetch('data/products.json', { cache: 'no-store' });
       if (!fallback.ok) throw new Error('Fallback unavailable');
       return normalizeProducts(await fallback.json());
     } catch (fallbackError) {

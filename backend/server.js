@@ -330,7 +330,9 @@ async function startServer() {
             $or: [
               { name: /^TV Remote Starter Item/ },
               { image: /product-placeholder/ },
-              { page: { $ne: "TCL-remote.html" } }
+              { page: { $ne: tclRemoteProduct.page } },
+              { image: { $ne: tclRemoteProduct.image } },
+              { description: { $ne: tclRemoteProduct.description } }
             ]
           },
           {
