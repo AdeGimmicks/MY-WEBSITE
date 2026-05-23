@@ -82,7 +82,7 @@
     "id": "vizio-tv-remote",
     "name": "Vizio TV Replacement Remote",
     "description": "Ready to use out of the box, no setup required.",
-    "price": 16.50,
+    "price": 16.5,
     "image": "Product images/Visio TV Remote/8.png",
     "page": "vizio-remote.html",
     "category": "TV Remotes",
@@ -102,7 +102,7 @@
     "id": "lg-magic-remote",
     "name": "LG Magic Remote",
     "description": "Smart pointer remote compatible with LG Smart TV.",
-    "price": 16.50,
+    "price": 16.5,
     "image": "Product images/LG Remotes Pix/1.png",
     "page": "lg tv-remote.html",
     "category": "TV Remotes",
@@ -139,8 +139,8 @@
   },
   {
     "id": "phone-accessory-starter",
-    "name": "Phone Accessory Starter Item",
-    "description": "Starter phone accessory product. Replace the photo, name, price, and details in Store Manager.",
+    "name": "Phone Accessory Starter Item 1",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
     "price": 9.99,
     "image": "Product images/product-placeholder.svg",
     "page": "product.html?id=phone-accessory-starter",
@@ -154,11 +154,416 @@
   },
   {
     "id": "charger-cable-starter",
-    "name": "Charger & Cable Starter Item",
-    "description": "Starter charger and cable product. Replace the photo, name, price, and details in Store Manager.",
+    "name": "Charger & Cable Starter Item 1",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
     "price": 7.99,
     "image": "Product images/product-placeholder.svg",
     "page": "product.html?id=charger-cable-starter",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-1",
+    "name": "TV Remote Starter Item 1",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=tv-remote-starter-1",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-2",
+    "name": "TV Remote Starter Item 2",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=tv-remote-starter-2",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-3",
+    "name": "TV Remote Starter Item 3",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=tv-remote-starter-3",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-4",
+    "name": "TV Remote Starter Item 4",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=tv-remote-starter-4",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "tv-remote-starter-5",
+    "name": "TV Remote Starter Item 5",
+    "description": "Starter tv remotes product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 14.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=tv-remote-starter-5",
+    "category": "TV Remotes",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-2",
+    "name": "Phone Accessory Starter Item 2",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-2",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-3",
+    "name": "Phone Accessory Starter Item 3",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-3",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-4",
+    "name": "Phone Accessory Starter Item 4",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-4",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-5",
+    "name": "Phone Accessory Starter Item 5",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-5",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-6",
+    "name": "Phone Accessory Starter Item 6",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-6",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-7",
+    "name": "Phone Accessory Starter Item 7",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-7",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-8",
+    "name": "Phone Accessory Starter Item 8",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-8",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-9",
+    "name": "Phone Accessory Starter Item 9",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-9",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-10",
+    "name": "Phone Accessory Starter Item 10",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-10",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-11",
+    "name": "Phone Accessory Starter Item 11",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-11",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "phone-accessory-starter-12",
+    "name": "Phone Accessory Starter Item 12",
+    "description": "Starter phone accessories product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 9.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=phone-accessory-starter-12",
+    "category": "Phone Accessories",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-2",
+    "name": "Charger & Cable Starter Item 2",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-2",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-3",
+    "name": "Charger & Cable Starter Item 3",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-3",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-4",
+    "name": "Charger & Cable Starter Item 4",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-4",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-5",
+    "name": "Charger & Cable Starter Item 5",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-5",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-6",
+    "name": "Charger & Cable Starter Item 6",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-6",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-7",
+    "name": "Charger & Cable Starter Item 7",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-7",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-8",
+    "name": "Charger & Cable Starter Item 8",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-8",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-9",
+    "name": "Charger & Cable Starter Item 9",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-9",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-10",
+    "name": "Charger & Cable Starter Item 10",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-10",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-11",
+    "name": "Charger & Cable Starter Item 11",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-11",
+    "category": "Chargers & Cables",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/product-placeholder.svg"
+    ]
+  },
+  {
+    "id": "charger-cable-starter-12",
+    "name": "Charger & Cable Starter Item 12",
+    "description": "Starter chargers & cables product. Replace the photo, name, price, and details in Store Manager.",
+    "price": 7.99,
+    "image": "Product images/product-placeholder.svg",
+    "page": "product.html?id=charger-cable-starter-12",
     "category": "Chargers & Cables",
     "stock": 10,
     "active": true,

@@ -234,13 +234,13 @@ function renderProductCard(product) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const productList = document.querySelector('[data-product-list]');
+  const productLists = Array.from(document.querySelectorAll('[data-product-list]'));
   const categorySelect = document.querySelector('[data-product-category-filter]');
   const selectedCategoryFromUrl = new URLSearchParams(window.location.search).get('category') || 'all';
   const productId = document.body.dataset.productId;
-  const existingProductMarkup = productList ? productList.innerHTML : '';
+  const existingProductMarkup = productLists[0] ? productLists[0].innerHTML : '';
 
-  if (!productList && !productId) return;
+  if (!productLists.length && !productId) return;
 
   try {
     const products = await loadProducts();
@@ -250,17 +250,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (product) updateProductDetail(product);
     }
 
-    if (!productList) return;
+    if (!productLists.length) return;
 
-    const mode = productList.dataset.productList;
-    const activeProducts = products
-      .filter(product => product.active !== false)
-      .filter(product => mode !== 'featured' || product.featured !== false);
+    const activeProducts = products.filter(product => product.active !== false);
 
     if (activeProducts.length === 0) {
-      if (!existingProductMarkup.trim()) {
-        productList.innerHTML = '<p>No products are available right now.</p>';
-      }
+      productLists.forEach(productList => {
+        if (!productList.innerHTML.trim()) {
+          productList.innerHTML = '<p>No products are available right now.</p>';
+        }
+      });
       return;
     }
 
@@ -272,15 +271,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       categorySelect.value = selectedCategoryFromUrl;
     }
 
-    function renderFilteredProducts() {
+    function renderList(productList) {
+      const mode = productList.dataset.productList;
+      const listCategory = productList.dataset.productCategory;
+      const limit = Number(productList.dataset.productLimit || 0);
       const selectedCategory = categorySelect ? categorySelect.value : selectedCategoryFromUrl;
-      const visibleProducts = selectedCategory === 'all'
-        ? activeProducts
-        : activeProducts.filter(product => product.category === selectedCategory);
+      const category = listCategory || (selectedCategory === 'all' ? '' : selectedCategory);
+      let visibleProducts = activeProducts
+        .filter(product => mode !== 'featured' || product.featured !== false)
+        .filter(product => !category || product.category === category);
+
+      if (limit > 0) visibleProducts = visibleProducts.slice(0, limit);
 
       productList.innerHTML = visibleProducts.length
         ? visibleProducts.map(renderProductCard).join('')
         : '<p class="empty-products">No products are available in this category yet.</p>';
+    }
+
+    function renderFilteredProducts() {
+      productLists.forEach(renderList);
 
       if (typeof bindCartButtons === 'function') {
         bindCartButtons();

@@ -158,10 +158,20 @@ body {
     background: #fff;
   }
   
-.products {
+  .products {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
+}
+
+.home-product-section {
+  margin-bottom: 48px;
+}
+
+.home-product-section h3 {
+  font-size: 1.7rem;
+  color: #1a1a2e;
+  margin: 0 0 18px;
 }
 
 .empty-products {
