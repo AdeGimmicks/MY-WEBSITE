@@ -329,7 +329,8 @@ async function startServer() {
             id: "tv-remote-starter-1",
             $or: [
               { name: /^TV Remote Starter Item/ },
-              { image: /product-placeholder/ }
+              { image: /product-placeholder/ },
+              { page: { $ne: "TCL-remote.html" } }
             ]
           },
           {

@@ -182,15 +182,15 @@ const DEFAULT_PRODUCTS = [
     "name": "TCL TV Remote Replacement",
     "description": "Replacement remote for TCL Roku TVs and compatible TCL smart TV models. Easy to use with quick access buttons for everyday streaming.",
     "price": 10,
-    "image": "Product images/TCL Remote Replacements/81sDAEnRQ3L._AC_SL1500_.jpg",
-    "page": "product.html?id=tv-remote-starter-1",
+    "image": "Product images/TCL Remote Replacements/61LBXnyGryL._AC_SL1500_.jpg",
+    "page": "TCL-remote.html",
     "category": "TV Remotes",
     "stock": 20,
     "active": true,
     "featured": true,
     "gallery": [
-      "Product images/TCL Remote Replacements/81sDAEnRQ3L._AC_SL1500_.jpg",
       "Product images/TCL Remote Replacements/61LBXnyGryL._AC_SL1500_.jpg",
+      "Product images/TCL Remote Replacements/81sDAEnRQ3L._AC_SL1500_.jpg",
       "Product images/TCL Remote Replacements/61aqHxexsWL._AC_SL1500_.jpg",
       "Product images/TCL Remote Replacements/51ye1Eqak2L._AC_SL1500_.jpg",
       "Product images/TCL Remote Replacements/71KYtV6lgCL._AC_SL1500_.jpg"
