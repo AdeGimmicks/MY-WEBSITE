@@ -502,10 +502,22 @@ app.get('/api/admin/products', requireAdmin, async (req, res) => {
   try {
     const products = await productsCollection
       .find()
-      .sort({ name: 1 })
+      .sort({ category: 1, name: 1 })
       .toArray();
 
-    res.json(products.map(hydrateProductGallery));
+    const categoryOrder = ["TV Remotes", "Phone Accessories", "Chargers & Cables"];
+    const orderedProducts = products
+      .map(hydrateProductGallery)
+      .sort((first, second) => {
+        const firstRank = categoryOrder.indexOf(first.category);
+        const secondRank = categoryOrder.indexOf(second.category);
+        const categoryDifference = (firstRank === -1 ? categoryOrder.length : firstRank)
+          - (secondRank === -1 ? categoryOrder.length : secondRank);
+        if (categoryDifference !== 0) return categoryDifference;
+        return String(first.name || "").localeCompare(String(second.name || ""));
+      });
+
+    res.json(orderedProducts);
   } catch (err) {
     console.error("❌ Failed to fetch admin products:", err);
     res.status(500).send({

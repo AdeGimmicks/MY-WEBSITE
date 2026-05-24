@@ -845,17 +845,32 @@
       els.managerCategory.innerHTML = categories.map(category => `<option value="${category}">${category}</option>`).join("");
     }
 
+    function productCategoryRank(product) {
+      const order = ["TV Remotes", "Phone Accessories", "Chargers & Cables"];
+      const rank = order.indexOf(product.category);
+      return rank === -1 ? order.length : rank;
+    }
+
+    function sortManagerProducts(productList) {
+      return [...productList].sort((first, second) => {
+        const categoryDifference = productCategoryRank(first) - productCategoryRank(second);
+        if (categoryDifference !== 0) return categoryDifference;
+        return String(first.name || "").localeCompare(String(second.name || ""));
+      });
+    }
+
     function renderProductDropdown() {
       const current = selectedProductId;
-      els.managerProductSelect.innerHTML = '<option value="">Choose product from website</option>' + (products.length ? products.map(product => `
+      const orderedProducts = sortManagerProducts(products);
+      els.managerProductSelect.innerHTML = '<option value="">Choose product from website</option>' + (orderedProducts.length ? orderedProducts.map(product => `
         <option value="${product.id}">${product.name}</option>
       `).join("") : '<option value="" disabled>No products found</option>');
-      els.managerProductSelect.value = current || products[0]?.id || "";
+      els.managerProductSelect.value = current || orderedProducts[0]?.id || "";
     }
 
     function renderProductList() {
       const query = els.managerSearch.value.trim().toLowerCase();
-      const visible = products.filter(product => {
+      const visible = sortManagerProducts(products).filter(product => {
         return !query || [product.name, product.category, product.description].join(" ").toLowerCase().includes(query);
       });
 
