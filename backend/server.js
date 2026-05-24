@@ -337,10 +337,7 @@ async function startServer() {
             id: starterId,
             $or: [
               { name: /^TV Remote Starter Item/ },
-              { image: /product-placeholder/ },
-              { page: { $ne: starterProduct.page } },
-              { image: { $ne: starterProduct.image } },
-              { description: { $ne: starterProduct.description } }
+              { image: /product-placeholder/ }
             ]
           },
           {
@@ -351,44 +348,22 @@ async function startServer() {
           }
         );
       }
-      await productsCollection.updateOne(
-        { id: "samsung-smart-remote" },
-        {
-          $set: {
-            price: 0.05,
-            updatedAt: new Date().toISOString()
-          }
-        }
-      );
-      await productsCollection.updateMany(
-        {
-          id: {
-            $in: [
-              "samsung-smart-remote",
-              "samsung-solar-remote",
-              "roku-streaming-remote",
-              "fire-tv-voice-remote",
-              "vizio-tv-remote",
-              "lg-magic-remote",
-              "philips-tv-remote"
-            ]
-          }
-        },
-        {
-          $set: {
-            category: "TV Remotes",
-            updatedAt: new Date().toISOString()
-          }
-        }
-      );
       const starterGallery = starterPlaceholderGallery();
       await productsCollection.updateMany(
         {
           id: { $regex: "starter" },
           $or: [
-            { gallery: { $exists: false } },
-            { gallery: { $size: 0 } },
-            { gallery: { $size: 1 } }
+            { name: /Starter Item/ },
+            { image: /product-placeholder/ }
+          ],
+          $and: [
+            {
+              $or: [
+                { gallery: { $exists: false } },
+                { gallery: { $size: 0 } },
+                { gallery: { $size: 1 } }
+              ]
+            }
           ]
         },
         {
