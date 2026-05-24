@@ -804,6 +804,9 @@
       try {
         data = text ? JSON.parse(text) : {};
       } catch {
+        if (response.status === 413) {
+          throw new Error("The uploaded photos are too large. The manager will resize them before saving.");
+        }
         throw new Error("This page needs the live Render server to save. Static file preview can only show the manager.");
       }
       if (!response.ok) throw new Error(data.message || "Request failed");
@@ -1080,20 +1083,54 @@
       reader.readAsText(file);
     }
 
+    function canvasToDataUrl(canvas, quality) {
+      return canvas.toDataURL("image/jpeg", quality);
+    }
+
+    function resizeUploadedImage(file) {
+      return new Promise((resolve, reject) => {
+        if (!file.type.startsWith("image/")) {
+          reject(new Error("Please choose image files only."));
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const image = new Image();
+          image.onload = () => {
+            const maxSide = 1200;
+            const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(image.width * scale));
+            canvas.height = Math.max(1, Math.round(image.height * scale));
+            const context = canvas.getContext("2d");
+            context.fillStyle = "#fff";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+            let quality = 0.86;
+            let dataUrl = canvasToDataUrl(canvas, quality);
+            while (dataUrl.length > 900000 && quality > 0.5) {
+              quality -= 0.08;
+              dataUrl = canvasToDataUrl(canvas, quality);
+            }
+            resolve(dataUrl);
+          };
+          image.onerror = () => reject(new Error("That image could not be loaded."));
+          image.src = reader.result;
+        };
+        reader.onerror = () => reject(new Error("That image could not be read."));
+        reader.readAsDataURL(file);
+      });
+    }
+
     function uploadImages(event) {
       const files = Array.from(event.target.files || []).slice(0, 6);
       if (!files.length) return;
       const product = currentProduct();
       if (!product && !isNewProduct) return;
 
-      Promise.all(files.map(file => new Promise((resolve, reject) => {
-        if (!file.type.startsWith("image/")) return reject(new Error("Please choose image files only."));
-        if (file.size > 6 * 1024 * 1024) return reject(new Error("Please use images under 6 MB."));
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      }))).then(images => {
+      Promise.all(files.map(resizeUploadedImage)).then(images => {
         const gallery = [...images, ...productGallery(product)].slice(0, 6);
         if (isNewProduct) {
           draftGallery = gallery;
