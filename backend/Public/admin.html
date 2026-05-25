@@ -645,46 +645,6 @@
         stock: 16,
         active: true,
         featured: true
-      },
-      {
-        id: "phone-accessory-starter",
-        name: "Phone Accessory Starter Item",
-        description: "Starter phone accessory product. Replace the photo, name, price, and details in Store Manager.",
-        price: 9.99,
-        image: "Product images/product-placeholder.svg?slot=1",
-        page: "product.html?id=phone-accessory-starter",
-        category: "Phone Accessories",
-        stock: 10,
-        active: true,
-        featured: true,
-        gallery: [
-          "Product images/product-placeholder.svg?slot=1",
-          "Product images/product-placeholder.svg?slot=2",
-          "Product images/product-placeholder.svg?slot=3",
-          "Product images/product-placeholder.svg?slot=4",
-          "Product images/product-placeholder.svg?slot=5",
-          "Product images/product-placeholder.svg?slot=6"
-        ]
-      },
-      {
-        id: "charger-cable-starter",
-        name: "Charger & Cable Starter Item",
-        description: "Starter charger and cable product. Replace the photo, name, price, and details in Store Manager.",
-        price: 7.99,
-        image: "Product images/product-placeholder.svg?slot=1",
-        page: "product.html?id=charger-cable-starter",
-        category: "Chargers & Cables",
-        stock: 10,
-        active: true,
-        featured: true,
-        gallery: [
-          "Product images/product-placeholder.svg?slot=1",
-          "Product images/product-placeholder.svg?slot=2",
-          "Product images/product-placeholder.svg?slot=3",
-          "Product images/product-placeholder.svg?slot=4",
-          "Product images/product-placeholder.svg?slot=5",
-          "Product images/product-placeholder.svg?slot=6"
-        ]
       }
     ];
 
@@ -841,12 +801,12 @@
     }
 
     function updateCategories() {
-      const categories = Array.from(new Set(["TV Remotes", "Phone Accessories", "Chargers & Cables", ...products.map(product => product.category).filter(Boolean)])).sort();
+      const categories = ["TV Remotes"];
       els.managerCategory.innerHTML = categories.map(category => `<option value="${category}">${category}</option>`).join("");
     }
 
     function productCategoryRank(product) {
-      const order = ["TV Remotes", "Phone Accessories", "Chargers & Cables"];
+      const order = ["TV Remotes"];
       const rank = order.indexOf(product.category);
       return rank === -1 ? order.length : rank;
     }
@@ -861,7 +821,7 @@
 
     function renderProductDropdown() {
       const current = selectedProductId;
-      const orderedProducts = sortManagerProducts(products);
+      const orderedProducts = sortManagerProducts(products.filter(product => product.category === "TV Remotes"));
       els.managerProductSelect.innerHTML = '<option value="">Choose product from website</option>' + (orderedProducts.length ? orderedProducts.map(product => `
         <option value="${product.id}">${product.name}</option>
       `).join("") : '<option value="" disabled>No products found</option>');
@@ -871,6 +831,7 @@
     function renderProductList() {
       const query = els.managerSearch.value.trim().toLowerCase();
       const visible = sortManagerProducts(products).filter(product => {
+        if (product.category !== "TV Remotes") return false;
         return !query || [product.name, product.category, product.description].join(" ").toLowerCase().includes(query);
       });
 

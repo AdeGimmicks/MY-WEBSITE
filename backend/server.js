@@ -375,6 +375,18 @@ async function startServer() {
           }
         }
       );
+      await productsCollection.updateMany(
+        {
+          category: { $ne: "TV Remotes" }
+        },
+        {
+          $set: {
+            active: false,
+            featured: false,
+            updatedAt: new Date().toISOString()
+          }
+        }
+      );
       console.log("✅ Product galleries checked");
     }
 
@@ -476,11 +488,14 @@ app.get('/api/products/:id', async (req, res) => {
 app.get('/api/admin/products', requireAdmin, async (req, res) => {
   try {
     const products = await productsCollection
-      .find()
+      .find({
+        category: "TV Remotes",
+        active: { $ne: false }
+      })
       .sort({ category: 1, name: 1 })
       .toArray();
 
-    const categoryOrder = ["TV Remotes", "Phone Accessories", "Chargers & Cables"];
+    const categoryOrder = ["TV Remotes"];
     const orderedProducts = products
       .map(hydrateProductGallery)
       .sort((first, second) => {
@@ -599,8 +614,14 @@ app.get('/api/admin/stats', requireAdmin, async (req, res) => {
   try {
     const [orders, productCount, activeProductCount] = await Promise.all([
       ordersCollection.find().toArray(),
-      productsCollection.countDocuments(),
-      productsCollection.countDocuments({ active: { $ne: false } })
+      productsCollection.countDocuments({
+        category: "TV Remotes",
+        active: { $ne: false }
+      }),
+      productsCollection.countDocuments({
+        category: "TV Remotes",
+        active: { $ne: false }
+      })
     ]);
 
     const totalRevenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
