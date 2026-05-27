@@ -280,6 +280,14 @@ function orderMailOptions(orderData) {
 
       <p><strong>Shipping Address:</strong> ${orderData.customer.address}</p>
 
+      <p><strong>Subtotal:</strong> $${orderData.subtotal || "0.00"}</p>
+
+      <p><strong>Shipping:</strong> $${orderData.shipping || "0.00"}</p>
+
+      <p><strong>Tax:</strong> $${orderData.tax || "0.00"}</p>
+
+      <p><strong>Processing Fee:</strong> $${orderData.processingFee || "0.00"}</p>
+
       <p><strong>Total Paid:</strong> $${orderData.total}</p>
 
       <p><strong>Order Time:</strong>

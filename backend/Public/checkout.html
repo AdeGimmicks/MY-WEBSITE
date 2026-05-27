@@ -9,13 +9,22 @@
   <script src="https://js.stripe.com/v3/"></script>
   
   <style>
+    .shipping-options {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+    }
     .shipping-options label {
-      display: block;
-      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0;
       font-weight: 500;
+      line-height: 1.25;
     }
     .shipping-options input[type="radio"] {
-      margin-right: 8px;
+      flex: 0 0 auto;
+      margin: 0;
     }
     #shipping-cost {
       font-weight: bold;
@@ -49,6 +58,7 @@
           <p><strong>Subtotal:</strong> $<span id="subtotal">0.00</span></p>
           <p><strong>Shipping:</strong> $<span id="shipping-amount">0.00</span></p>
           <p><strong>Tax:</strong> $<span id="tax">0.00</span></p>
+          <p><strong>Processing Fee:</strong> $<span id="processing-fee">1.47</span></p>
           <p><strong>Total:</strong> $<span id="cart-total">0.00</span></p>
           <p><strong>Final Total:</strong> $<span id="final-total">0.00</span></p>
         </div>
@@ -67,10 +77,9 @@
 
         <h3>Shipping Options</h3>
         <div class="shipping-options">
-          <label><input type="radio" name="shipping" value="5.00" /> Standard (5–7 days) — $5.00</label>
+          <label><input type="radio" name="shipping" value="0" checked /> Free Shipping (5–7 days) — $0.00</label>
           <label><input type="radio" name="shipping" value="10.00" /> Expedited (2–3 days) — $10.00</label>
           <label><input type="radio" name="shipping" value="20.00" /> Express (Next-day) — $20.00</label>
-          <label><input type="radio" name="shipping" value="0" checked /> Free Shipping (0.00 USD)</label>
         </div>
 
         <h3>Payment Method</h3>
@@ -139,6 +148,8 @@
 <script src="js/cart.js?v=store-manager-1"></script>
 
 <script>
+  const PROCESSING_FEE = 1.47;
+
   document.addEventListener('DOMContentLoaded', () => {
     const cartSummary = JSON.parse(localStorage.getItem('cartSummary')) || {
       subtotal: "0.00",
@@ -148,9 +159,11 @@
 
     document.getElementById('subtotal').textContent = cartSummary.subtotal;
     document.getElementById('tax').textContent = cartSummary.tax;
-    document.getElementById('shipping-amount').textContent = "0.00"; // default until user picks
-    document.getElementById('cart-total').textContent = cartSummary.total;
-    document.getElementById('final-total').textContent = cartSummary.total;
+    document.getElementById('processing-fee').textContent = PROCESSING_FEE.toFixed(2);
+    document.getElementById('shipping-amount').textContent = "0.00";
+    const totalWithFee = (parseFloat(cartSummary.total) || 0) + PROCESSING_FEE;
+    document.getElementById('cart-total').textContent = totalWithFee.toFixed(2);
+    document.getElementById('final-total').textContent = totalWithFee.toFixed(2);
 
     updateTotalWithShipping(); // Ensure totals refresh with selected shipping
   });
@@ -213,12 +226,14 @@
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
     const shippingFee = parseFloat(selectedShipping?.value || "0");
     const total = cartTotal + shippingFee;
+    const processingFee = parseFloat(document.getElementById('processing-fee').textContent) || 0;
 
     return {
       customer: { name, email, address },
       items: cart,
       subtotal: summary.subtotal || document.getElementById('subtotal').textContent || "0.00",
       tax: summary.tax || document.getElementById('tax').textContent || "0.00",
+      processingFee: processingFee.toFixed(2),
       total: total.toFixed(2),
       shipping: shippingFee.toFixed(2),
       paymentId

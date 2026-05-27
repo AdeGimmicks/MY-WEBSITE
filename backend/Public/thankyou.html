@@ -42,6 +42,7 @@
     <p><strong>Subtotal (Items):</strong> $<span id="subtotal"></span></p>
     <p><strong>Shipping:</strong> $<span id="shipping"></span></p>
     <p><strong>Tax:</strong> $<span id="tax"></span></p>
+    <p><strong>Processing Fee:</strong> $<span id="processing-fee"></span></p>
     <p><strong>Total Paid:</strong> $<span id="total"></span></p>
     <p><strong>Order Time:</strong> <span id="time"></span></p>
   </div>
@@ -61,8 +62,9 @@
       const cartTotal = parseFloat(order.subtotal || summary?.subtotal || order.total || 0);
       const tax = parseFloat(order.tax || summary?.tax || 0);
       const shipping = parseFloat(order.shipping) || 0;
+      const processingFee = parseFloat(order.processingFee) || 0;
       const savedTotal = parseFloat(order.total);
-      const grandTotal = Number.isFinite(savedTotal) ? savedTotal : cartTotal + shipping + tax;
+      const grandTotal = Number.isFinite(savedTotal) ? savedTotal : cartTotal + shipping + tax + processingFee;
   
       document.getElementById('order-number').textContent = order.orderNumber || 'Processing';
       document.getElementById('name').textContent = order.customer.name;
@@ -71,6 +73,7 @@
       document.getElementById('subtotal').textContent = cartTotal.toFixed(2);
       document.getElementById('shipping').textContent = shipping.toFixed(2);
       document.getElementById('tax').textContent = tax.toFixed(2);
+      document.getElementById('processing-fee').textContent = processingFee.toFixed(2);
       document.getElementById('total').textContent = grandTotal.toFixed(2);
       document.getElementById('time').textContent = new Date(order.timestamp).toLocaleString();
       updateEmailStatus(order.orderNumber, order.emailStatus);
