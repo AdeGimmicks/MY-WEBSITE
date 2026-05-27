@@ -141,29 +141,6 @@
 
           <div id="card-element" style="margin-top: 15px;"></div>
           <div id="card-errors" role="alert" style="color: red; margin-top: 10px;"></div>
-
-          <div id="wallet-section">
-            <div id="payment-request-button"></div>
-            <div id="wallet-errors" style="color: red; margin-top: 10px;"></div>
-          </div>
-          
-
-
-          <label class="payment-option">
-            <div class="left">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" />
-              <span>Apple Pay</span>
-            </div>
-            <input type="radio" name="payment" value="apple-pay" />
-          </label>
-
-          <label class="payment-option">
-            <div class="left">
-              <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal" />
-              <span>PayPal (Pay now or later with PayPal)</span>
-            </div>
-            <input type="radio" name="payment" value="paypal" />
-          </label>
         </div>
 
         <button type="submit" class="btn">Place Your Order</button>
@@ -364,70 +341,6 @@
           console.error('❌ Failed to save order:', err);
           alert(err.message);
         }
-      }
-    }
-  });
-</script>
-
-<script>
-  // Wallet payment (Apple Pay, Google Pay)
-  const paymentRequest = stripe.paymentRequest({
-    country: 'US',
-    currency: 'usd',
-    total: {
-      label: 'KingsArena Order',
-      amount: 1000 // Will be updated dynamically
-    },
-    requestPayerName: true,
-    requestPayerEmail: true
-  });
-
-  const prButton = elements.create('paymentRequestButton', {
-    paymentRequest: paymentRequest,
-  });
-
-  paymentRequest.canMakePayment().then(function(result) {
-  if (result) {
-    prButton.mount('#payment-request-button');
-  } else {
-    document.getElementById('wallet-errors').textContent =
-      'Apple Pay or Google Pay is not available on this browser/device.';
-    document.getElementById('wallet-section').style.display = 'none';
-  }
-});
-
-  // Handle payment confirmation
-  paymentRequest.on('paymentmethod', async (ev) => {
-    const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
-    const shippingFee = parseFloat(document.querySelector('input[name="shipping"]:checked')?.value || "0");
-    const finalAmount = (cartTotal + shippingFee).toFixed(2);
-
-    const res = await fetch(apiUrl('/create-payment-intent'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: Math.round(finalAmount * 100) })
-    });
-
-    const { clientSecret } = await res.json();
-
-    const confirmResult = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: ev.paymentMethod.id,
-    }, { handleActions: false });
-
-    if (confirmResult.error) {
-      ev.complete('fail');
-      document.getElementById('wallet-errors').textContent = confirmResult.error.message;
-    } else {
-      ev.complete('success');
-      if (confirmResult.paymentIntent.status === "requires_action") {
-        const finalResult = await stripe.confirmCardPayment(clientSecret);
-        if (finalResult.error) {
-          document.getElementById('wallet-errors').textContent = finalResult.error.message;
-        } else {
-          await finishOrder(finalResult.paymentIntent.id);
-        }
-      } else {
-        await finishOrder(confirmResult.paymentIntent.id);
       }
     }
   });
