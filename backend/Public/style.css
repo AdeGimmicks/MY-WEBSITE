@@ -27,6 +27,11 @@ body {
     font-weight: bold;
     color: #f9c80e;
   }
+
+  .logo a {
+    color: inherit;
+    text-decoration: none;
+  }
   
   nav {
     flex-grow: 1;
@@ -789,7 +794,7 @@ img {
   .product-card {
     border-radius: 0;
     background: #fff;
-    padding: 10px 10px 12px;
+    padding: 12px 12px 14px;
     text-align: left;
     box-shadow: none;
   }
@@ -799,8 +804,8 @@ img {
   }
 
   .product-card img {
-    height: 160px;
-    margin: 0 0 10px;
+    height: 180px;
+    margin: 0 0 12px;
     border-radius: 0;
     background: #fff;
   }
@@ -811,7 +816,7 @@ img {
     margin: 0 0 6px;
     overflow: hidden;
     color: #111827;
-    font-size: 0.98rem;
+    font-size: 1.02rem;
     font-weight: 600;
     line-height: 1.25;
     -webkit-box-orient: vertical;
@@ -829,7 +834,7 @@ img {
   }
 
   .product-card p strong {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 700;
   }
 
@@ -848,8 +853,8 @@ img {
   .products .buy-btn .btn {
     flex: 1;
     min-width: 0;
-    padding: 8px 6px;
-    font-size: 0.75rem;
+    padding: 9px 6px;
+    font-size: 0.78rem;
     line-height: 1.15;
     white-space: normal;
     box-shadow: none;
