@@ -804,10 +804,12 @@ img {
   }
 
   .product-card img {
-    height: 180px;
-    margin: 0 0 12px;
+    height: 210px;
+    margin: 0 0 14px;
     border-radius: 0;
     background: #fff;
+    transform: scale(1.08);
+    transform-origin: center;
   }
 
   .product-card h4 {
@@ -853,8 +855,9 @@ img {
   .products .buy-btn .btn {
     flex: 1;
     min-width: 0;
-    padding: 9px 6px;
-    font-size: 0.78rem;
+    padding: 10px 6px;
+    font-size: 0.88rem;
+    font-weight: 800;
     line-height: 1.15;
     white-space: normal;
     box-shadow: none;
