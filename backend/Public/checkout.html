@@ -65,6 +65,7 @@
       margin-top: 10px;
     }
   </style>
+  <script src="js/tracking.js?v=ga4-1"></script>
 </head>
 
 <body>
@@ -189,6 +190,9 @@
     document.getElementById('final-total').textContent = totalWithFee.toFixed(2);
 
     updateTotalWithShipping(); // Ensure totals refresh with selected shipping
+    if (typeof eoTrackBeginCheckout === 'function') {
+      eoTrackBeginCheckout(JSON.parse(localStorage.getItem('cart')) || [], document.getElementById('final-total').textContent);
+    }
   });
 </script>
 
@@ -290,6 +294,14 @@
     showOrderSuccess();
     const savedOrder = await saveOrder(orderData);
     rememberLatestOrder(orderData, savedOrder);
+    if (typeof eoTrackPurchase === 'function') {
+      eoTrackPurchase({
+        ...orderData,
+        orderNumber: savedOrder.orderNumber,
+        timestamp: savedOrder.timestamp || new Date().toISOString()
+      });
+      sessionStorage.setItem(`eo-purchase-${savedOrder.orderNumber || paymentId}`, '1');
+    }
     localStorage.removeItem('cart');
     await wait(2500);
     window.location.href = 'thankyou.html';

@@ -22,12 +22,12 @@ function updateCartCount() {
   }
 }
 
-function addToCart(name, price, image) {
+function addToCart(name, price, image, productId) {
 
   const cart = getCart();
 
   // Check if item already exists
-  const existingItem = cart.find(item => item.name === name);
+  const existingItem = cart.find(item => (productId && item.productId === productId) || item.name === name);
 
   if (existingItem) {
     existingItem.quantity += 1;
@@ -36,16 +36,23 @@ function addToCart(name, price, image) {
       name,
       price: parseFloat(price),
       image,
+      productId,
       quantity: 1
     });
   }
 
   saveCart(cart);
   updateCartCount();
+  if (typeof eoTrackAddToCart === 'function') {
+    eoTrackAddToCart({ name, price: parseFloat(price), image, productId, quantity: 1 });
+  }
 }
 
-function buyNow(name, price, image) {
-  addToCart(name, price, image);
+function buyNow(name, price, image, productId) {
+  addToCart(name, price, image, productId);
+  if (typeof eoTrackBeginCheckout === 'function') {
+    eoTrackBeginCheckout(getCart(), parseFloat(price));
+  }
   window.location.href = "checkout.html";
 }
 
@@ -65,13 +72,14 @@ function bindCartButtons() {
     const name = button.dataset.name;
     const price = button.dataset.price;
     const image = button.dataset.image;
+    const productId = button.dataset.productId;
 
     if (button.classList.contains('buy-now')) {
-      buyNow(name, price, image);
+      buyNow(name, price, image, productId);
       return;
     }
 
-    addToCart(name, price, image);
+    addToCart(name, price, image, productId);
   });
 }
 
@@ -159,6 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (taxDisplay) {
     taxDisplay.textContent = `Tax: $${taxAmount.toFixed(2)}`;
+  }
+
+  if (typeof eoTrackViewCart === 'function' && window.location.pathname.toLowerCase().includes('cart.html')) {
+    eoTrackViewCart(cart, finalTotal);
   }
 
   // Save cart summary for checkout page

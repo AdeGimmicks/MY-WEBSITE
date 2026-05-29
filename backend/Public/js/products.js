@@ -420,6 +420,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function updateProductDetail(product) {
+  if (typeof eoTrackProductView === 'function') {
+    eoTrackProductView(product);
+  }
+
   const price = Number(product.price || 0).toFixed(2);
   const title = document.querySelector('.product-info h2');
   const summary = document.querySelector('.product-info > p');

@@ -28,6 +28,7 @@
       text-align: left;
     }
   </style>
+  <script src="js/tracking.js?v=ga4-1"></script>
 </head>
 <body>
 
@@ -76,6 +77,10 @@
       document.getElementById('processing-fee').textContent = processingFee.toFixed(2);
       document.getElementById('total').textContent = grandTotal.toFixed(2);
       document.getElementById('time').textContent = new Date(order.timestamp).toLocaleString();
+      if (typeof eoTrackPurchase === 'function' && !sessionStorage.getItem(`eo-purchase-${order.orderNumber || order.paymentId}`)) {
+        eoTrackPurchase(order);
+        sessionStorage.setItem(`eo-purchase-${order.orderNumber || order.paymentId}`, '1');
+      }
       updateEmailStatus(order.orderNumber, order.emailStatus);
     }
 
