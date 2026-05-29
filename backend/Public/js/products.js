@@ -309,8 +309,8 @@ function renderProductCard(product) {
       <a href="${productUrl}" class="product-link">
         <img src="${product.image}" alt="${product.name}">
         <h4>${product.name}</h4>
-        <p>${product.description}</p>
-        <p><strong>$${price}</strong></p>
+        <p class="product-summary">${product.description}</p>
+        <p class="product-price"><strong>$${price}</strong></p>
         <p class="stock-note">${stockText}</p>
       </a>
       <div class="buy-btn">
@@ -336,6 +336,7 @@ function renderProductCard(product) {
 document.addEventListener('DOMContentLoaded', async () => {
   const productLists = Array.from(document.querySelectorAll('[data-product-list]'));
   const categorySelect = document.querySelector('[data-product-category-filter]');
+  const productSearch = document.querySelector('[data-product-search]');
   const selectedCategoryFromUrl = new URLSearchParams(window.location.search).get('category') || 'all';
   const productId = document.body.dataset.productId;
   const existingProductMarkup = productLists[0] ? productLists[0].innerHTML : '';
@@ -376,10 +377,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       const listCategory = productList.dataset.productCategory;
       const limit = Number(productList.dataset.productLimit || 0);
       const selectedCategory = categorySelect ? categorySelect.value : selectedCategoryFromUrl;
+      const searchTerm = productSearch ? productSearch.value.trim().toLowerCase() : '';
       const category = listCategory || (selectedCategory === 'all' ? '' : selectedCategory);
       let visibleProducts = activeProducts
         .filter(product => mode !== 'featured' || product.featured !== false)
-        .filter(product => !category || product.category === category);
+        .filter(product => !category || product.category === category)
+        .filter(product => {
+          if (!searchTerm) return true;
+          return [product.name, product.description, product.category]
+            .filter(Boolean)
+            .some(value => String(value).toLowerCase().includes(searchTerm));
+        });
 
       if (limit > 0) visibleProducts = visibleProducts.slice(0, limit);
 
@@ -397,6 +405,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (categorySelect) categorySelect.addEventListener('change', renderFilteredProducts);
+    if (productSearch) productSearch.addEventListener('input', renderFilteredProducts);
     renderFilteredProducts();
   } catch (error) {
     productLists.forEach(productList => {
