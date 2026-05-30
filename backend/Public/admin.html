@@ -1045,6 +1045,10 @@
       return place || location.country || "Unknown location";
     }
 
+    function visitorIpText(visitor) {
+      return visitor.location?.ip ? ` - IP ${visitor.location.ip}` : "";
+    }
+
     function eventNameLabel(eventName) {
       return String(eventName || "page_view").replace(/_/g, " ");
     }
@@ -1060,7 +1064,7 @@
         els.visitorsList.innerHTML = visitors.length ? visitors.slice(0, 12).map(visitor => `
           <div class="activity-item">
             <strong>${visitorLabel(visitor)}</strong>
-            <p>${visitor.device || "Device"} / ${visitor.browser || "Browser"} - ${visitorLocationText(visitor)}</p>
+            <p>${visitor.device || "Device"} / ${visitor.browser || "Browser"} - ${visitorLocationText(visitor)}${visitorIpText(visitor)}</p>
             <p>Last action: ${eventNameLabel(visitor.lastEvent)}${visitor.lastProduct ? ` - ${visitor.lastProduct}` : ""}</p>
             <p>Last seen: ${visitor.lastSeen ? new Date(visitor.lastSeen).toLocaleString() : "Unknown"}</p>
             ${lastVisitorEvents(visitor)}

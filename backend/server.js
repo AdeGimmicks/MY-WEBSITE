@@ -9,9 +9,11 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const { MongoClient } = require('mongodb');
+const geoip = require('geoip-lite');
 
 app.use(cors());
 app.use(express.json({ limit: '12mb' }));
+app.set('trust proxy', true);
 
 app.get("/robots.txt", (req, res) => {
   res.type("text/plain");
@@ -689,15 +691,34 @@ function visitorBrowser(userAgent = "") {
 }
 
 function visitorLocation(req) {
-  const city = cleanVisitorText(req.get('cf-ipcity') || req.get('x-vercel-ip-city') || "");
-  const region = cleanVisitorText(req.get('cf-region') || req.get('x-vercel-ip-country-region') || "");
-  const country = cleanVisitorText(req.get('cf-ipcountry') || req.get('x-vercel-ip-country') || "");
+  const ip = visitorIp(req);
+  const geo = ip ? geoip.lookup(ip) : null;
+  const city = cleanVisitorText(req.get('cf-ipcity') || req.get('x-vercel-ip-city') || geo?.city || "");
+  const region = cleanVisitorText(req.get('cf-region') || req.get('x-vercel-ip-country-region') || geo?.region || "");
+  const country = cleanVisitorText(req.get('cf-ipcountry') || req.get('x-vercel-ip-country') || geo?.country || "");
 
-  return { city, region, country };
+  return { city, region, country, ip: maskVisitorIp(ip) };
 }
 
 function cleanVisitorText(value, fallback = "") {
   return String(value || fallback).trim().slice(0, 220);
+}
+
+function visitorIp(req) {
+  const forwarded = String(req.get('x-forwarded-for') || "").split(",")[0].trim();
+  return req.get('cf-connecting-ip') || req.get('x-real-ip') || forwarded || req.ip || "";
+}
+
+function maskVisitorIp(ip) {
+  const cleanIp = String(ip || "").replace(/^::ffff:/, "");
+  if (!cleanIp) return "";
+  if (cleanIp.includes(":")) {
+    const parts = cleanIp.split(":").filter(Boolean);
+    return parts.length > 2 ? `${parts.slice(0, 2).join(":")}:...` : cleanIp;
+  }
+
+  const parts = cleanIp.split(".");
+  return parts.length === 4 ? `${parts[0]}.${parts[1]}.${parts[2]}.xxx` : cleanIp;
 }
 
 app.post('/api/visitor-event', async (req, res) => {
