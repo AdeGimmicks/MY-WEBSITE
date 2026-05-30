@@ -71,9 +71,14 @@ function eoSessionId() {
   return sessionId;
 }
 
+function eoVisitId() {
+  return `visit-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 function eoTrackManagerVisit(event, params = {}) {
   const payload = {
     visitorId: eoVisitorId(),
+    visitId: eoVisitId(),
     sessionId: eoSessionId(),
     event,
     page: window.location.pathname.split('/').pop() || 'index.html',
@@ -97,9 +102,10 @@ function eoTrackManagerVisit(event, params = {}) {
 }
 
 function eoTrackWebsiteVisit() {
-  const key = 'eoManagerVisitTracked';
-  if (sessionStorage.getItem(key)) return;
-  sessionStorage.setItem(key, '1');
+  try {
+    if (document.referrer && new URL(document.referrer).origin === window.location.origin) return;
+  } catch {}
+
   eoTrackManagerVisit('visit');
 }
 

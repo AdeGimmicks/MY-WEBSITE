@@ -737,6 +737,7 @@ app.post('/api/visitor-event', async (req, res) => {
     const now = new Date().toISOString();
     const userAgent = req.get('user-agent') || "";
     const visitorId = cleanVisitorText(req.body.visitorId || crypto.randomUUID()).slice(0, 80);
+    const visitId = cleanVisitorText(req.body.visitId || `${visitorId}-${Date.now()}`).slice(0, 100);
     const sessionId = cleanVisitorText(req.body.sessionId || "").slice(0, 80);
     const eventName = normalizeVisitorEventName(cleanVisitorText(req.body.event || "visit", "visit").slice(0, 60));
     const page = cleanVisitorText(req.body.page || req.get('referer') || "Website");
@@ -759,6 +760,7 @@ app.post('/api/visitor-event', async (req, res) => {
     const update = {
       $setOnInsert: {
         visitorId,
+        visitId,
         firstSeen: now
       },
       $set: {
@@ -788,7 +790,7 @@ app.post('/api/visitor-event', async (req, res) => {
     }
 
     await visitorsCollection.updateOne(
-      { visitorId },
+      { visitId },
       update,
       { upsert: true }
     );
