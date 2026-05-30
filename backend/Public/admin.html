@@ -398,18 +398,55 @@
       padding: 16px;
     }
 
+    .manager-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(23, 32, 51, 0.05);
+      margin-top: 18px;
+      overflow: hidden;
+    }
+
+    .manager-panel summary {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      list-style: none;
+      padding: 18px;
+    }
+
+    .manager-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .manager-panel summary::after {
+      color: var(--muted);
+      content: "+";
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .manager-panel[open] summary {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .manager-panel[open] summary::after {
+      content: "-";
+    }
+
+    .manager-panel-body {
+      padding: 18px;
+    }
+
     .activity-list {
       display: grid;
       gap: 10px;
     }
 
     .manager-visitors {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      box-shadow: 0 12px 30px rgba(23, 32, 51, 0.05);
       margin-top: 18px;
-      padding: 16px;
     }
 
     .visitor-grid {
@@ -558,69 +595,81 @@
         <div><strong id="managerUpdated">Not edited</strong><span>last saved</span></div>
       </div>
 
-      <div class="manager-layout">
-        <aside class="manager-list" aria-label="Product list">
-          <label class="search-box"><span>Find product</span><input id="managerSearch" type="search" placeholder="Search Samsung, Roku, LG..." autocomplete="off" /></label>
-          <div id="managerProductList" class="manager-product-list"></div>
-        </aside>
+      <details class="manager-panel" open>
+        <summary><div><p class="eyebrow">Products</p><h3>Find and edit products</h3></div></summary>
+        <div class="manager-panel-body">
+          <div class="manager-layout">
+            <aside class="manager-list" aria-label="Product list">
+              <label class="search-box"><span>Find product</span><input id="managerSearch" type="search" placeholder="Search Samsung, Roku, LG..." autocomplete="off" /></label>
+              <div id="managerProductList" class="manager-product-list"></div>
+            </aside>
 
-        <form class="manager-form" id="managerForm">
-          <div class="manager-form-head">
-            <div><p class="eyebrow">Selected product</p><h3 id="managerSelectedName">Choose a product</h3></div>
-            <button class="text-button" id="resetProductButton" type="button">Reset product</button>
-          </div>
+            <form class="manager-form" id="managerForm">
+              <div class="manager-form-head">
+                <div><p class="eyebrow">Selected product</p><h3 id="managerSelectedName">Choose a product</h3></div>
+                <button class="text-button" id="resetProductButton" type="button">Reset product</button>
+              </div>
 
-          <div class="product-select-row">
-            <label><span>Select product to edit</span><select id="managerProductSelect"><option value="">Loading products...</option></select></label>
-            <button class="gold-button" id="loadSelectedProductButton" type="button">Edit selected</button>
-            <button class="ghost-button" id="addNewProductButton" type="button">Add new product</button>
-          </div>
+              <div class="product-select-row">
+                <label><span>Select product to edit</span><select id="managerProductSelect"><option value="">Loading products...</option></select></label>
+                <button class="gold-button" id="loadSelectedProductButton" type="button">Edit selected</button>
+                <button class="ghost-button" id="addNewProductButton" type="button">Add new product</button>
+              </div>
 
-          <div class="manager-grid">
-            <label class="field"><span>Product name</span><input id="managerName" type="text" required /></label>
-            <label class="field"><span>Category</span><select id="managerCategory"></select></label>
-            <label class="field"><span>Price</span><input id="managerPrice" type="number" min="0" step="0.01" required /></label>
-            <label class="field"><span>Stock quantity</span><input id="managerStock" type="number" min="0" step="1" required /></label>
-            <label class="field"><span>Product page</span><input id="managerPage" type="text" placeholder="samsung-remote.html" required /></label>
-            <label class="field"><span>Main image URL/path</span><input id="managerImage" type="text" placeholder="Product images/..." /></label>
-            <label class="field full"><span>Description</span><textarea id="managerDescription" rows="4" required></textarea></label>
-          </div>
+              <div class="manager-grid">
+                <label class="field"><span>Product name</span><input id="managerName" type="text" required /></label>
+                <label class="field"><span>Category</span><select id="managerCategory"></select></label>
+                <label class="field"><span>Price</span><input id="managerPrice" type="number" min="0" step="0.01" required /></label>
+                <label class="field"><span>Stock quantity</span><input id="managerStock" type="number" min="0" step="1" required /></label>
+                <label class="field"><span>Product page</span><input id="managerPage" type="text" placeholder="samsung-remote.html" required /></label>
+                <label class="field"><span>Main image URL/path</span><input id="managerImage" type="text" placeholder="Product images/..." /></label>
+                <label class="field full"><span>Description</span><textarea id="managerDescription" rows="4" required></textarea></label>
+              </div>
 
-          <div id="managerImagePreview" class="manager-image-preview" role="img" aria-label="Selected product image preview"></div>
-          <label class="field"><span>Upload product gallery photos</span><input id="managerImageUpload" type="file" accept="image/*" multiple /></label>
-          <div id="managerGalleryPreview" class="manager-gallery-preview" aria-label="Product gallery preview"></div>
+              <div id="managerImagePreview" class="manager-image-preview" role="img" aria-label="Selected product image preview"></div>
+              <label class="field"><span>Upload product gallery photos</span><input id="managerImageUpload" type="file" accept="image/*" multiple /></label>
+              <div id="managerGalleryPreview" class="manager-gallery-preview" aria-label="Product gallery preview"></div>
 
-          <div class="manager-actions">
-            <button class="primary-button" type="submit">Save product</button>
-            <a class="ghost-button button-link" id="managerProductLink" href="products.html">Open product page</a>
-            <button class="ghost-button" id="exportCatalogButton" type="button">Export catalog</button>
-            <label class="ghost-button file-button">Import catalog<input id="importCatalogInput" type="file" accept="application/json" /></label>
-            <button class="text-button danger-button" id="hideProductButton" type="button">Hide product</button>
-          </div>
-        </form>
-      </div>
-
-      <div class="manager-activity">
-        <section>
-          <div class="manager-form-head"><div><p class="eyebrow">Purchases</p><h3>Orders</h3></div><button class="text-button" id="refreshOrdersButton" type="button">Refresh</button></div>
-          <div id="ordersList" class="activity-list"></div>
-        </section>
-        <section>
-          <div class="manager-form-head"><div><p class="eyebrow">Catalog</p><h3>Status</h3></div></div>
-          <div id="statusList" class="activity-list"></div>
-        </section>
-      </div>
-
-      <section class="manager-visitors">
-        <div class="manager-form-head">
-          <div><p class="eyebrow">Website visitors</p><h3>Visitor Activity</h3></div>
-          <div class="manager-actions">
-            <button class="ghost-button" id="downloadVisitorsButton" type="button">Download activity</button>
-            <button class="text-button" id="refreshVisitorsButton" type="button">Refresh</button>
+              <div class="manager-actions">
+                <button class="primary-button" type="submit">Save product</button>
+                <a class="ghost-button button-link" id="managerProductLink" href="products.html">Open product page</a>
+                <button class="ghost-button" id="exportCatalogButton" type="button">Export catalog</button>
+                <label class="ghost-button file-button">Import catalog<input id="importCatalogInput" type="file" accept="application/json" /></label>
+                <button class="text-button danger-button" id="hideProductButton" type="button">Hide product</button>
+              </div>
+            </form>
           </div>
         </div>
-        <div id="visitorsList" class="visitor-grid"></div>
-      </section>
+      </details>
+
+      <details class="manager-panel">
+        <summary><div><p class="eyebrow">Purchases</p><h3>Orders</h3></div></summary>
+        <div class="manager-panel-body">
+          <div class="manager-form-head"><div></div><button class="text-button" id="refreshOrdersButton" type="button">Refresh</button></div>
+          <div id="ordersList" class="activity-list"></div>
+        </div>
+      </details>
+
+      <details class="manager-panel">
+        <summary><div><p class="eyebrow">Catalog</p><h3>Status</h3></div></summary>
+        <div class="manager-panel-body">
+          <div id="statusList" class="activity-list"></div>
+        </div>
+      </details>
+
+      <details class="manager-panel manager-visitors">
+        <summary><div><p class="eyebrow">Website visitors</p><h3>Visitor Activity</h3></div></summary>
+        <div class="manager-panel-body">
+          <div class="manager-form-head">
+            <div></div>
+            <div class="manager-actions">
+              <button class="ghost-button" id="downloadVisitorsButton" type="button">Download activity</button>
+              <button class="text-button" id="refreshVisitorsButton" type="button">Refresh</button>
+            </div>
+          </div>
+          <div id="visitorsList" class="visitor-grid"></div>
+        </div>
+      </details>
     </section>
   </main>
 
