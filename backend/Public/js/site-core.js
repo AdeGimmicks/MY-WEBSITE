@@ -96,6 +96,13 @@ function eoTrackManagerVisit(event, params = {}) {
   }).catch(() => {});
 }
 
+function eoTrackWebsiteVisit() {
+  const key = 'eoManagerVisitTracked';
+  if (sessionStorage.getItem(key)) return;
+  sessionStorage.setItem(key, '1');
+  eoTrackManagerVisit('visit');
+}
+
 function eoTrackEvent(eventName, params = {}) {
   if (typeof gtag !== 'function') return;
   gtag('event', eventName, params);
@@ -131,11 +138,6 @@ function eoTrackProductView(product) {
     value: price
   });
 
-  eoTrackManagerVisit('product_view', {
-    productId: itemId,
-    productName: product.name,
-    value: price
-  });
 }
 
 function eoTrackAddToCart(item) {
@@ -157,11 +159,6 @@ function eoTrackAddToCart(item) {
     value: price
   });
 
-  eoTrackManagerVisit('add_to_cart', {
-    productId: itemId,
-    productName: item.name,
-    value: price
-  });
 }
 
 function eoTrackBeginCheckout(cart, total) {
@@ -181,10 +178,6 @@ function eoTrackBeginCheckout(cart, total) {
     value: Number(total || 0)
   });
 
-  eoTrackManagerVisit('checkout_started', {
-    productName: items.map(item => item.name).filter(Boolean).join(', '),
-    value: Number(total || 0)
-  });
 }
 
 function eoTrackViewCart(cart, total) {
@@ -217,10 +210,6 @@ function eoTrackPurchase(order) {
     value
   });
 
-  eoTrackManagerVisit('purchase', {
-    productName: items.map(item => item.name).filter(Boolean).join(', '),
-    value
-  });
 }
 
 window.eoTrackEvent = eoTrackEvent;
@@ -232,5 +221,5 @@ window.eoTrackPurchase = eoTrackPurchase;
 window.eoVisitorId = eoVisitorId;
 
 if (!document.body?.dataset || document.body.dataset.page !== 'manager') {
-  eoTrackManagerVisit('page_view');
+  eoTrackWebsiteVisit();
 }

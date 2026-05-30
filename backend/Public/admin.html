@@ -1098,17 +1098,11 @@
     }
 
     function eventNameLabel(eventName) {
-      return String(eventName || "page_view").replace(/_/g, " ");
-    }
-
-    function lastVisitorEvents(visitor) {
-      const events = Array.isArray(visitor.events) ? visitor.events.slice(-4).reverse() : [];
-      return events.map(event => `<p>${eventNameLabel(event.event)} - ${event.productName || event.title || event.page || "Website"}${event.timestamp ? ` - ${new Date(event.timestamp).toLocaleString()}` : ""}</p>`).join("");
+      return String(eventName || "visit").replace(/_/g, " ");
     }
 
     function visitorLastAction(visitor) {
-      const action = eventNameLabel(visitor.lastEvent);
-      return `${action}${visitor.lastProduct ? ` - ${visitor.lastProduct}` : ""}`;
+      return eventNameLabel(visitor.lastEvent);
     }
 
     async function loadVisitors() {
@@ -1129,10 +1123,6 @@
               <p class="visitor-meta">Last seen</p>
               <strong>${visitor.lastSeen ? new Date(visitor.lastSeen).toLocaleString() : "Unknown"}</strong>
             </div>
-            <details class="visitor-events">
-              <summary>View recent activity</summary>
-              ${lastVisitorEvents(visitor)}
-            </details>
           </div>
         `).join("") : "<p class='help-text'>No visitor activity yet.</p>";
       } catch (error) {
@@ -1147,7 +1137,7 @@
       }
 
       const rows = [
-        ["Visitor", "Device", "Browser", "Location", "IP", "Last Action", "Last Product", "Last Seen", "Customer Email"]
+        ["Visitor", "Device", "Browser", "Location", "IP", "Visit Status", "Last Seen", "Customer Email"]
       ];
 
       visitorActivity.forEach(visitor => {
@@ -1158,7 +1148,6 @@
           visitorLocationText(visitor),
           visitor.location?.ip || "",
           eventNameLabel(visitor.lastEvent),
-          visitor.lastProduct || "",
           visitor.lastSeen ? new Date(visitor.lastSeen).toLocaleString() : "",
           visitor.customerEmail || ""
         ]);

@@ -722,6 +722,14 @@ function maskVisitorIp(ip) {
   return parts.length === 4 ? `${parts[0]}.${parts[1]}.${parts[2]}.xxx` : cleanIp;
 }
 
+function normalizeVisitorEventName(eventName) {
+  return "visit";
+}
+
+function shouldStoreVisitorEvent(eventName) {
+  return false;
+}
+
 app.post('/api/visitor-event', async (req, res) => {
   try {
     if (!visitorsCollection) return res.json({ success: true });
@@ -730,7 +738,7 @@ app.post('/api/visitor-event', async (req, res) => {
     const userAgent = req.get('user-agent') || "";
     const visitorId = cleanVisitorText(req.body.visitorId || crypto.randomUUID()).slice(0, 80);
     const sessionId = cleanVisitorText(req.body.sessionId || "").slice(0, 80);
-    const eventName = cleanVisitorText(req.body.event || "page_view", "page_view").slice(0, 60);
+    const eventName = normalizeVisitorEventName(cleanVisitorText(req.body.event || "visit", "visit").slice(0, 60));
     const page = cleanVisitorText(req.body.page || req.get('referer') || "Website");
     const title = cleanVisitorText(req.body.title || page);
     const productName = cleanVisitorText(req.body.productName || req.body.content_name || "");
@@ -748,35 +756,40 @@ app.post('/api/visitor-event', async (req, res) => {
       timestamp: now
     };
 
+    const update = {
+      $setOnInsert: {
+        visitorId,
+        firstSeen: now
+      },
+      $set: {
+        sessionId,
+        lastSeen: now,
+        lastSeenDate: new Date(now),
+        lastEvent: eventName,
+        lastPage: page,
+        lastTitle: title,
+        lastProduct: shouldStoreVisitorEvent(eventName) ? productName : "",
+        referrer,
+        location,
+        device: visitorDevice(userAgent),
+        browser: visitorBrowser(userAgent),
+        userAgent: userAgent.slice(0, 300)
+      },
+      $inc: { visitCount: eventName === "visit" ? 1 : 0 }
+    };
+
+    if (shouldStoreVisitorEvent(eventName)) {
+      update.$push = {
+        events: {
+          $each: [event],
+          $slice: -12
+        }
+      };
+    }
+
     await visitorsCollection.updateOne(
       { visitorId },
-      {
-        $setOnInsert: {
-          visitorId,
-          firstSeen: now
-        },
-        $set: {
-          sessionId,
-          lastSeen: now,
-          lastSeenDate: new Date(now),
-          lastEvent: eventName,
-          lastPage: page,
-          lastTitle: title,
-          lastProduct: productName,
-          referrer,
-          location,
-          device: visitorDevice(userAgent),
-          browser: visitorBrowser(userAgent),
-          userAgent: userAgent.slice(0, 300)
-        },
-        $inc: { visitCount: eventName === "page_view" ? 1 : 0 },
-        $push: {
-          events: {
-            $each: [event],
-            $slice: -40
-          }
-        }
-      },
+      update,
       { upsert: true }
     );
 
@@ -889,8 +902,7 @@ app.post('/save-order', async (req, res) => {
             lastOrderNumber: orderNumber,
             lastOrderTotal: orderData.total,
             lastSeen: orderData.timestamp,
-            lastSeenDate: new Date(orderData.timestamp),
-            lastEvent: "purchase"
+            lastSeenDate: new Date(orderData.timestamp)
           }
         }
       );
