@@ -1,4 +1,4 @@
-const GA_MEASUREMENT_ID = 'G-RZLCQBJ3E';
+const GA_MEASUREMENT_ID = 'G-RZLCQBJB3E';
 
 window.dataLayer = window.dataLayer || [];
 function gtag(){window.dataLayer.push(arguments);}
