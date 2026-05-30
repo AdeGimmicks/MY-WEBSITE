@@ -415,7 +415,46 @@
     .visitor-grid {
       display: grid;
       gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: 1fr;
+      max-height: 520px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .visitor-item {
+      align-items: start;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: minmax(150px, 0.8fr) minmax(220px, 1.3fr) minmax(170px, 0.8fr) auto;
+    }
+
+    .visitor-item p {
+      margin-bottom: 4px;
+    }
+
+    .visitor-meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .visitor-action {
+      font-weight: 700;
+    }
+
+    .visitor-events {
+      grid-column: 1 / -1;
+    }
+
+    .visitor-events summary {
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .visitor-events p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 6px 0 0;
     }
 
     .activity-item {
@@ -480,7 +519,8 @@
       .manager-stats,
       .manager-grid,
       .product-select-row,
-      .manager-gallery-preview {
+      .manager-gallery-preview,
+      .visitor-item {
         grid-template-columns: 1fr;
       }
     }
@@ -572,7 +612,13 @@
       </div>
 
       <section class="manager-visitors">
-        <div class="manager-form-head"><div><p class="eyebrow">Website visitors</p><h3>Visitor Activity</h3></div><button class="text-button" id="refreshVisitorsButton" type="button">Refresh</button></div>
+        <div class="manager-form-head">
+          <div><p class="eyebrow">Website visitors</p><h3>Visitor Activity</h3></div>
+          <div class="manager-actions">
+            <button class="ghost-button" id="downloadVisitorsButton" type="button">Download activity</button>
+            <button class="text-button" id="refreshVisitorsButton" type="button">Refresh</button>
+          </div>
+        </div>
         <div id="visitorsList" class="visitor-grid"></div>
       </section>
     </section>
@@ -675,6 +721,7 @@
     let isNewProduct = false;
     let draftGallery = [];
     let catalogProducts = null;
+    let visitorActivity = [];
 
     const els = {
       refreshButton: document.querySelector("#refreshButton"),
@@ -709,6 +756,7 @@
       statusList: document.querySelector("#statusList"),
       refreshOrdersButton: document.querySelector("#refreshOrdersButton"),
       refreshVisitorsButton: document.querySelector("#refreshVisitorsButton"),
+      downloadVisitorsButton: document.querySelector("#downloadVisitorsButton"),
       saveModeLabel: document.querySelector("#saveModeLabel"),
       toast: document.querySelector("#toast")
     };
@@ -1058,21 +1106,72 @@
       return events.map(event => `<p>${eventNameLabel(event.event)} - ${event.productName || event.title || event.page || "Website"}${event.timestamp ? ` - ${new Date(event.timestamp).toLocaleString()}` : ""}</p>`).join("");
     }
 
+    function visitorLastAction(visitor) {
+      const action = eventNameLabel(visitor.lastEvent);
+      return `${action}${visitor.lastProduct ? ` - ${visitor.lastProduct}` : ""}`;
+    }
+
     async function loadVisitors() {
       try {
         const visitors = await fetchJson("/api/admin/visitors");
+        visitorActivity = visitors;
         els.visitorsList.innerHTML = visitors.length ? visitors.slice(0, 12).map(visitor => `
-          <div class="activity-item">
-            <strong>${visitorLabel(visitor)}</strong>
-            <p>${visitor.device || "Device"} / ${visitor.browser || "Browser"} - ${visitorLocationText(visitor)}${visitorIpText(visitor)}</p>
-            <p>Last action: ${eventNameLabel(visitor.lastEvent)}${visitor.lastProduct ? ` - ${visitor.lastProduct}` : ""}</p>
-            <p>Last seen: ${visitor.lastSeen ? new Date(visitor.lastSeen).toLocaleString() : "Unknown"}</p>
-            ${lastVisitorEvents(visitor)}
+          <div class="activity-item visitor-item">
+            <div>
+              <strong>${visitorLabel(visitor)}</strong>
+              <p class="visitor-meta">${visitor.device || "Device"} / ${visitor.browser || "Browser"}</p>
+            </div>
+            <div>
+              <p class="visitor-action">${visitorLastAction(visitor)}</p>
+              <p class="visitor-meta">${visitorLocationText(visitor)}${visitorIpText(visitor)}</p>
+            </div>
+            <div>
+              <p class="visitor-meta">Last seen</p>
+              <strong>${visitor.lastSeen ? new Date(visitor.lastSeen).toLocaleString() : "Unknown"}</strong>
+            </div>
+            <details class="visitor-events">
+              <summary>View recent activity</summary>
+              ${lastVisitorEvents(visitor)}
+            </details>
           </div>
         `).join("") : "<p class='help-text'>No visitor activity yet.</p>";
       } catch (error) {
         els.visitorsList.innerHTML = `<p class="help-text">${error.message}</p>`;
       }
+    }
+
+    function downloadVisitors() {
+      if (!visitorActivity.length) {
+        showToast("No visitor activity to download yet.");
+        return;
+      }
+
+      const rows = [
+        ["Visitor", "Device", "Browser", "Location", "IP", "Last Action", "Last Product", "Last Seen", "Customer Email"]
+      ];
+
+      visitorActivity.forEach(visitor => {
+        rows.push([
+          visitorLabel(visitor),
+          visitor.device || "",
+          visitor.browser || "",
+          visitorLocationText(visitor),
+          visitor.location?.ip || "",
+          eventNameLabel(visitor.lastEvent),
+          visitor.lastProduct || "",
+          visitor.lastSeen ? new Date(visitor.lastSeen).toLocaleString() : "",
+          visitor.customerEmail || ""
+        ]);
+      });
+
+      const csv = rows.map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `electronics-visitor-activity-${new Date().toISOString().slice(0, 10)}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
     }
 
     async function resendOrderEmail(orderNumber) {
@@ -1251,6 +1350,7 @@
     els.hideProductButton.addEventListener("click", hideProduct);
     els.refreshOrdersButton.addEventListener("click", loadOrders);
     els.refreshVisitorsButton.addEventListener("click", loadVisitors);
+    els.downloadVisitorsButton.addEventListener("click", downloadVisitors);
 
     checkSetup();
     refreshManager();

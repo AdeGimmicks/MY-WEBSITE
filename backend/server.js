@@ -324,6 +324,7 @@ async function startServer() {
     productsCollection = db.collection("products");
     settingsCollection = db.collection("settings");
     visitorsCollection = db.collection("visitors");
+    await visitorsCollection.createIndex({ lastSeenDate: 1 }, { expireAfterSeconds: 86400 });
 
     const productCount = await productsCollection.countDocuments();
     if (productCount === 0) {
@@ -757,6 +758,7 @@ app.post('/api/visitor-event', async (req, res) => {
         $set: {
           sessionId,
           lastSeen: now,
+          lastSeenDate: new Date(now),
           lastEvent: eventName,
           lastPage: page,
           lastTitle: title,
@@ -787,6 +789,14 @@ app.post('/api/visitor-event', async (req, res) => {
 
 app.get('/api/admin/visitors', requireAdmin, async (req, res) => {
   try {
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    await visitorsCollection.deleteMany({
+      $or: [
+        { lastSeen: { $lt: cutoff } },
+        { lastSeen: { $exists: false } }
+      ]
+    });
+
     const visitors = await visitorsCollection
       .find({}, { projection: { userAgent: 0 } })
       .sort({ lastSeen: -1 })
@@ -879,6 +889,7 @@ app.post('/save-order', async (req, res) => {
             lastOrderNumber: orderNumber,
             lastOrderTotal: orderData.total,
             lastSeen: orderData.timestamp,
+            lastSeenDate: new Date(orderData.timestamp),
             lastEvent: "purchase"
           }
         }
