@@ -15,6 +15,21 @@ app.use(cors());
 app.use(express.json({ limit: '12mb' }));
 app.set('trust proxy', true);
 
+const seedProductsPath = path.join(__dirname, 'Public', 'data', 'products.json');
+const publicDir = path.join(__dirname, 'Public');
+const cleanPageRoutes = new Map([
+  ['about', 'about.html'],
+  ['cart', 'cart.html'],
+  ['checkout', 'checkout.html'],
+  ['contact', 'contact.html'],
+  ['privacy-policy', 'privacy-policy.html'],
+  ['products', 'products.html'],
+  ['return-policy', 'return-policy.html'],
+  ['shipping-policy', 'shipping-policy.html'],
+  ['terms-and-conditions', 'terms-and-conditions.html'],
+  ['thankyou', 'thankyou.html']
+]);
+
 app.get("/robots.txt", (req, res) => {
   res.type("text/plain");
   res.send(`User-agent: *
@@ -25,15 +40,38 @@ Sitemap: https://www.electronicsonly.com/sitemap.xml`);
 
 // Rate limit protection
 
+app.use((req, res, next) => {
+  if (!['GET', 'HEAD'].includes(req.method) || !req.path.toLowerCase().endsWith('.html')) {
+    return next();
+  }
+
+  const fileName = decodeURIComponent(req.path.replace(/^\//, ''));
+  const staticRoute = Array.from(cleanPageRoutes.entries())
+    .find(([, page]) => page.toLowerCase() === fileName.toLowerCase());
+  const seedProduct = readSeedProducts()
+    .find(product => String(product.page || '').toLowerCase() === fileName.toLowerCase());
+
+  const cleanPath = fileName.toLowerCase() === 'index.html'
+    ? '/'
+    : staticRoute
+      ? `/${staticRoute[0]}`
+      : seedProduct
+        ? `/${seedProduct.id}`
+        : null;
+
+  if (!cleanPath) return next();
+
+  const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  res.redirect(301, `${cleanPath}${query}`);
+});
+
 // Serve frontend files
-app.use(express.static(path.join(__dirname, 'Public')));
+app.use(express.static(publicDir));
 
 let ordersCollection;
 let productsCollection;
 let settingsCollection;
 let visitorsCollection;
-
-const seedProductsPath = path.join(__dirname, 'Public', 'data', 'products.json');
 
 function formatStoreTime(timestamp) {
   return new Date(timestamp).toLocaleString('en-US', {
@@ -434,8 +472,18 @@ startServer();
 
 // Home route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Public', 'index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
+
+app.get('/home', (req, res) => {
+  res.redirect(301, '/');
+});
+
+for (const [route, page] of cleanPageRoutes.entries()) {
+  app.get(`/${route}`, (req, res) => {
+    res.sendFile(path.join(publicDir, page));
+  });
+}
 
 
 // ==============================
@@ -486,6 +534,16 @@ app.get('/api/products', async (req, res) => {
 
 app.get('/api/products/:id', async (req, res) => {
   try {
+    if (!productsCollection) {
+      const seedProduct = readSeedProducts().find(product => product.id === req.params.id && product.active !== false);
+      if (!seedProduct) {
+        return res.status(404).send({
+          message: "Product not found"
+        });
+      }
+      return res.json(hydrateProductGallery(seedProduct));
+    }
+
     const product = await productsCollection.findOne({
       id: req.params.id,
       active: { $ne: false }
@@ -503,6 +561,39 @@ app.get('/api/products/:id', async (req, res) => {
     res.status(500).send({
       message: "Failed to fetch product"
     });
+  }
+});
+
+app.get('/:slug', async (req, res, next) => {
+  try {
+    const slug = String(req.params.slug || '').trim();
+    if (!slug || slug.includes('.')) return next();
+
+    let product = null;
+    if (productsCollection) {
+      product = await productsCollection.findOne({
+        id: slug,
+        active: { $ne: false }
+      });
+    }
+    if (!product) {
+      product = readSeedProducts().find(item => item.id === slug && item.active !== false);
+    }
+    if (!product) return next();
+
+    const page = String(product.page || '').trim();
+    const productPagePath = page && !page.includes('..')
+      ? path.join(publicDir, page)
+      : '';
+
+    if (productPagePath && productPagePath.startsWith(publicDir) && fs.existsSync(productPagePath)) {
+      return res.sendFile(productPagePath);
+    }
+
+    res.sendFile(path.join(publicDir, 'product.html'));
+  } catch (err) {
+    console.error("❌ Failed to serve clean product page:", err);
+    next();
   }
 });
 

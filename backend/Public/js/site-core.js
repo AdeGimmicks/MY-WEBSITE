@@ -1,5 +1,18 @@
 const GA_MEASUREMENT_ID = 'G-RZLCQBJB3E';
 const META_PIXEL_ID = '457800017160804';
+const EO_CLEAN_LINKS = new Map([
+  ['index.html', '/'],
+  ['about.html', '/about'],
+  ['cart.html', '/cart'],
+  ['checkout.html', '/checkout'],
+  ['contact.html', '/contact'],
+  ['privacy-policy.html', '/privacy-policy'],
+  ['products.html', '/products'],
+  ['return-policy.html', '/return-policy'],
+  ['shipping-policy.html', '/shipping-policy'],
+  ['terms-and-conditions.html', '/terms-and-conditions'],
+  ['thankyou.html', '/thankyou']
+]);
 
 window.dataLayer = window.dataLayer || [];
 function gtag(){window.dataLayer.push(arguments);}
@@ -15,6 +28,35 @@ function gtag(){window.dataLayer.push(arguments);}
 
 gtag('js', new Date());
 gtag('config', GA_MEASUREMENT_ID);
+
+function eoCleanInternalHref(rawHref) {
+  if (!rawHref || rawHref.startsWith('#') || rawHref.startsWith('mailto:') || rawHref.startsWith('tel:')) {
+    return rawHref;
+  }
+
+  let url;
+  try {
+    url = new URL(rawHref, window.location.href);
+  } catch {
+    return rawHref;
+  }
+
+  if (url.origin !== window.location.origin) return rawHref;
+
+  const fileName = decodeURIComponent(url.pathname.split('/').pop() || '').toLowerCase();
+  const cleanPath = EO_CLEAN_LINKS.get(fileName);
+  if (!cleanPath) return rawHref;
+
+  return `${cleanPath}${url.search}${url.hash}`;
+}
+
+function eoUseCleanInternalLinks() {
+  document.querySelectorAll('a[href]').forEach(link => {
+    link.setAttribute('href', eoCleanInternalHref(link.getAttribute('href')));
+  });
+}
+
+document.addEventListener('DOMContentLoaded', eoUseCleanInternalLinks);
 
 (function loadMetaPixel() {
   if (window.fbq) return;

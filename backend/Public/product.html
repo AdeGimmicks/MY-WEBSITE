@@ -134,7 +134,10 @@
     }
 
     function productIdFromUrl() {
-      return new URLSearchParams(window.location.search).get('id');
+      const productId = new URLSearchParams(window.location.search).get('id');
+      if (productId) return productId;
+      const slug = window.location.pathname.split('/').filter(Boolean).pop();
+      return slug && !slug.includes('.') ? decodeURIComponent(slug) : '';
     }
 
     function renderDynamicProduct(product) {

@@ -53,7 +53,7 @@ function buyNow(name, price, image, productId) {
   if (typeof eoTrackBeginCheckout === 'function') {
     eoTrackBeginCheckout(getCart(), parseFloat(price));
   }
-  window.location.href = "checkout.html";
+  window.location.href = "/checkout";
 }
 
 let cartEventsBound = false;
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     taxDisplay.textContent = `Tax: $${taxAmount.toFixed(2)}`;
   }
 
-  if (typeof eoTrackViewCart === 'function' && window.location.pathname.toLowerCase().includes('cart.html')) {
+  if (typeof eoTrackViewCart === 'function' && /^\/?cart(?:\.html)?$/i.test(window.location.pathname.replace(/^\//, ''))) {
     eoTrackViewCart(cart, finalTotal);
   }
 

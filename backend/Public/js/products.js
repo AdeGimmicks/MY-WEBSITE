@@ -302,7 +302,9 @@ function renderProductCard(product) {
   const stock = Number(product.stock || 0);
   const stockText = stock > 0 ? `${stock} in stock` : 'Out of stock';
   const disabledClass = stock > 0 ? '' : ' disabled';
-  const productUrl = product.page || `product.html?id=${encodeURIComponent(product.id)}`;
+  const productUrl = product.id
+    ? `/${encodeURIComponent(product.id)}`
+    : product.page || `product.html?id=${encodeURIComponent(product.id)}`;
 
   return `
     <div class="product-card">

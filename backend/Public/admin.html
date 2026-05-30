@@ -986,7 +986,7 @@
       els.managerImage.value = product.image && !product.image.startsWith("data:") ? product.image : "";
       els.managerDescription.value = product.description || "";
       els.managerImagePreview.style.backgroundImage = product.image ? `url("${safeImage(product.image)}")` : "";
-      els.managerProductLink.href = product.page || "products.html";
+      els.managerProductLink.href = product.id ? `/${encodeURIComponent(product.id)}` : "/products";
       renderGallery(product);
       renderProductDropdown();
       renderProductList();
@@ -1027,7 +1027,7 @@
       els.managerImage.value = "";
       els.managerDescription.value = "";
       els.managerImagePreview.style.backgroundImage = "";
-      els.managerProductLink.href = "products.html";
+      els.managerProductLink.href = "/products";
       renderGallery(null);
       renderProductList();
       showToast("New product mode. Add details and photos, then save.");

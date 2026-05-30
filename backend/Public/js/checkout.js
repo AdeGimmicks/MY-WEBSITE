@@ -22,7 +22,7 @@ function buyNow(name, price, image) {
     image
   };
   localStorage.setItem('checkoutItem', JSON.stringify(product)); // Not "cart"
-  window.location.href = "checkout.html";
+  window.location.href = "/checkout";
 }
 
 document.addEventListener('DOMContentLoaded', () => {
