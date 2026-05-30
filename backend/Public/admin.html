@@ -403,6 +403,21 @@
       gap: 10px;
     }
 
+    .manager-visitors {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(23, 32, 51, 0.05);
+      margin-top: 18px;
+      padding: 16px;
+    }
+
+    .visitor-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
     .activity-item {
       background: #f8fafc;
       border: 1px solid var(--line);
@@ -555,6 +570,11 @@
           <div id="statusList" class="activity-list"></div>
         </section>
       </div>
+
+      <section class="manager-visitors">
+        <div class="manager-form-head"><div><p class="eyebrow">Website visitors</p><h3>Visitor Activity</h3></div><button class="text-button" id="refreshVisitorsButton" type="button">Refresh</button></div>
+        <div id="visitorsList" class="visitor-grid"></div>
+      </section>
     </section>
   </main>
 
@@ -685,8 +705,10 @@
       importCatalogInput: document.querySelector("#importCatalogInput"),
       hideProductButton: document.querySelector("#hideProductButton"),
       ordersList: document.querySelector("#ordersList"),
+      visitorsList: document.querySelector("#visitorsList"),
       statusList: document.querySelector("#statusList"),
       refreshOrdersButton: document.querySelector("#refreshOrdersButton"),
+      refreshVisitorsButton: document.querySelector("#refreshVisitorsButton"),
       saveModeLabel: document.querySelector("#saveModeLabel"),
       toast: document.querySelector("#toast")
     };
@@ -1013,6 +1035,42 @@
       }
     }
 
+    function visitorLabel(visitor) {
+      return visitor.customerName || visitor.customerEmail || `Visitor ${String(visitor.visitorId || "").slice(-6) || ""}`;
+    }
+
+    function visitorLocationText(visitor) {
+      const location = visitor.location || {};
+      const place = [location.city, location.region].filter(Boolean).join(", ");
+      return place || location.country || "Unknown location";
+    }
+
+    function eventNameLabel(eventName) {
+      return String(eventName || "page_view").replace(/_/g, " ");
+    }
+
+    function lastVisitorEvents(visitor) {
+      const events = Array.isArray(visitor.events) ? visitor.events.slice(-4).reverse() : [];
+      return events.map(event => `<p>${eventNameLabel(event.event)} - ${event.productName || event.title || event.page || "Website"}${event.timestamp ? ` - ${new Date(event.timestamp).toLocaleString()}` : ""}</p>`).join("");
+    }
+
+    async function loadVisitors() {
+      try {
+        const visitors = await fetchJson("/api/admin/visitors");
+        els.visitorsList.innerHTML = visitors.length ? visitors.slice(0, 12).map(visitor => `
+          <div class="activity-item">
+            <strong>${visitorLabel(visitor)}</strong>
+            <p>${visitor.device || "Device"} / ${visitor.browser || "Browser"} - ${visitorLocationText(visitor)}</p>
+            <p>Last action: ${eventNameLabel(visitor.lastEvent)}${visitor.lastProduct ? ` - ${visitor.lastProduct}` : ""}</p>
+            <p>Last seen: ${visitor.lastSeen ? new Date(visitor.lastSeen).toLocaleString() : "Unknown"}</p>
+            ${lastVisitorEvents(visitor)}
+          </div>
+        `).join("") : "<p class='help-text'>No visitor activity yet.</p>";
+      } catch (error) {
+        els.visitorsList.innerHTML = `<p class="help-text">${error.message}</p>`;
+      }
+    }
+
     async function resendOrderEmail(orderNumber) {
       if (!orderNumber) return;
       try {
@@ -1142,7 +1200,7 @@
       showToast("Product hidden in preview. Save product to publish this status.");
     }
 
-    els.refreshButton.addEventListener("click", () => Promise.all([refreshManager(), loadOrders()]));
+    els.refreshButton.addEventListener("click", () => Promise.all([refreshManager(), loadOrders(), loadVisitors()]));
     els.managerSearch.addEventListener("input", renderProductList);
     els.managerProductList.addEventListener("click", event => {
       const button = event.target.closest("[data-product-id]");
@@ -1188,10 +1246,12 @@
     els.importCatalogInput.addEventListener("change", importCatalog);
     els.hideProductButton.addEventListener("click", hideProduct);
     els.refreshOrdersButton.addEventListener("click", loadOrders);
+    els.refreshVisitorsButton.addEventListener("click", loadVisitors);
 
     checkSetup();
     refreshManager();
     loadOrders();
+    loadVisitors();
   </script>
 </body>
 </html>

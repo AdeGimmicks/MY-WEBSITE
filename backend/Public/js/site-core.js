@@ -51,6 +51,51 @@ function eoAnalyticsItem(item) {
   };
 }
 
+function eoVisitorId() {
+  const key = 'eoVisitorId';
+  let visitorId = localStorage.getItem(key);
+  if (!visitorId) {
+    visitorId = `eo-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem(key, visitorId);
+  }
+  return visitorId;
+}
+
+function eoSessionId() {
+  const key = 'eoSessionId';
+  let sessionId = sessionStorage.getItem(key);
+  if (!sessionId) {
+    sessionId = `eos-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    sessionStorage.setItem(key, sessionId);
+  }
+  return sessionId;
+}
+
+function eoTrackManagerVisit(event, params = {}) {
+  const payload = {
+    visitorId: eoVisitorId(),
+    sessionId: eoSessionId(),
+    event,
+    page: window.location.pathname.split('/').pop() || 'index.html',
+    title: document.title,
+    referrer: document.referrer || 'Direct',
+    ...params
+  };
+
+  const body = JSON.stringify(payload);
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon('/api/visitor-event', new Blob([body], { type: 'application/json' }));
+    return;
+  }
+
+  fetch('/api/visitor-event', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body,
+    keepalive: true
+  }).catch(() => {});
+}
+
 function eoTrackEvent(eventName, params = {}) {
   if (typeof gtag !== 'function') return;
   gtag('event', eventName, params);
@@ -85,6 +130,12 @@ function eoTrackProductView(product) {
     currency: 'USD',
     value: price
   });
+
+  eoTrackManagerVisit('product_view', {
+    productId: itemId,
+    productName: product.name,
+    value: price
+  });
 }
 
 function eoTrackAddToCart(item) {
@@ -105,6 +156,12 @@ function eoTrackAddToCart(item) {
     currency: 'USD',
     value: price
   });
+
+  eoTrackManagerVisit('add_to_cart', {
+    productId: itemId,
+    productName: item.name,
+    value: price
+  });
 }
 
 function eoTrackBeginCheckout(cart, total) {
@@ -121,6 +178,11 @@ function eoTrackBeginCheckout(cart, total) {
     content_type: 'product',
     currency: 'USD',
     num_items: items.reduce((sum, item) => sum + Number(item.quantity || 1), 0),
+    value: Number(total || 0)
+  });
+
+  eoTrackManagerVisit('checkout_started', {
+    productName: items.map(item => item.name).filter(Boolean).join(', '),
     value: Number(total || 0)
   });
 }
@@ -154,6 +216,11 @@ function eoTrackPurchase(order) {
     num_items: items.reduce((sum, item) => sum + Number(item.quantity || 1), 0),
     value
   });
+
+  eoTrackManagerVisit('purchase', {
+    productName: items.map(item => item.name).filter(Boolean).join(', '),
+    value
+  });
 }
 
 window.eoTrackEvent = eoTrackEvent;
@@ -162,3 +229,8 @@ window.eoTrackAddToCart = eoTrackAddToCart;
 window.eoTrackBeginCheckout = eoTrackBeginCheckout;
 window.eoTrackViewCart = eoTrackViewCart;
 window.eoTrackPurchase = eoTrackPurchase;
+window.eoVisitorId = eoVisitorId;
+
+if (!document.body?.dataset || document.body.dataset.page !== 'manager') {
+  eoTrackManagerVisit('page_view');
+}

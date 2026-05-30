@@ -29,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'Public')));
 let ordersCollection;
 let productsCollection;
 let settingsCollection;
+let visitorsCollection;
 
 const seedProductsPath = path.join(__dirname, 'Public', 'data', 'products.json');
 
@@ -320,6 +321,7 @@ async function startServer() {
     ordersCollection = db.collection("orders");
     productsCollection = db.collection("products");
     settingsCollection = db.collection("settings");
+    visitorsCollection = db.collection("visitors");
 
     const productCount = await productsCollection.countDocuments();
     if (productCount === 0) {
@@ -669,6 +671,118 @@ app.get('/api/admin/stats', requireAdmin, async (req, res) => {
 
 
 // ==============================
+// Website Visitor Activity
+// ==============================
+
+function visitorDevice(userAgent = "") {
+  if (/ipad|tablet/i.test(userAgent)) return "Tablet";
+  if (/mobile|iphone|android/i.test(userAgent)) return "Mobile";
+  return "Desktop";
+}
+
+function visitorBrowser(userAgent = "") {
+  if (/Edg\//.test(userAgent)) return "Edge";
+  if (/Chrome\//.test(userAgent) && !/Edg\//.test(userAgent)) return "Chrome";
+  if (/Safari\//.test(userAgent) && !/Chrome\//.test(userAgent)) return "Safari";
+  if (/Firefox\//.test(userAgent)) return "Firefox";
+  return "Browser";
+}
+
+function visitorLocation(req) {
+  const city = cleanVisitorText(req.get('cf-ipcity') || req.get('x-vercel-ip-city') || "");
+  const region = cleanVisitorText(req.get('cf-region') || req.get('x-vercel-ip-country-region') || "");
+  const country = cleanVisitorText(req.get('cf-ipcountry') || req.get('x-vercel-ip-country') || "");
+
+  return { city, region, country };
+}
+
+function cleanVisitorText(value, fallback = "") {
+  return String(value || fallback).trim().slice(0, 220);
+}
+
+app.post('/api/visitor-event', async (req, res) => {
+  try {
+    if (!visitorsCollection) return res.json({ success: true });
+
+    const now = new Date().toISOString();
+    const userAgent = req.get('user-agent') || "";
+    const visitorId = cleanVisitorText(req.body.visitorId || crypto.randomUUID()).slice(0, 80);
+    const sessionId = cleanVisitorText(req.body.sessionId || "").slice(0, 80);
+    const eventName = cleanVisitorText(req.body.event || "page_view", "page_view").slice(0, 60);
+    const page = cleanVisitorText(req.body.page || req.get('referer') || "Website");
+    const title = cleanVisitorText(req.body.title || page);
+    const productName = cleanVisitorText(req.body.productName || req.body.content_name || "");
+    const productId = cleanVisitorText(req.body.productId || "");
+    const referrer = cleanVisitorText(req.body.referrer || req.get('referer') || "Direct");
+    const location = visitorLocation(req);
+
+    const event = {
+      event: eventName,
+      page,
+      title,
+      productId,
+      productName,
+      value: Number(req.body.value || 0),
+      timestamp: now
+    };
+
+    await visitorsCollection.updateOne(
+      { visitorId },
+      {
+        $setOnInsert: {
+          visitorId,
+          firstSeen: now
+        },
+        $set: {
+          sessionId,
+          lastSeen: now,
+          lastEvent: eventName,
+          lastPage: page,
+          lastTitle: title,
+          lastProduct: productName,
+          referrer,
+          location,
+          device: visitorDevice(userAgent),
+          browser: visitorBrowser(userAgent),
+          userAgent: userAgent.slice(0, 300)
+        },
+        $inc: { visitCount: eventName === "page_view" ? 1 : 0 },
+        $push: {
+          events: {
+            $each: [event],
+            $slice: -40
+          }
+        }
+      },
+      { upsert: true }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Failed to save visitor event:", err);
+    res.json({ success: false });
+  }
+});
+
+app.get('/api/admin/visitors', requireAdmin, async (req, res) => {
+  try {
+    const visitors = await visitorsCollection
+      .find({}, { projection: { userAgent: 0 } })
+      .sort({ lastSeen: -1 })
+      .limit(50)
+      .toArray();
+
+    res.json(visitors);
+  } catch (err) {
+    console.error("❌ Failed to fetch visitors:", err);
+    res.status(500).send({
+      message: "Failed to fetch visitors"
+    });
+  }
+});
+
+
+// ==============================
 // Stripe Payment Intent
 // ==============================
 
@@ -733,6 +847,22 @@ app.post('/save-order', async (req, res) => {
     };
 
     await ordersCollection.insertOne(orderData);
+
+    if (orderData.visitorId && visitorsCollection) {
+      await visitorsCollection.updateOne(
+        { visitorId: String(orderData.visitorId) },
+        {
+          $set: {
+            customerName: orderData.customer.name,
+            customerEmail: orderData.customer.email,
+            lastOrderNumber: orderNumber,
+            lastOrderTotal: orderData.total,
+            lastSeen: orderData.timestamp,
+            lastEvent: "purchase"
+          }
+        }
+      );
+    }
 
     const emailResult = await sendOrderEmail(orderData, orderMailOptions(orderData));
 
