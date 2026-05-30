@@ -32,6 +32,19 @@ let settingsCollection;
 
 const seedProductsPath = path.join(__dirname, 'Public', 'data', 'products.json');
 
+function formatStoreTime(timestamp) {
+  return new Date(timestamp).toLocaleString('en-US', {
+    timeZone: 'America/Chicago',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+}
+
 function hashAdminKey(adminKey, salt = crypto.randomBytes(16).toString('hex')) {
   const hash = crypto.pbkdf2Sync(adminKey, salt, 100000, 64, 'sha512').toString('hex');
   return { salt, hash };
@@ -291,7 +304,7 @@ function orderMailOptions(orderData) {
       <p><strong>Total Paid:</strong> $${orderData.total}</p>
 
       <p><strong>Order Time:</strong>
-      ${new Date(orderData.timestamp).toLocaleString()}</p>
+      ${formatStoreTime(orderData.timestamp)}</p>
 
       <p>We’ve received your order and it is being processed.</p>
     `
