@@ -50,7 +50,7 @@
 
   <p style="margin-top: 40px;">
     <span id="email-status-message">We’re sending your email confirmation.</span><br>
-    <strong>If it says sent but you don’t see it, please check your Spam or Promotions folder and mark it as “Not Spam.”</strong><br>
+    If you don’t see it in your inbox, please check your Spam or Promotions folder and mark it as “Not Spam.”<br>
     If you have any questions, feel free to <a href="contact.html">contact us</a>.
   </p>
   
@@ -85,7 +85,7 @@
     }
 
     function emailStatusText(status, error) {
-      if (status === 'sent') return 'Email confirmation sent.';
+      if (status === 'sent') return 'Your confirmation email has been sent.';
       if (status === 'failed') return `Email confirmation failed${error ? `: ${error}` : '.'}`;
       if (status === 'pending') return 'Email confirmation is still sending.';
       return 'Email confirmation status is being checked.';
