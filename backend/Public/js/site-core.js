@@ -1,4 +1,5 @@
 const GA_MEASUREMENT_ID = 'G-RZLCQBJB3E';
+const META_PIXEL_ID = '457800017160804';
 
 window.dataLayer = window.dataLayer || [];
 function gtag(){window.dataLayer.push(arguments);}
@@ -14,6 +15,29 @@ function gtag(){window.dataLayer.push(arguments);}
 
 gtag('js', new Date());
 gtag('config', GA_MEASUREMENT_ID);
+
+(function loadMetaPixel() {
+  if (window.fbq) return;
+
+  window._fbq = window._fbq || [];
+  const fbq = window.fbq = function() {
+    fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments);
+  };
+
+  if (!window._fbq) window._fbq = fbq;
+  fbq.push = fbq;
+  fbq.loaded = true;
+  fbq.version = '2.0';
+  fbq.queue = [];
+
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+  document.head.appendChild(script);
+
+  fbq('init', META_PIXEL_ID);
+  fbq('track', 'PageView');
+})();
 
 function eoAnalyticsItem(item) {
   const quantity = Number(item.quantity || 1);
@@ -32,9 +56,15 @@ function eoTrackEvent(eventName, params = {}) {
   gtag('event', eventName, params);
 }
 
+function eoTrackMeta(eventName, params = {}) {
+  if (typeof fbq !== 'function') return;
+  fbq('track', eventName, params);
+}
+
 function eoTrackProductView(product) {
   if (!product) return;
   const price = Number(product.price || 0);
+  const itemId = product.id || product.name;
 
   eoTrackEvent('view_item', {
     currency: 'USD',
@@ -47,24 +77,51 @@ function eoTrackProductView(product) {
       quantity: 1
     })]
   });
+
+  eoTrackMeta('ViewContent', {
+    content_ids: [itemId],
+    content_name: product.name,
+    content_type: 'product',
+    currency: 'USD',
+    value: price
+  });
 }
 
 function eoTrackAddToCart(item) {
   if (!item) return;
   const price = Number(item.price || 0);
+  const itemId = item.productId || item.id || item.name;
 
   eoTrackEvent('add_to_cart', {
     currency: 'USD',
     value: price,
     items: [eoAnalyticsItem(item)]
   });
+
+  eoTrackMeta('AddToCart', {
+    content_ids: [itemId],
+    content_name: item.name,
+    content_type: 'product',
+    currency: 'USD',
+    value: price
+  });
 }
 
 function eoTrackBeginCheckout(cart, total) {
+  const items = Array.isArray(cart) ? cart : [];
+
   eoTrackEvent('begin_checkout', {
     currency: 'USD',
     value: Number(total || 0),
-    items: (Array.isArray(cart) ? cart : []).map(eoAnalyticsItem)
+    items: items.map(eoAnalyticsItem)
+  });
+
+  eoTrackMeta('InitiateCheckout', {
+    content_ids: items.map(item => item.productId || item.id || item.name),
+    content_type: 'product',
+    currency: 'USD',
+    num_items: items.reduce((sum, item) => sum + Number(item.quantity || 1), 0),
+    value: Number(total || 0)
   });
 }
 
@@ -78,14 +135,24 @@ function eoTrackViewCart(cart, total) {
 
 function eoTrackPurchase(order) {
   if (!order) return;
+  const items = Array.isArray(order.items) ? order.items : [];
+  const value = Number(order.total || 0);
 
   eoTrackEvent('purchase', {
     transaction_id: order.orderNumber || order.paymentId || `EO-${Date.now()}`,
     currency: 'USD',
-    value: Number(order.total || 0),
+    value,
     tax: Number(order.tax || 0),
     shipping: Number(order.shipping || 0),
-    items: (Array.isArray(order.items) ? order.items : []).map(eoAnalyticsItem)
+    items: items.map(eoAnalyticsItem)
+  });
+
+  eoTrackMeta('Purchase', {
+    content_ids: items.map(item => item.productId || item.id || item.name),
+    content_type: 'product',
+    currency: 'USD',
+    num_items: items.reduce((sum, item) => sum + Number(item.quantity || 1), 0),
+    value
   });
 }
 
