@@ -88,3 +88,10 @@ function eoTrackPurchase(order) {
     items: (Array.isArray(order.items) ? order.items : []).map(eoAnalyticsItem)
   });
 }
+
+window.eoTrackEvent = eoTrackEvent;
+window.eoTrackProductView = eoTrackProductView;
+window.eoTrackAddToCart = eoTrackAddToCart;
+window.eoTrackBeginCheckout = eoTrackBeginCheckout;
+window.eoTrackViewCart = eoTrackViewCart;
+window.eoTrackPurchase = eoTrackPurchase;
