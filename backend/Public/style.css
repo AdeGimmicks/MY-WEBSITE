@@ -220,6 +220,82 @@ body {
 .product-card {
   cursor: pointer;
 }
+
+.reviews-section {
+  padding: 46px 0;
+  background: #f0f0f4;
+}
+
+.reviews-header {
+  max-width: 780px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.reviews-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #b58b00;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reviews-header h3 {
+  margin: 0 0 12px;
+  color: #1a1a2e;
+  font-size: 2rem;
+  line-height: 1.15;
+}
+
+.rating-summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: #4b5563;
+  font-size: 0.98rem;
+}
+
+.stars,
+.review-stars {
+  color: #f9c80e;
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 0 rgba(26, 26, 46, 0.14);
+}
+
+.rating-summary strong {
+  color: #1a1a2e;
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.review-card {
+  min-height: 190px;
+  padding: 22px;
+  border: 1px solid #e2e6ef;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(26, 26, 46, 0.06);
+}
+
+.review-card p {
+  margin: 14px 0 18px;
+  color: #222;
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+.review-card strong {
+  color: #667085;
+  font-size: 0.92rem;
+}
   
   footer {
     background: #1a1a2e;
@@ -873,6 +949,47 @@ img {
 
   footer {
     margin-top: 0;
+  }
+
+  .reviews-section {
+    padding: 28px 12px;
+    background: #fff;
+  }
+
+  .reviews-section .container {
+    width: 100%;
+  }
+
+  .reviews-header {
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .reviews-header h3 {
+    font-size: 1.35rem;
+  }
+
+  .rating-summary {
+    justify-content: flex-start;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+
+  .review-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .review-card {
+    min-height: 0;
+    padding: 16px;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+
+  .review-card p {
+    font-size: 0.95rem;
+    margin: 10px 0 12px;
   }
 
 }
