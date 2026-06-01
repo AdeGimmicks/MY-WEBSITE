@@ -387,6 +387,64 @@
       width: 100%;
     }
 
+    .review-manager-layout {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(260px, 0.55fr) minmax(0, 1fr);
+    }
+
+    .review-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-button {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--ink);
+      display: grid;
+      gap: 6px;
+      padding: 14px;
+      text-align: left;
+      white-space: normal;
+    }
+
+    .review-button.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: white;
+    }
+
+    .review-button span {
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    .review-button p {
+      color: inherit;
+      margin: 0;
+    }
+
+    .review-toggle-row {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .review-toggle-row label {
+      align-items: center;
+      display: inline-flex;
+      gap: 8px;
+      font-weight: 800;
+    }
+
+    .review-toggle-row input {
+      width: auto;
+    }
+
     .manager-activity {
       display: grid;
       gap: 18px;
@@ -526,7 +584,8 @@
       .auth-strip,
       .setup-grid,
       .manager-layout,
-      .manager-activity {
+      .manager-activity,
+      .review-manager-layout {
         grid-template-columns: 1fr;
       }
 
@@ -557,6 +616,7 @@
       .manager-grid,
       .product-select-row,
       .manager-gallery-preview,
+      .review-manager-layout,
       .visitor-item {
         grid-template-columns: 1fr;
       }
@@ -636,6 +696,50 @@
                 <button class="ghost-button" id="exportCatalogButton" type="button">Export catalog</button>
                 <label class="ghost-button file-button">Import catalog<input id="importCatalogInput" type="file" accept="application/json" /></label>
                 <button class="text-button danger-button" id="hideProductButton" type="button">Hide product</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </details>
+
+      <details class="manager-panel">
+        <summary><div><p class="eyebrow">Reviews</p><h3>Customer Reviews</h3></div></summary>
+        <div class="manager-panel-body">
+          <div class="review-manager-layout">
+            <aside class="manager-list" aria-label="Customer review list">
+              <div class="manager-form-head">
+                <div><p class="eyebrow">Reviews</p><h3>Saved reviews</h3></div>
+                <button class="gold-button" id="addNewReviewButton" type="button">Add review</button>
+              </div>
+              <div id="reviewList" class="review-list"></div>
+            </aside>
+
+            <form class="manager-form" id="reviewForm">
+              <div class="manager-form-head">
+                <div><p class="eyebrow">Selected review</p><h3 id="reviewSelectedName">Choose a review</h3></div>
+                <button class="text-button" id="resetReviewButton" type="button">Reset review</button>
+              </div>
+
+              <div class="manager-grid">
+                <label class="field"><span>Reviewer name</span><input id="reviewName" type="text" required /></label>
+                <label class="field"><span>Star rating</span><select id="reviewRating">
+                  <option value="5">5 stars</option>
+                  <option value="4">4 stars</option>
+                  <option value="3">3 stars</option>
+                  <option value="2">2 stars</option>
+                  <option value="1">1 star</option>
+                </select></label>
+                <label class="field full"><span>Review text</span><textarea id="reviewText" rows="5" maxlength="280" required></textarea></label>
+              </div>
+
+              <div class="review-toggle-row">
+                <label><input id="reviewActive" type="checkbox" checked /> Show on website</label>
+                <label><input id="reviewFeatured" type="checkbox" checked /> Featured</label>
+              </div>
+
+              <div class="manager-actions">
+                <button class="primary-button" type="submit">Save review</button>
+                <button class="text-button danger-button" id="hideReviewButton" type="button">Hide review</button>
               </div>
             </form>
           </div>
@@ -771,6 +875,9 @@
     let draftGallery = [];
     let catalogProducts = null;
     let visitorActivity = [];
+    let reviews = [];
+    let selectedReviewId = "";
+    let isNewReview = false;
 
     const els = {
       refreshButton: document.querySelector("#refreshButton"),
@@ -806,6 +913,17 @@
       refreshOrdersButton: document.querySelector("#refreshOrdersButton"),
       refreshVisitorsButton: document.querySelector("#refreshVisitorsButton"),
       downloadVisitorsButton: document.querySelector("#downloadVisitorsButton"),
+      addNewReviewButton: document.querySelector("#addNewReviewButton"),
+      reviewList: document.querySelector("#reviewList"),
+      reviewForm: document.querySelector("#reviewForm"),
+      reviewSelectedName: document.querySelector("#reviewSelectedName"),
+      reviewName: document.querySelector("#reviewName"),
+      reviewRating: document.querySelector("#reviewRating"),
+      reviewText: document.querySelector("#reviewText"),
+      reviewActive: document.querySelector("#reviewActive"),
+      reviewFeatured: document.querySelector("#reviewFeatured"),
+      resetReviewButton: document.querySelector("#resetReviewButton"),
+      hideReviewButton: document.querySelector("#hideReviewButton"),
       saveModeLabel: document.querySelector("#saveModeLabel"),
       toast: document.querySelector("#toast")
     };
@@ -1113,8 +1231,136 @@
       els.statusList.innerHTML = `
         <div class="activity-item"><strong>Saving</strong><p>Open manager. Saves publish to MongoDB.</p></div>
         <div class="activity-item"><strong>Current product</strong><p>${currentProduct()?.name || "None selected"}</p></div>
+        <div class="activity-item"><strong>Reviews</strong><p>${reviews.length} saved customer reviews.</p></div>
         <div class="activity-item"><strong>Message</strong><p>${message}</p></div>
       `;
+    }
+
+    function reviewStars(rating) {
+      const count = Math.min(5, Math.max(1, Number(rating || 5)));
+      return "&#9733;".repeat(count) + "&#9734;".repeat(5 - count);
+    }
+
+    function currentReview() {
+      return reviews.find(review => review.id === selectedReviewId) || reviews[0];
+    }
+
+    function reviewIdFromName(name) {
+      return String(name || "review")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    function uniqueReviewId(name) {
+      const base = reviewIdFromName(name);
+      let candidate = base;
+      let count = 2;
+      while (reviews.some(review => review.id === candidate)) {
+        candidate = `${base}-${count}`;
+        count += 1;
+      }
+      return candidate;
+    }
+
+    function renderReviewList() {
+      els.reviewList.innerHTML = reviews.length ? reviews.map(review => `
+        <button class="review-button ${review.id === selectedReviewId ? "active" : ""}" type="button" data-review-id="${review.id}">
+          <strong>${review.name || "Customer"}</strong>
+          <span>${reviewStars(review.rating)}</span>
+          <p>${review.text || ""}</p>
+          <small>${review.active === false ? "Hidden" : "Showing"}${review.featured === false ? "" : " - Featured"}</small>
+        </button>
+      `).join("") : "<p class='help-text'>No reviews yet. Add your first review.</p>";
+    }
+
+    function fillReviewForm(review) {
+      if (!review) {
+        startNewReview();
+        return;
+      }
+      isNewReview = false;
+      selectedReviewId = review.id;
+      els.reviewSelectedName.textContent = review.name || "Selected review";
+      els.reviewName.value = review.name || "";
+      els.reviewRating.value = String(review.rating || 5);
+      els.reviewText.value = review.text || "";
+      els.reviewActive.checked = review.active !== false;
+      els.reviewFeatured.checked = review.featured !== false;
+      renderReviewList();
+    }
+
+    function startNewReview() {
+      isNewReview = true;
+      selectedReviewId = "";
+      els.reviewSelectedName.textContent = "New review";
+      els.reviewName.value = "";
+      els.reviewRating.value = "5";
+      els.reviewText.value = "";
+      els.reviewActive.checked = true;
+      els.reviewFeatured.checked = true;
+      renderReviewList();
+    }
+
+    async function loadReviews() {
+      try {
+        reviews = await fetchJson("/api/admin/reviews");
+      } catch (error) {
+        reviews = [];
+        els.reviewList.innerHTML = `<p class="help-text">${error.message}</p>`;
+        return;
+      }
+      if (!selectedReviewId && reviews[0]) selectedReviewId = reviews[0].id;
+      fillReviewForm(currentReview());
+      renderStatus("Catalog loaded. Changes save directly to MongoDB.");
+    }
+
+    function reviewPayload() {
+      const existing = isNewReview ? {} : currentReview() || {};
+      const name = els.reviewName.value.trim();
+      return {
+        ...existing,
+        id: isNewReview ? uniqueReviewId(name) : existing.id,
+        name,
+        rating: Number(els.reviewRating.value) || 5,
+        text: els.reviewText.value.trim(),
+        active: els.reviewActive.checked,
+        featured: els.reviewFeatured.checked
+      };
+    }
+
+    async function saveReview(event) {
+      event.preventDefault();
+      const review = reviewPayload();
+      try {
+        const saved = await fetchJson(isNewReview ? "/api/admin/reviews" : `/api/admin/reviews/${review.id}`, {
+          method: isNewReview ? "POST" : "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(review)
+        });
+        const exists = reviews.some(item => item.id === saved.id);
+        reviews = exists ? reviews.map(item => item.id === saved.id ? saved : item) : [saved, ...reviews];
+        selectedReviewId = saved.id;
+        isNewReview = false;
+        fillReviewForm(saved);
+        showToast("Review saved. The website will show it after refresh.");
+      } catch (error) {
+        showToast(error.message);
+      }
+    }
+
+    async function hideReview() {
+      const review = currentReview();
+      if (!review) return;
+      try {
+        const saved = await fetchJson(`/api/admin/reviews/${review.id}`, { method: "DELETE" });
+        reviews = reviews.map(item => item.id === saved.id ? saved : item);
+        fillReviewForm(saved);
+        showToast("Review hidden from the website.");
+      } catch (error) {
+        showToast(error.message);
+      }
     }
 
     async function loadOrders() {
@@ -1341,7 +1587,17 @@
       showToast("Product hidden in preview. Save product to publish this status.");
     }
 
-    els.refreshButton.addEventListener("click", () => Promise.all([refreshManager(), loadOrders(), loadVisitors()]));
+    els.refreshButton.addEventListener("click", () => Promise.all([refreshManager(), loadReviews(), loadOrders(), loadVisitors()]));
+    els.addNewReviewButton.addEventListener("click", startNewReview);
+    els.reviewList.addEventListener("click", event => {
+      const button = event.target.closest("[data-review-id]");
+      if (!button) return;
+      selectedReviewId = button.dataset.reviewId;
+      fillReviewForm(currentReview());
+    });
+    els.reviewForm.addEventListener("submit", saveReview);
+    els.resetReviewButton.addEventListener("click", () => fillReviewForm(currentReview()));
+    els.hideReviewButton.addEventListener("click", hideReview);
     els.managerSearch.addEventListener("input", renderProductList);
     els.managerProductList.addEventListener("click", event => {
       const button = event.target.closest("[data-product-id]");
@@ -1392,6 +1648,7 @@
 
     checkSetup();
     refreshManager();
+    loadReviews();
     loadOrders();
     loadVisitors();
   </script>

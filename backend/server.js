@@ -72,6 +72,34 @@ let ordersCollection;
 let productsCollection;
 let settingsCollection;
 let visitorsCollection;
+let reviewsCollection;
+
+const defaultCustomerReviews = [
+  {
+    id: 'easy-samsung-order',
+    name: 'Recent customer',
+    text: 'Checkout was simple, and I found the right Samsung remote without stress.',
+    rating: 5,
+    active: true,
+    featured: true
+  },
+  {
+    id: 'clear-product-photos',
+    name: 'TV remote buyer',
+    text: 'The product page made it easy to compare the remote pictures before ordering.',
+    rating: 5,
+    active: true,
+    featured: true
+  },
+  {
+    id: 'clean-order-receipt',
+    name: 'Online shopper',
+    text: 'Clear pricing, easy cart, and the order receipt showed everything I needed.',
+    rating: 5,
+    active: true,
+    featured: true
+  }
+];
 
 function formatStoreTime(timestamp) {
   return new Date(timestamp).toLocaleString('en-US', {
@@ -271,6 +299,35 @@ function normalizeProduct(product) {
   };
 }
 
+function normalizeReview(review) {
+  const name = String(review.name || '').trim();
+  const text = String(review.text || '').trim();
+  const id = String(review.id || `${name}-${text}` || 'review').trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  return {
+    id,
+    name,
+    text,
+    rating: Math.min(5, Math.max(1, Number(review.rating || 5))),
+    active: review.active !== false,
+    featured: review.featured !== false,
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function validateReview(review) {
+  if (!review.id || !review.name || !review.text) {
+    return 'Reviewer name and review text are required';
+  }
+  if (review.text.length > 280) {
+    return 'Review text must stay under 280 characters';
+  }
+  return '';
+}
+
 // Create email transporter once
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -362,6 +419,7 @@ async function startServer() {
     productsCollection = db.collection("products");
     settingsCollection = db.collection("settings");
     visitorsCollection = db.collection("visitors");
+    reviewsCollection = db.collection("reviews");
     await visitorsCollection.createIndex({ lastSeenDate: 1 }, { expireAfterSeconds: 86400 });
 
     const productCount = await productsCollection.countDocuments();
@@ -452,6 +510,15 @@ async function startServer() {
         }
       );
       console.log("✅ Product galleries checked");
+    }
+
+    const reviewCount = await reviewsCollection.countDocuments();
+    if (reviewCount === 0) {
+      await reviewsCollection.insertMany(defaultCustomerReviews.map(review => ({
+        ...normalizeReview(review),
+        createdAt: new Date().toISOString()
+      })));
+      console.log(`✅ Seeded ${defaultCustomerReviews.length} reviews`);
     }
 
     console.log("✅ Connected to MongoDB Atlas");
@@ -560,6 +627,27 @@ app.get('/api/products/:id', async (req, res) => {
     console.error("❌ Failed to fetch product:", err);
     res.status(500).send({
       message: "Failed to fetch product"
+    });
+  }
+});
+
+app.get('/api/reviews', async (req, res) => {
+  try {
+    if (!reviewsCollection) {
+      return res.json(defaultCustomerReviews.filter(review => review.active !== false));
+    }
+
+    const reviews = await reviewsCollection
+      .find({ active: { $ne: false } })
+      .sort({ featured: -1, updatedAt: -1, name: 1 })
+      .limit(12)
+      .toArray();
+
+    res.json(reviews);
+  } catch (err) {
+    console.error("❌ Failed to fetch reviews:", err);
+    res.status(500).send({
+      message: "Failed to fetch reviews"
     });
   }
 });
@@ -723,6 +811,104 @@ app.delete('/api/admin/products/:id', requireAdmin, async (req, res) => {
     console.error("❌ Failed to remove product:", err);
     res.status(500).send({
       message: "Failed to remove product"
+    });
+  }
+});
+
+app.get('/api/admin/reviews', requireAdmin, async (req, res) => {
+  try {
+    const reviews = await reviewsCollection
+      .find({})
+      .sort({ active: -1, featured: -1, updatedAt: -1, name: 1 })
+      .toArray();
+
+    res.json(reviews);
+  } catch (err) {
+    console.error("❌ Failed to fetch admin reviews:", err);
+    res.status(500).send({
+      message: "Failed to fetch reviews"
+    });
+  }
+});
+
+app.post('/api/admin/reviews', requireAdmin, async (req, res) => {
+  try {
+    const review = {
+      ...normalizeReview(req.body),
+      createdAt: new Date().toISOString()
+    };
+    const validationError = validateReview(review);
+    if (validationError) {
+      return res.status(400).send({ message: validationError });
+    }
+
+    const existing = await reviewsCollection.findOne({ id: review.id });
+    if (existing) {
+      review.id = `${review.id}-${Date.now().toString(36)}`;
+    }
+
+    await reviewsCollection.insertOne(review);
+    res.status(201).json(review);
+  } catch (err) {
+    console.error("❌ Failed to create review:", err);
+    res.status(500).send({
+      message: "Failed to create review"
+    });
+  }
+});
+
+app.put('/api/admin/reviews/:id', requireAdmin, async (req, res) => {
+  try {
+    const review = normalizeReview({
+      ...req.body,
+      id: req.params.id
+    });
+    const validationError = validateReview(review);
+    if (validationError) {
+      return res.status(400).send({ message: validationError });
+    }
+
+    const updatedReview = await reviewsCollection.findOneAndUpdate(
+      { id: req.params.id },
+      { $set: review },
+      { returnDocument: "after" }
+    );
+
+    if (!updatedReview) {
+      return res.status(404).send({ message: "Review not found" });
+    }
+
+    res.json(updatedReview);
+  } catch (err) {
+    console.error("❌ Failed to update review:", err);
+    res.status(500).send({
+      message: "Failed to update review"
+    });
+  }
+});
+
+app.delete('/api/admin/reviews/:id', requireAdmin, async (req, res) => {
+  try {
+    const updatedReview = await reviewsCollection.findOneAndUpdate(
+      { id: req.params.id },
+      {
+        $set: {
+          active: false,
+          updatedAt: new Date().toISOString()
+        }
+      },
+      { returnDocument: "after" }
+    );
+
+    if (!updatedReview) {
+      return res.status(404).send({ message: "Review not found" });
+    }
+
+    res.json(updatedReview);
+  } catch (err) {
+    console.error("❌ Failed to hide review:", err);
+    res.status(500).send({
+      message: "Failed to hide review"
     });
   }
 });
