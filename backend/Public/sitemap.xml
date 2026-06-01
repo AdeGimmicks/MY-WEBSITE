@@ -1,93 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
 <url>
-<loc>https://www.electronicsonly.com/</loc>
+  <loc>https://www.electronicsonly.com/</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/products</loc>
+  <loc>https://www.electronicsonly.com/products</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/about</loc>
+  <loc>https://www.electronicsonly.com/about</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/contact</loc>
+  <loc>https://www.electronicsonly.com/contact</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/fire-tv-voice-remote</loc>
+  <loc>https://www.electronicsonly.com/samsung-smart-remote</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/lg-magic-remote</loc>
+  <loc>https://www.electronicsonly.com/samsung-solar-remote</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/philips-tv-remote</loc>
+  <loc>https://www.electronicsonly.com/roku-streaming-remote</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/roku-streaming-remote</loc>
+  <loc>https://www.electronicsonly.com/fire-tv-voice-remote</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/samsung-smart-remote</loc>
+  <loc>https://www.electronicsonly.com/vizio-tv-remote</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/samsung-solar-remote</loc>
+  <loc>https://www.electronicsonly.com/lg-magic-remote</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/vizio-tv-remote</loc>
+  <loc>https://www.electronicsonly.com/philips-tv-remote</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/tv-remote-starter-1</loc>
+  <loc>https://www.electronicsonly.com/tv-remote-starter-1</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/tv-remote-starter-2</loc>
+  <loc>https://www.electronicsonly.com/tv-remote-starter-2</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/tv-remote-starter-3</loc>
+  <loc>https://www.electronicsonly.com/tv-remote-starter-3</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/tv-remote-starter-4</loc>
+  <loc>https://www.electronicsonly.com/tv-remote-starter-4</loc>
 </url>
-
 <url>
-<loc>https://www.electronicsonly.com/tv-remote-starter-5</loc>
+  <loc>https://www.electronicsonly.com/tv-remote-starter-5</loc>
 </url>
-
-<url>
-<loc>https://www.electronicsonly.com/cart</loc>
-</url>
-
-<url>
-<loc>https://www.electronicsonly.com/checkout</loc>
-</url>
-
-<url>
-<loc>https://www.electronicsonly.com/privacy-policy</loc>
-</url>
-
-<url>
-<loc>https://www.electronicsonly.com/return-policy</loc>
-</url>
-
-<url>
-<loc>https://www.electronicsonly.com/shipping-policy</loc>
-</url>
-
-<url>
-<loc>https://www.electronicsonly.com/terms-and-conditions</loc>
-</url>
-
 </urlset>

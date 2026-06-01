@@ -29,6 +29,14 @@ const cleanPageRoutes = new Map([
   ['terms-and-conditions', 'terms-and-conditions.html'],
   ['thankyou', 'thankyou.html']
 ]);
+const legacyRedirects = new Map([
+  ['/lg-tv-remote.html', '/lg-magic-remote'],
+  ['/philips-tv-remote.html', '/philips-tv-remote'],
+  ['/footer/privacy-policy.html', '/privacy-policy'],
+  ['/footer/shipping-policy.html', '/shipping-policy'],
+  ['/footer/return-policy.html', '/return-policy'],
+  ['/footer/terms-and-conditions.html', '/terms-and-conditions']
+]);
 
 app.get("/robots.txt", (req, res) => {
   res.type("text/plain");
@@ -38,7 +46,72 @@ Allow: /
 Sitemap: https://www.electronicsonly.com/sitemap.xml`);
 });
 
+function escapeSitemapText(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+app.get('/sitemap.xml', async (req, res) => {
+  const baseUrl = 'https://www.electronicsonly.com';
+  const coreRoutes = ['/', '/products', '/about', '/contact'];
+
+  try {
+    let products = [];
+    if (productsCollection) {
+      products = await productsCollection
+        .find({ active: { $ne: false } })
+        .project({ id: 1 })
+        .sort({ featured: -1, name: 1 })
+        .toArray();
+    }
+
+    if (!products.length) {
+      products = readSeedProducts().filter(product => product.active !== false);
+    }
+
+    const urls = [
+      ...coreRoutes,
+      ...products
+        .map(product => `/${String(product.id || '').trim()}`)
+        .filter(route => route.length > 1)
+    ];
+
+    const uniqueUrls = Array.from(new Set(urls));
+    const lastmod = new Date().toISOString().slice(0, 10);
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${uniqueUrls.map(route => `<url>
+  <loc>${escapeSitemapText(`${baseUrl}${route}`)}</loc>
+  <lastmod>${lastmod}</lastmod>
+</url>`).join('\n')}
+</urlset>`;
+
+    res.type('application/xml').send(xml);
+  } catch (err) {
+    console.error('❌ Failed to build sitemap:', err);
+    res.status(500).type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${coreRoutes.map(route => `<url><loc>${baseUrl}${route}</loc></url>`).join('\n')}
+</urlset>`);
+  }
+});
+
 // Rate limit protection
+
+app.use((req, res, next) => {
+  if (!['GET', 'HEAD'].includes(req.method)) return next();
+
+  const cleanPath = decodeURIComponent(req.path).toLowerCase();
+  const redirectTo = legacyRedirects.get(cleanPath);
+  if (!redirectTo) return next();
+
+  const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  res.redirect(301, `${redirectTo}${query}`);
+});
 
 app.use((req, res, next) => {
   if (!['GET', 'HEAD'].includes(req.method) || !req.path.toLowerCase().endsWith('.html')) {
@@ -66,6 +139,18 @@ app.use((req, res, next) => {
 });
 
 // Serve frontend files
+app.use((req, res, next) => {
+  const cleanPath = req.path.toLowerCase().replace(/\.html$/, '');
+
+  if (cleanPath === '/admin') {
+    res.set('X-Robots-Tag', 'noindex, nofollow');
+  } else if (['/cart', '/checkout', '/thankyou'].includes(cleanPath)) {
+    res.set('X-Robots-Tag', 'noindex, follow');
+  }
+
+  next();
+});
+
 app.use(express.static(publicDir));
 
 let ordersCollection;
