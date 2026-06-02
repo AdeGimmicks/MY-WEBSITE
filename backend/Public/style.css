@@ -993,3 +993,10 @@ img {
   }
 
 }
+
+.checkout-note {
+  margin: 6px 0 12px;
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}

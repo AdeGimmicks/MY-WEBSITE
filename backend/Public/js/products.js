@@ -235,7 +235,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "iphone-13",
     "name": "Apple iPhone 13",
-    "description": "Reliable iPhone with smooth performance, clear camera quality, and all-day everyday use. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Reliable iPhone with smooth performance, clear camera quality, and all-day everyday use. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 399.99,
     "image": "Product images/Smart Phones/iphone-standard.svg",
     "page": "product.html?id=iphone-13",
@@ -254,7 +254,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "iphone-13-pro",
     "name": "Apple iPhone 13 Pro",
-    "description": "Premium iPhone with pro camera features, strong battery life, and a sharp display. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Premium iPhone with pro camera features, strong battery life, and a sharp display. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 499.99,
     "image": "Product images/Smart Phones/iphone-pro.svg",
     "page": "product.html?id=iphone-13-pro",
@@ -273,7 +273,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "iphone-14",
     "name": "Apple iPhone 14",
-    "description": "Modern iPhone with fast performance, bright display, and dependable camera quality. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Modern iPhone with fast performance, bright display, and dependable camera quality. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 499.99,
     "image": "Product images/Smart Phones/iphone-standard.svg",
     "page": "product.html?id=iphone-14",
@@ -292,7 +292,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "iphone-14-pro",
     "name": "Apple iPhone 14 Pro",
-    "description": "Pro iPhone option with advanced camera features, smooth display, and premium finish. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Pro iPhone option with advanced camera features, smooth display, and premium finish. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 599.99,
     "image": "Product images/Smart Phones/iphone-pro.svg",
     "page": "product.html?id=iphone-14-pro",
@@ -311,7 +311,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "iphone-15",
     "name": "Apple iPhone 15",
-    "description": "Updated iPhone with USB-C charging, strong camera quality, and smooth daily performance. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Updated iPhone with USB-C charging, strong camera quality, and smooth daily performance. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 649.99,
     "image": "Product images/Smart Phones/iphone-standard.svg",
     "page": "product.html?id=iphone-15",
@@ -330,7 +330,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "iphone-15-pro",
     "name": "Apple iPhone 15 Pro",
-    "description": "Premium iPhone with pro performance, advanced camera features, and a refined design. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Premium iPhone with pro performance, advanced camera features, and a refined design. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 799.99,
     "image": "Product images/Smart Phones/iphone-pro.svg",
     "page": "product.html?id=iphone-15-pro",
@@ -349,7 +349,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "iphone-16",
     "name": "Apple iPhone 16",
-    "description": "Latest-generation iPhone option with fast performance and a clean everyday smartphone feel. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Latest-generation iPhone option with fast performance and a clean everyday smartphone feel. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 799.99,
     "image": "Product images/Smart Phones/iphone-standard.svg",
     "page": "product.html?id=iphone-16",
@@ -368,7 +368,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "iphone-16-pro",
     "name": "Apple iPhone 16 Pro",
-    "description": "High-end iPhone option with pro speed, premium camera capability, and sleek design. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "High-end iPhone option with pro speed, premium camera capability, and sleek design. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 999.99,
     "image": "Product images/Smart Phones/iphone-pro.svg",
     "page": "product.html?id=iphone-16-pro",
@@ -387,7 +387,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "samsung-galaxy-s22",
     "name": "Samsung Galaxy S22",
-    "description": "Compact Android phone with bright display, solid camera quality, and smooth performance. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Compact Android phone with bright display, solid camera quality, and smooth performance. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 299.99,
     "image": "Product images/Smart Phones/android-standard.svg",
     "page": "product.html?id=samsung-galaxy-s22",
@@ -406,7 +406,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "samsung-galaxy-s23",
     "name": "Samsung Galaxy S23",
-    "description": "Fast Samsung Galaxy phone with a bright display, reliable battery, and strong camera quality. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Fast Samsung Galaxy phone with a bright display, reliable battery, and strong camera quality. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 399.99,
     "image": "Product images/Smart Phones/android-pro.svg",
     "page": "product.html?id=samsung-galaxy-s23",
@@ -425,7 +425,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "samsung-galaxy-s24",
     "name": "Samsung Galaxy S24",
-    "description": "Modern Samsung Galaxy smartphone with sharp display, fast performance, and premium design. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Modern Samsung Galaxy smartphone with sharp display, fast performance, and premium design. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 599.99,
     "image": "Product images/Smart Phones/android-pro.svg",
     "page": "product.html?id=samsung-galaxy-s24",
@@ -444,7 +444,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "samsung-galaxy-s25",
     "name": "Samsung Galaxy S25",
-    "description": "New Samsung Galaxy option with flagship-style speed, camera quality, and daily reliability. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "New Samsung Galaxy option with flagship-style speed, camera quality, and daily reliability. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 799.99,
     "image": "Product images/Smart Phones/android-pro.svg",
     "page": "product.html?id=samsung-galaxy-s25",
@@ -463,7 +463,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "google-pixel-7",
     "name": "Google Pixel 7",
-    "description": "Clean Android phone with excellent camera quality, smooth software, and dependable performance. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Clean Android phone with excellent camera quality, smooth software, and dependable performance. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 299.99,
     "image": "Product images/Smart Phones/android-standard.svg",
     "page": "product.html?id=google-pixel-7",
@@ -482,7 +482,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "google-pixel-8",
     "name": "Google Pixel 8",
-    "description": "Google Pixel phone with sharp photos, clean Android software, and strong everyday speed. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Google Pixel phone with sharp photos, clean Android software, and strong everyday speed. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 449.99,
     "image": "Product images/Smart Phones/android-standard.svg",
     "page": "product.html?id=google-pixel-8",
@@ -501,7 +501,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "google-pixel-9",
     "name": "Google Pixel 9",
-    "description": "Modern Pixel smartphone with clean Android experience, bright display, and advanced camera tools. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Modern Pixel smartphone with clean Android experience, bright display, and advanced camera tools. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 599.99,
     "image": "Product images/Smart Phones/android-pro.svg",
     "page": "product.html?id=google-pixel-9",
@@ -520,7 +520,7 @@ const DEFAULT_PRODUCTS = [
   {
     "id": "motorola-moto-g-5g",
     "name": "Motorola Moto G 5G",
-    "description": "Affordable Android smartphone with 5G support, good battery life, and simple everyday use. Used phone. Color may vary after purchase; customers may receive this same model in any available color.",
+    "description": "Affordable Android smartphone with 5G support, good battery life, and simple everyday use. Used/refurbished phone, not new. Color may vary after purchase; customers may receive this same model in any available color. Condition level may vary by available stock, from fair used condition to very good or excellent refurbished condition.",
     "price": 179.99,
     "image": "Product images/Smart Phones/android-standard.svg",
     "page": "product.html?id=motorola-moto-g-5g",
