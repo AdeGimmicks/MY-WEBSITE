@@ -609,12 +609,16 @@ function renderProductCard(product) {
   const productUrl = product.id
     ? `/${encodeURIComponent(product.id)}`
     : product.page || `product.html?id=${encodeURIComponent(product.id)}`;
+  const conditionBadge = product.category === 'Smart Phone'
+    ? '<p class="condition-badge">Used/refurbished phone · Color may vary</p>'
+    : '';
 
   return `
     <div class="product-card">
       <a href="${productUrl}" class="product-link">
         <img src="${product.image}" alt="${product.name}">
         <h4>${product.name}</h4>
+        ${conditionBadge}
         <p class="product-summary">${product.description}</p>
         <p class="product-price"><strong>$${price}</strong></p>
         <p class="stock-note">${stockText}</p>
