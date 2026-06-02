@@ -584,7 +584,7 @@ async function startServer() {
       );
       await productsCollection.updateMany(
         {
-          category: { $ne: "TV Remotes" }
+          category: { $nin: ["TV Remotes", "Smart Phone"] }
         },
         {
           $set: {
@@ -779,13 +779,13 @@ app.get('/api/admin/products', requireAdmin, async (req, res) => {
   try {
     const products = await productsCollection
       .find({
-        category: "TV Remotes",
+        category: { $in: ["TV Remotes", "Smart Phone"] },
         active: { $ne: false }
       })
       .sort({ category: 1, name: 1 })
       .toArray();
 
-    const categoryOrder = ["TV Remotes"];
+    const categoryOrder = ["TV Remotes", "Smart Phone"];
     const orderedProducts = products
       .map(hydrateProductGallery)
       .sort((first, second) => {
@@ -1003,11 +1003,11 @@ app.get('/api/admin/stats', requireAdmin, async (req, res) => {
     const [orders, productCount, activeProductCount] = await Promise.all([
       ordersCollection.find().toArray(),
       productsCollection.countDocuments({
-        category: "TV Remotes",
+        category: { $in: ["TV Remotes", "Smart Phone"] },
         active: { $ne: false }
       }),
       productsCollection.countDocuments({
-        category: "TV Remotes",
+        category: { $in: ["TV Remotes", "Smart Phone"] },
         active: { $ne: false }
       })
     ]);

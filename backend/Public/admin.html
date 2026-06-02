@@ -781,90 +781,543 @@
 
   <script>
     const DEFAULT_PRODUCTS = [
-      {
-        id: "samsung-smart-remote",
-        name: "Samsung Smart TV Remote",
-        description: "Compatible with most Samsung smart TVs.",
-        price: 0.05,
-        image: "Product images/Samsung Remote Pix/14.png",
-        page: "samsung-remote.html",
-        category: "TV Remotes",
-        stock: 25,
-        active: true,
-        featured: true
-      },
-      {
-        id: "samsung-solar-remote",
-        name: "Samsung Solar TV Remote Replacement",
-        description: "BN59-01455A Solar Voice Remote Replacement.",
-        price: 18.99,
-        image: "Product images/Samsung Solar Remotes/1.png",
-        page: "samsungSolar-remote Replacement.html",
-        category: "TV Remotes",
-        stock: 20,
-        active: true,
-        featured: true
-      },
-      {
-        id: "roku-streaming-remote",
-        name: "Roku Streaming Remote",
-        description: "Works with all Roku streaming devices.",
-        price: 12.49,
-        image: "Product images/Roku Remote control/26.png",
-        page: "Roku-remote.html",
-        category: "TV Remotes",
-        stock: 20,
-        active: true,
-        featured: true
-      },
-      {
-        id: "fire-tv-voice-remote",
-        name: "Fire TV Voice Remote",
-        description: "Alexa-enabled with voice control features.",
-        price: 18.99,
-        image: "Product images/Alexa Remote Pix/1.png",
-        page: "Alexatv-remote.html",
-        category: "TV Remotes",
-        stock: 18,
-        active: true,
-        featured: true
-      },
-      {
-        id: "vizio-tv-remote",
-        name: "Vizio TV Replacement Remote",
-        description: "Ready to use out of the box, no setup required.",
-        price: 16.50,
-        image: "Product images/Visio TV Remote/8.png",
-        page: "vizio-remote.html",
-        category: "TV Remotes",
-        stock: 18,
-        active: true,
-        featured: true
-      },
-      {
-        id: "lg-magic-remote",
-        name: "LG Magic Remote",
-        description: "Smart pointer remote compatible with LG Smart TV.",
-        price: 16.50,
-        image: "Product images/LG Remotes Pix/1.png",
-        page: "lg tv-remote.html",
-        category: "TV Remotes",
-        stock: 20,
-        active: true,
-        featured: true
-      },
-      {
-        id: "philips-tv-remote",
-        name: "Philips TV Remote Replacement",
-        description: "Compatible with Philips Smart TV.",
-        price: 13.99,
-        image: "Product images/Philip TV remote/22.png",
-        page: "philips tv-remote.html",
-        category: "TV Remotes",
-        stock: 16,
-        active: true,
-        featured: true
-      }
+          {
+                "id": "samsung-smart-remote",
+                "name": "Samsung Smart TV Remote",
+                "description": "Compatible with most Samsung smart TVs.",
+                "price": 0.05,
+                "image": "Product images/Samsung Remote Pix/14.png",
+                "page": "samsung-remote.html",
+                "category": "TV Remotes",
+                "stock": 25,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Samsung Remote Pix/15.png",
+                      "Product images/Samsung Remote Pix/14.png",
+                      "Product images/Samsung Remote Pix/17.png",
+                      "Product images/Samsung Remote Pix/18.png",
+                      "Product images/Samsung Remote Pix/19.png"
+                ]
+          },
+          {
+                "id": "samsung-solar-remote",
+                "name": "Samsung Solar TV Remote Replacement",
+                "description": "BN59-01455A Solar Voice Remote Replacement.",
+                "price": 18.99,
+                "image": "Product images/Samsung Solar Remotes/1.png",
+                "page": "samsungSolar-remote Replacement.html",
+                "category": "TV Remotes",
+                "stock": 20,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Samsung Solar Remotes/1.png",
+                      "Product images/Samsung Solar Remotes/2.png",
+                      "Product images/Samsung Solar Remotes/3.jpg",
+                      "Product images/Samsung Solar Remotes/4.jpg",
+                      "Product images/Samsung Solar Remotes/5.jpg",
+                      "Product images/Samsung Solar Remotes/6.jpg"
+                ]
+          },
+          {
+                "id": "roku-streaming-remote",
+                "name": "Roku Streaming Remote",
+                "description": "Works with all Roku streaming devices.",
+                "price": 12.49,
+                "image": "Product images/Roku Remote control/26.png",
+                "page": "Roku-remote.html",
+                "category": "TV Remotes",
+                "stock": 20,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Roku Remote control/26.png",
+                      "Product images/Roku Remote control/27.png",
+                      "Product images/Roku Remote control/28.png",
+                      "Product images/Roku Remote control/29.png",
+                      "Product images/Roku Remote control/30.png",
+                      "Product images/Roku Remote control/31.png"
+                ]
+          },
+          {
+                "id": "fire-tv-voice-remote",
+                "name": "Fire TV Voice Remote",
+                "description": "Alexa-enabled with voice control features.",
+                "price": 18.99,
+                "image": "Product images/Alexa Remote Pix/1.png",
+                "page": "Alexatv-remote.html",
+                "category": "TV Remotes",
+                "stock": 18,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Alexa Remote Pix/1.png",
+                      "Product images/Alexa Remote Pix/2.png",
+                      "Product images/Alexa Remote Pix/3.png",
+                      "Product images/Alexa Remote Pix/4.png",
+                      "Product images/Alexa Remote Pix/5.png",
+                      "Product images/Alexa Remote Pix/6.png"
+                ]
+          },
+          {
+                "id": "vizio-tv-remote",
+                "name": "Vizio TV Replacement Remote",
+                "description": "Ready to use out of the box, no setup required.",
+                "price": 16.5,
+                "image": "Product images/Visio TV Remote/8.png",
+                "page": "vizio-remote.html",
+                "category": "TV Remotes",
+                "stock": 18,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Visio TV Remote/7.png",
+                      "Product images/Visio TV Remote/8.png",
+                      "Product images/Visio TV Remote/9.png",
+                      "Product images/Visio TV Remote/10.png",
+                      "Product images/Visio TV Remote/11.png",
+                      "Product images/Visio TV Remote/12.png"
+                ]
+          },
+          {
+                "id": "lg-magic-remote",
+                "name": "LG Magic Remote",
+                "description": "Smart pointer remote compatible with LG Smart TV.",
+                "price": 16.5,
+                "image": "Product images/LG Remotes Pix/1.png",
+                "page": "lg tv-remote.html",
+                "category": "TV Remotes",
+                "stock": 20,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/LG Remotes Pix/1.png",
+                      "Product images/LG Remotes Pix/2.png",
+                      "Product images/LG Remotes Pix/3.png",
+                      "Product images/LG Remotes Pix/4.png",
+                      "Product images/LG Remotes Pix/5.png",
+                      "Product images/LG Remotes Pix/6.png"
+                ]
+          },
+          {
+                "id": "philips-tv-remote",
+                "name": "Philips TV Remote Replacement",
+                "description": "Compatible with Philips Smart TV.",
+                "price": 13.99,
+                "image": "Product images/Philip TV remote/22.png",
+                "page": "philips tv-remote.html",
+                "category": "TV Remotes",
+                "stock": 16,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Philip TV remote/21.png",
+                      "Product images/Philip TV remote/22.png",
+                      "Product images/Philip TV remote/23.png",
+                      "Product images/Philip TV remote/24.png",
+                      "Product images/Philip TV remote/25.png"
+                ]
+          },
+          {
+                "id": "tv-remote-starter-1",
+                "name": "TCL TV Remote Replacement",
+                "description": "Replacement remote for TCL Roku TVs and compatible TCL smart TVs.",
+                "price": 10,
+                "image": "Product images/TCL Remote Replacements/61LBXnyGryL._AC_SL1500_.jpg",
+                "page": "TCL-remote.html",
+                "category": "TV Remotes",
+                "stock": 20,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/TCL Remote Replacements/61LBXnyGryL._AC_SL1500_.jpg",
+                      "Product images/TCL Remote Replacements/81sDAEnRQ3L._AC_SL1500_.jpg",
+                      "Product images/TCL Remote Replacements/61aqHxexsWL._AC_SL1500_.jpg",
+                      "Product images/TCL Remote Replacements/51ye1Eqak2L._AC_SL1500_.jpg",
+                      "Product images/TCL Remote Replacements/71KYtV6lgCL._AC_SL1500_.jpg"
+                ]
+          },
+          {
+                "id": "tv-remote-starter-2",
+                "name": "Roku Remote 2-Pack",
+                "description": "Two replacement remotes for Roku TVs and compatible Roku devices.",
+                "price": 19.99,
+                "image": "Product images/Two Pack Remotes/roku-two-pack.svg?v=2",
+                "page": "roku-remote-2pack.html",
+                "category": "TV Remotes",
+                "stock": 20,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Two Pack Remotes/roku-two-pack.svg?v=2",
+                      "Product images/Roku Remote control/26.png",
+                      "Product images/Roku Remote control/27.png",
+                      "Product images/Roku Remote control/28.png",
+                      "Product images/Roku Remote control/29.png"
+                ]
+          },
+          {
+                "id": "tv-remote-starter-3",
+                "name": "Fire TV Voice Remote 2-Pack",
+                "description": "Two Alexa voice remotes for Fire TV and compatible streaming devices.",
+                "price": 29.99,
+                "image": "Product images/Two Pack Remotes/fire-tv-two-pack.svg?v=2",
+                "page": "fire-tv-remote-2pack.html",
+                "category": "TV Remotes",
+                "stock": 20,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Two Pack Remotes/fire-tv-two-pack.svg?v=2",
+                      "Product images/Alexa Remote Pix/1.png",
+                      "Product images/Alexa Remote Pix/2.png",
+                      "Product images/Alexa Remote Pix/3.png",
+                      "Product images/Alexa Remote Pix/4.png"
+                ]
+          },
+          {
+                "id": "tv-remote-starter-4",
+                "name": "Samsung Remote 2-Pack",
+                "description": "Two replacement remotes for Samsung Smart TVs and compatible models.",
+                "price": 19.99,
+                "image": "Product images/Two Pack Remotes/samsung-two-pack.svg?v=2",
+                "page": "samsung-remote-2pack.html",
+                "category": "TV Remotes",
+                "stock": 20,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Two Pack Remotes/samsung-two-pack.svg?v=2",
+                      "Product images/Samsung Remote Pix/14.png",
+                      "Product images/Samsung Remote Pix/15.png",
+                      "Product images/Samsung Remote Pix/17.png",
+                      "Product images/Samsung Remote Pix/18.png"
+                ]
+          },
+          {
+                "id": "tv-remote-starter-5",
+                "name": "LG Magic Remote 2-Pack",
+                "description": "Two replacement LG Magic Remotes for compatible LG Smart TVs.",
+                "price": 24.99,
+                "image": "Product images/Two Pack Remotes/lg-two-pack.svg?v=2",
+                "page": "lg-remote-2pack.html",
+                "category": "TV Remotes",
+                "stock": 20,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Two Pack Remotes/lg-two-pack.svg?v=2",
+                      "Product images/LG Remotes Pix/1.png",
+                      "Product images/LG Remotes Pix/2.png",
+                      "Product images/LG Remotes Pix/3.png",
+                      "Product images/LG Remotes Pix/4.png"
+                ]
+          },
+          {
+                "id": "iphone-13",
+                "name": "Apple iPhone 13",
+                "description": "Reliable iPhone with smooth performance, clear camera quality, and all-day everyday use.",
+                "price": 399.99,
+                "image": "Product images/Smart Phones/iphone-standard.svg",
+                "page": "product.html?id=iphone-13",
+                "category": "Smart Phone",
+                "stock": 12,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "iphone-13-pro",
+                "name": "Apple iPhone 13 Pro",
+                "description": "Premium iPhone with pro camera features, strong battery life, and a sharp display.",
+                "price": 499.99,
+                "image": "Product images/Smart Phones/iphone-pro.svg",
+                "page": "product.html?id=iphone-13-pro",
+                "category": "Smart Phone",
+                "stock": 10,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "iphone-14",
+                "name": "Apple iPhone 14",
+                "description": "Modern iPhone with fast performance, bright display, and dependable camera quality.",
+                "price": 499.99,
+                "image": "Product images/Smart Phones/iphone-standard.svg",
+                "page": "product.html?id=iphone-14",
+                "category": "Smart Phone",
+                "stock": 12,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "iphone-14-pro",
+                "name": "Apple iPhone 14 Pro",
+                "description": "Pro iPhone option with advanced camera features, smooth display, and premium finish.",
+                "price": 599.99,
+                "image": "Product images/Smart Phones/iphone-pro.svg",
+                "page": "product.html?id=iphone-14-pro",
+                "category": "Smart Phone",
+                "stock": 10,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "iphone-15",
+                "name": "Apple iPhone 15",
+                "description": "Updated iPhone with USB-C charging, strong camera quality, and smooth daily performance.",
+                "price": 649.99,
+                "image": "Product images/Smart Phones/iphone-standard.svg",
+                "page": "product.html?id=iphone-15",
+                "category": "Smart Phone",
+                "stock": 10,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "iphone-15-pro",
+                "name": "Apple iPhone 15 Pro",
+                "description": "Premium iPhone with pro performance, advanced camera features, and a refined design.",
+                "price": 799.99,
+                "image": "Product images/Smart Phones/iphone-pro.svg",
+                "page": "product.html?id=iphone-15-pro",
+                "category": "Smart Phone",
+                "stock": 8,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "iphone-16",
+                "name": "Apple iPhone 16",
+                "description": "Latest-generation iPhone option with fast performance and a clean everyday smartphone feel.",
+                "price": 799.99,
+                "image": "Product images/Smart Phones/iphone-standard.svg",
+                "page": "product.html?id=iphone-16",
+                "category": "Smart Phone",
+                "stock": 8,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "iphone-16-pro",
+                "name": "Apple iPhone 16 Pro",
+                "description": "High-end iPhone option with pro speed, premium camera capability, and sleek design.",
+                "price": 999.99,
+                "image": "Product images/Smart Phones/iphone-pro.svg",
+                "page": "product.html?id=iphone-16-pro",
+                "category": "Smart Phone",
+                "stock": 6,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "samsung-galaxy-s22",
+                "name": "Samsung Galaxy S22",
+                "description": "Compact Android phone with bright display, solid camera quality, and smooth performance.",
+                "price": 299.99,
+                "image": "Product images/Smart Phones/android-standard.svg",
+                "page": "product.html?id=samsung-galaxy-s22",
+                "category": "Smart Phone",
+                "stock": 12,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "samsung-galaxy-s23",
+                "name": "Samsung Galaxy S23",
+                "description": "Fast Samsung Galaxy phone with a bright display, reliable battery, and strong camera quality.",
+                "price": 399.99,
+                "image": "Product images/Smart Phones/android-pro.svg",
+                "page": "product.html?id=samsung-galaxy-s23",
+                "category": "Smart Phone",
+                "stock": 10,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/android-pro.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "samsung-galaxy-s24",
+                "name": "Samsung Galaxy S24",
+                "description": "Modern Samsung Galaxy smartphone with sharp display, fast performance, and premium design.",
+                "price": 599.99,
+                "image": "Product images/Smart Phones/android-pro.svg",
+                "page": "product.html?id=samsung-galaxy-s24",
+                "category": "Smart Phone",
+                "stock": 10,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/android-pro.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "samsung-galaxy-s25",
+                "name": "Samsung Galaxy S25",
+                "description": "New Samsung Galaxy option with flagship-style speed, camera quality, and daily reliability.",
+                "price": 799.99,
+                "image": "Product images/Smart Phones/android-pro.svg",
+                "page": "product.html?id=samsung-galaxy-s25",
+                "category": "Smart Phone",
+                "stock": 8,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/android-pro.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "google-pixel-7",
+                "name": "Google Pixel 7",
+                "description": "Clean Android phone with excellent camera quality, smooth software, and dependable performance.",
+                "price": 299.99,
+                "image": "Product images/Smart Phones/android-standard.svg",
+                "page": "product.html?id=google-pixel-7",
+                "category": "Smart Phone",
+                "stock": 12,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "google-pixel-8",
+                "name": "Google Pixel 8",
+                "description": "Google Pixel phone with sharp photos, clean Android software, and strong everyday speed.",
+                "price": 449.99,
+                "image": "Product images/Smart Phones/android-standard.svg",
+                "page": "product.html?id=google-pixel-8",
+                "category": "Smart Phone",
+                "stock": 10,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "google-pixel-9",
+                "name": "Google Pixel 9",
+                "description": "Modern Pixel smartphone with clean Android experience, bright display, and advanced camera tools.",
+                "price": 599.99,
+                "image": "Product images/Smart Phones/android-pro.svg",
+                "page": "product.html?id=google-pixel-9",
+                "category": "Smart Phone",
+                "stock": 8,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/android-pro.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          },
+          {
+                "id": "motorola-moto-g-5g",
+                "name": "Motorola Moto G 5G",
+                "description": "Affordable Android smartphone with 5G support, good battery life, and simple everyday use.",
+                "price": 179.99,
+                "image": "Product images/Smart Phones/android-standard.svg",
+                "page": "product.html?id=motorola-moto-g-5g",
+                "category": "Smart Phone",
+                "stock": 15,
+                "active": true,
+                "featured": true,
+                "gallery": [
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/iphone-standard.svg",
+                      "Product images/Smart Phones/iphone-pro.svg",
+                      "Product images/Smart Phones/android-standard.svg",
+                      "Product images/Smart Phones/android-pro.svg"
+                ]
+          }
     ];
 
     const catalogBackupKey = "electronics-manager-catalog-backup";
@@ -1038,12 +1491,12 @@
     }
 
     function updateCategories() {
-      const categories = ["TV Remotes"];
+      const categories = ["TV Remotes", "Smart Phone"];
       els.managerCategory.innerHTML = categories.map(category => `<option value="${category}">${category}</option>`).join("");
     }
 
     function productCategoryRank(product) {
-      const order = ["TV Remotes"];
+      const order = ["TV Remotes", "Smart Phone"];
       const rank = order.indexOf(product.category);
       return rank === -1 ? order.length : rank;
     }
@@ -1058,7 +1511,7 @@
 
     function renderProductDropdown() {
       const current = selectedProductId;
-      const orderedProducts = sortManagerProducts(products.filter(product => product.category === "TV Remotes"));
+      const orderedProducts = sortManagerProducts(products.filter(product => ["TV Remotes", "Smart Phone"].includes(product.category)));
       els.managerProductSelect.innerHTML = '<option value="">Choose product from website</option>' + (orderedProducts.length ? orderedProducts.map(product => `
         <option value="${product.id}">${product.name}</option>
       `).join("") : '<option value="" disabled>No products found</option>');
@@ -1068,7 +1521,7 @@
     function renderProductList() {
       const query = els.managerSearch.value.trim().toLowerCase();
       const visible = sortManagerProducts(products).filter(product => {
-        if (product.category !== "TV Remotes") return false;
+        if (!["TV Remotes", "Smart Phone"].includes(product.category)) return false;
         return !query || [product.name, product.category, product.description].join(" ").toLowerCase().includes(query);
       });
 
@@ -1138,7 +1591,7 @@
       els.managerProductSelect.value = "";
       els.managerSelectedName.textContent = "New product";
       els.managerName.value = "";
-      els.managerCategory.value = els.managerCategory.value || "Samsung";
+      els.managerCategory.value = els.managerCategory.value || "TV Remotes";
       els.managerPrice.value = "0.00";
       els.managerStock.value = "0";
       els.managerPage.value = "";

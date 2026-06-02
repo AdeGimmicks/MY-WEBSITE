@@ -231,5 +231,309 @@
       "Product images/LG Remotes Pix/3.png",
       "Product images/LG Remotes Pix/4.png"
     ]
+  },
+  {
+    "id": "iphone-13",
+    "name": "Apple iPhone 13",
+    "description": "Reliable iPhone with smooth performance, clear camera quality, and all-day everyday use.",
+    "price": 399.99,
+    "image": "Product images/Smart Phones/iphone-standard.svg",
+    "page": "product.html?id=iphone-13",
+    "category": "Smart Phone",
+    "stock": 12,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "iphone-13-pro",
+    "name": "Apple iPhone 13 Pro",
+    "description": "Premium iPhone with pro camera features, strong battery life, and a sharp display.",
+    "price": 499.99,
+    "image": "Product images/Smart Phones/iphone-pro.svg",
+    "page": "product.html?id=iphone-13-pro",
+    "category": "Smart Phone",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "iphone-14",
+    "name": "Apple iPhone 14",
+    "description": "Modern iPhone with fast performance, bright display, and dependable camera quality.",
+    "price": 499.99,
+    "image": "Product images/Smart Phones/iphone-standard.svg",
+    "page": "product.html?id=iphone-14",
+    "category": "Smart Phone",
+    "stock": 12,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "iphone-14-pro",
+    "name": "Apple iPhone 14 Pro",
+    "description": "Pro iPhone option with advanced camera features, smooth display, and premium finish.",
+    "price": 599.99,
+    "image": "Product images/Smart Phones/iphone-pro.svg",
+    "page": "product.html?id=iphone-14-pro",
+    "category": "Smart Phone",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "iphone-15",
+    "name": "Apple iPhone 15",
+    "description": "Updated iPhone with USB-C charging, strong camera quality, and smooth daily performance.",
+    "price": 649.99,
+    "image": "Product images/Smart Phones/iphone-standard.svg",
+    "page": "product.html?id=iphone-15",
+    "category": "Smart Phone",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "iphone-15-pro",
+    "name": "Apple iPhone 15 Pro",
+    "description": "Premium iPhone with pro performance, advanced camera features, and a refined design.",
+    "price": 799.99,
+    "image": "Product images/Smart Phones/iphone-pro.svg",
+    "page": "product.html?id=iphone-15-pro",
+    "category": "Smart Phone",
+    "stock": 8,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "iphone-16",
+    "name": "Apple iPhone 16",
+    "description": "Latest-generation iPhone option with fast performance and a clean everyday smartphone feel.",
+    "price": 799.99,
+    "image": "Product images/Smart Phones/iphone-standard.svg",
+    "page": "product.html?id=iphone-16",
+    "category": "Smart Phone",
+    "stock": 8,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "iphone-16-pro",
+    "name": "Apple iPhone 16 Pro",
+    "description": "High-end iPhone option with pro speed, premium camera capability, and sleek design.",
+    "price": 999.99,
+    "image": "Product images/Smart Phones/iphone-pro.svg",
+    "page": "product.html?id=iphone-16-pro",
+    "category": "Smart Phone",
+    "stock": 6,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "samsung-galaxy-s22",
+    "name": "Samsung Galaxy S22",
+    "description": "Compact Android phone with bright display, solid camera quality, and smooth performance.",
+    "price": 299.99,
+    "image": "Product images/Smart Phones/android-standard.svg",
+    "page": "product.html?id=samsung-galaxy-s22",
+    "category": "Smart Phone",
+    "stock": 12,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "samsung-galaxy-s23",
+    "name": "Samsung Galaxy S23",
+    "description": "Fast Samsung Galaxy phone with a bright display, reliable battery, and strong camera quality.",
+    "price": 399.99,
+    "image": "Product images/Smart Phones/android-pro.svg",
+    "page": "product.html?id=samsung-galaxy-s23",
+    "category": "Smart Phone",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/android-pro.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "samsung-galaxy-s24",
+    "name": "Samsung Galaxy S24",
+    "description": "Modern Samsung Galaxy smartphone with sharp display, fast performance, and premium design.",
+    "price": 599.99,
+    "image": "Product images/Smart Phones/android-pro.svg",
+    "page": "product.html?id=samsung-galaxy-s24",
+    "category": "Smart Phone",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/android-pro.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "samsung-galaxy-s25",
+    "name": "Samsung Galaxy S25",
+    "description": "New Samsung Galaxy option with flagship-style speed, camera quality, and daily reliability.",
+    "price": 799.99,
+    "image": "Product images/Smart Phones/android-pro.svg",
+    "page": "product.html?id=samsung-galaxy-s25",
+    "category": "Smart Phone",
+    "stock": 8,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/android-pro.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "google-pixel-7",
+    "name": "Google Pixel 7",
+    "description": "Clean Android phone with excellent camera quality, smooth software, and dependable performance.",
+    "price": 299.99,
+    "image": "Product images/Smart Phones/android-standard.svg",
+    "page": "product.html?id=google-pixel-7",
+    "category": "Smart Phone",
+    "stock": 12,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "google-pixel-8",
+    "name": "Google Pixel 8",
+    "description": "Google Pixel phone with sharp photos, clean Android software, and strong everyday speed.",
+    "price": 449.99,
+    "image": "Product images/Smart Phones/android-standard.svg",
+    "page": "product.html?id=google-pixel-8",
+    "category": "Smart Phone",
+    "stock": 10,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "google-pixel-9",
+    "name": "Google Pixel 9",
+    "description": "Modern Pixel smartphone with clean Android experience, bright display, and advanced camera tools.",
+    "price": 599.99,
+    "image": "Product images/Smart Phones/android-pro.svg",
+    "page": "product.html?id=google-pixel-9",
+    "category": "Smart Phone",
+    "stock": 8,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/android-pro.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
+  },
+  {
+    "id": "motorola-moto-g-5g",
+    "name": "Motorola Moto G 5G",
+    "description": "Affordable Android smartphone with 5G support, good battery life, and simple everyday use.",
+    "price": 179.99,
+    "image": "Product images/Smart Phones/android-standard.svg",
+    "page": "product.html?id=motorola-moto-g-5g",
+    "category": "Smart Phone",
+    "stock": 15,
+    "active": true,
+    "featured": true,
+    "gallery": [
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/iphone-standard.svg",
+      "Product images/Smart Phones/iphone-pro.svg",
+      "Product images/Smart Phones/android-standard.svg",
+      "Product images/Smart Phones/android-pro.svg"
+    ]
   }
 ]
