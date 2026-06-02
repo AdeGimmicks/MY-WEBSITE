@@ -34,6 +34,20 @@
       background: #fffdf2;
       box-shadow: 0 6px 18px rgba(26, 26, 46, 0.08);
     }
+    .shipping-option.disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      background: #f7f8fb;
+      box-shadow: none;
+    }
+    .shipping-option.disabled:hover {
+      border-color: #d9dee8;
+      background: #f7f8fb;
+      box-shadow: none;
+    }
+    .shipping-option.disabled * {
+      cursor: not-allowed;
+    }
     .shipping-option input[type="radio"] {
       width: auto;
       margin: 0;
@@ -107,26 +121,40 @@
         <label for="email">Email</label>
         <input type="email" id="email" required />
 
+        <label for="country">Shipping Country</label>
+        <select id="country" required>
+          <option value="US" selected>United States</option>
+          <option value="CA">Canada</option>
+          <option value="GB">United Kingdom</option>
+          <option value="NG">Nigeria</option>
+          <option value="OTHER">Other country</option>
+        </select>
+
         <label for="address">Shipping Address</label>
-        <p class="checkout-note">Worldwide orders are accepted. All prices are charged in USD, and customers are responsible for shipping costs to their destination.</p>
+        <p class="checkout-note">Select your shipping country to see the correct shipping cost. Free shipping is available for United States orders only.</p>
         <textarea id="address" required></textarea>
 
         <h3>Shipping Options</h3>
         <div class="shipping-options">
-          <label class="shipping-option">
-            <input type="radio" name="shipping" value="5.99" checked />
-            <span class="shipping-copy"><strong>Standard Shipping</strong><small>Arrives in 3–5 business days where available</small></span>
-            <strong class="shipping-price">$5.99</strong>
+          <label class="shipping-option" data-shipping-option="free">
+            <input type="radio" name="shipping" value="0.00" data-shipping-key="free" checked />
+            <span class="shipping-copy"><strong data-shipping-label>Free Shipping</strong><small data-shipping-note>United States only · 3–5 business days</small></span>
+            <strong class="shipping-price" data-shipping-price>$0.00</strong>
           </label>
-          <label class="shipping-option">
-            <input type="radio" name="shipping" value="6.99" />
-            <span class="shipping-copy"><strong>Expedited</strong><small>Arrives in 2–3 business days</small></span>
-            <strong class="shipping-price">$6.99</strong>
+          <label class="shipping-option" data-shipping-option="standard">
+            <input type="radio" name="shipping" value="5.99" data-shipping-key="standard" />
+            <span class="shipping-copy"><strong data-shipping-label>Standard Shipping</strong><small data-shipping-note>United States · 3–5 business days</small></span>
+            <strong class="shipping-price" data-shipping-price>$5.99</strong>
           </label>
-          <label class="shipping-option">
-            <input type="radio" name="shipping" value="9.99" />
-            <span class="shipping-copy"><strong>Express</strong><small>Next-day delivery</small></span>
-            <strong class="shipping-price">$9.99</strong>
+          <label class="shipping-option" data-shipping-option="expedited">
+            <input type="radio" name="shipping" value="6.99" data-shipping-key="expedited" />
+            <span class="shipping-copy"><strong data-shipping-label>Expedited</strong><small data-shipping-note>United States · 2–3 business days</small></span>
+            <strong class="shipping-price" data-shipping-price>$6.99</strong>
+          </label>
+          <label class="shipping-option" data-shipping-option="express">
+            <input type="radio" name="shipping" value="9.99" data-shipping-key="express" />
+            <span class="shipping-copy"><strong data-shipping-label>Express</strong><small data-shipping-note>United States · next-day where available</small></span>
+            <strong class="shipping-price" data-shipping-price>$9.99</strong>
           </label>
         </div>
 
@@ -190,7 +218,7 @@
     document.getElementById('cart-total').textContent = totalWithFee.toFixed(2);
     document.getElementById('final-total').textContent = totalWithFee.toFixed(2);
 
-    updateTotalWithShipping(); // Ensure totals refresh with selected shipping
+    updateShippingByCountry(); // Ensure totals refresh with selected country and shipping
     if (typeof eoTrackBeginCheckout === 'function') {
       eoTrackBeginCheckout(JSON.parse(localStorage.getItem('cart')) || [], document.getElementById('final-total').textContent);
     }
@@ -210,15 +238,71 @@
     displayError.textContent = event.error ? event.error.message : '';
   });
 
+  const countrySelect = document.getElementById('country');
+  const SHIPPING_RATES = {
+    US: { free: 0, standard: 5.99, expedited: 6.99, express: 9.99 },
+    CA: { free: 0, standard: 18.99, expedited: 29.99, express: 44.99 },
+    GB: { free: 0, standard: 24.99, expedited: 39.99, express: 59.99 },
+    NG: { free: 0, standard: 34.99, expedited: 54.99, express: 79.99 },
+    OTHER: { free: 0, standard: 39.99, expedited: 59.99, express: 89.99 }
+  };
+  const SHIPPING_NOTES = {
+    US: {
+      free: 'United States only · 3–5 business days',
+      standard: 'United States · 3–5 business days',
+      expedited: 'United States · 2–3 business days',
+      express: 'United States · next-day where available'
+    },
+    INTERNATIONAL: {
+      free: 'United States only · not available for international delivery',
+      standard: 'International standard shipping',
+      expedited: 'International expedited shipping',
+      express: 'International express shipping'
+    }
+  };
+
+  function currentShippingRates() {
+    return SHIPPING_RATES[countrySelect?.value] || SHIPPING_RATES.OTHER;
+  }
+
+  function updateShippingByCountry() {
+    const country = countrySelect?.value || 'US';
+    const isDomestic = country === 'US';
+    const rates = currentShippingRates();
+
+    document.querySelectorAll('input[name="shipping"][data-shipping-key]').forEach(input => {
+      const key = input.dataset.shippingKey;
+      const option = input.closest('.shipping-option');
+      const note = option?.querySelector('[data-shipping-note]');
+      const price = option?.querySelector('[data-shipping-price]');
+      const disabled = key === 'free' && !isDomestic;
+      const amount = rates[key] ?? 0;
+
+      input.value = amount.toFixed(2);
+      input.disabled = disabled;
+      option?.classList.toggle('disabled', disabled);
+      if (note) note.textContent = isDomestic ? SHIPPING_NOTES.US[key] : SHIPPING_NOTES.INTERNATIONAL[key];
+      if (price) price.textContent = '$' + amount.toFixed(2);
+    });
+
+    const selected = document.querySelector('input[name="shipping"]:checked');
+    if (!selected || selected.disabled) {
+      const fallback = document.querySelector('input[name="shipping"][data-shipping-key="standard"]');
+      if (fallback) fallback.checked = true;
+    }
+
+    updateTotalWithShipping();
+  }
+
   function updateTotalWithShipping() {
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
     const selected = document.querySelector('input[name="shipping"]:checked');
     let shippingFee = 0;
     if (selected) {
-      shippingFee = parseFloat(selected.value);
+      shippingFee = parseFloat(selected.value) || 0;
       document.getElementById('shipping-amount').textContent = shippingFee.toFixed(2);
     } else {
-      document.getElementById('shipping-amount').textContent = "0.00";
+      document.getElementById('shipping-amount').textContent = '0.00';
     }
     const final = cartTotal + shippingFee;
     document.getElementById('final-total').textContent = final.toFixed(2);
@@ -227,11 +311,12 @@
   document.querySelectorAll('input[name="shipping"]').forEach(radio => {
     radio.addEventListener('change', updateTotalWithShipping);
   });
+  countrySelect?.addEventListener('change', updateShippingByCountry);
 
-  updateTotalWithShipping();
+  updateShippingByCountry();
 
   function apiUrl(path) {
-    return `${API_BASE}${path}`;
+    return API_BASE + path;
   }
 
   function showOrderSuccess() {
@@ -249,23 +334,25 @@
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const address = document.getElementById('address').value.trim();
+    const country = countrySelect?.value || 'US';
+    const countryName = countrySelect?.options[countrySelect.selectedIndex]?.textContent || 'United States';
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const summary = JSON.parse(localStorage.getItem('cartSummary')) || {};
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
-    const shippingFee = parseFloat(selectedShipping?.value || "0");
+    const shippingFee = parseFloat(selectedShipping?.value || '0') || 0;
     const total = cartTotal + shippingFee;
     const processingFee = parseFloat(document.getElementById('processing-fee').textContent) || 0;
 
     return {
-      customer: { name, email, address },
+      customer: { name, email, address, country, countryName },
       items: cart,
-      subtotal: summary.subtotal || document.getElementById('subtotal').textContent || "0.00",
-      tax: summary.tax || document.getElementById('tax').textContent || "0.00",
+      subtotal: summary.subtotal || document.getElementById('subtotal').textContent || '0.00',
+      tax: summary.tax || document.getElementById('tax').textContent || '0.00',
       processingFee: processingFee.toFixed(2),
       total: total.toFixed(2),
       shipping: shippingFee.toFixed(2),
       paymentId,
-      visitorId: typeof eoVisitorId === 'function' ? eoVisitorId() : ""
+      visitorId: typeof eoVisitorId === 'function' ? eoVisitorId() : ''
     };
   }
 
@@ -277,16 +364,16 @@
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(data.message || "Your payment went through, but the order could not be saved. Please contact us.");
+      throw new Error(data.message || 'Your payment went through, but the order could not be saved. Please contact us.');
     }
     return data;
   }
 
   function rememberLatestOrder(orderData, savedOrder) {
-    localStorage.setItem("latestOrder", JSON.stringify({
+    localStorage.setItem('latestOrder', JSON.stringify({
       ...orderData,
       orderNumber: savedOrder.orderNumber,
-      emailStatus: savedOrder.emailStatus || "pending",
+      emailStatus: savedOrder.emailStatus || 'pending',
       timestamp: savedOrder.timestamp || new Date().toISOString()
     }));
   }
@@ -302,7 +389,7 @@
         orderNumber: savedOrder.orderNumber,
         timestamp: savedOrder.timestamp || new Date().toISOString()
       });
-      sessionStorage.setItem(`eo-purchase-${savedOrder.orderNumber || paymentId}`, '1');
+      sessionStorage.setItem('eo-purchase-' + (savedOrder.orderNumber || paymentId), '1');
     }
     localStorage.removeItem('cart');
     await wait(2500);
@@ -314,16 +401,21 @@
     const selectedShipping = document.querySelector('input[name="shipping"]:checked');
     const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
     if (selectedPayment !== 'credit-card') {
-      alert("Only Credit/Debit Card is supported at the moment.");
+      alert('Only Credit/Debit Card is supported at the moment.');
+      return;
+    }
+    if (!selectedShipping || selectedShipping.disabled) {
+      alert('Please select an available shipping option for your country.');
       return;
     }
 
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const address = document.getElementById('address').value.trim();
+    const country = countrySelect?.value || 'US';
 
     const cartTotal = parseFloat(document.getElementById('cart-total').textContent) || 0;
-    const shippingFee = parseFloat(selectedShipping.value);
+    const shippingFee = parseFloat(selectedShipping.value) || 0;
     const total = cartTotal + shippingFee;
 
     const response = await fetch(apiUrl('/create-payment-intent'), {
@@ -340,7 +432,7 @@
         billing_details: {
           name,
           email,
-          address: { line1: address }
+          address: country === 'OTHER' ? { line1: address } : { line1: address, country }
         }
       }
     });
