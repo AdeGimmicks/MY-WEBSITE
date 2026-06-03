@@ -945,6 +945,7 @@ img {
     flex: 1;
     min-width: 0;
     padding: 10px 6px;
+    border-radius: 999px;
     font-size: 0.88rem;
     font-weight: 800;
     line-height: 1.15;
@@ -952,12 +953,108 @@ img {
     box-shadow: none;
   }
 
-  .home-page .products .buy-now {
+  .home-page .products .buy-btn {
     display: none;
   }
 
-  .home-page .products .add-to-cart {
-    flex-basis: 100%;
+  .products-page .highlights {
+    padding: 0 0 14px;
+    background: #f3f4f6;
+  }
+
+  .products-page .products {
+    gap: 8px;
+    padding: 8px;
+    background: #f3f4f6;
+  }
+
+  .products-page .product-card {
+    padding: 10px;
+    border: 1px solid #e3e7ef;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .products-page .product-card img {
+    height: 190px;
+    padding: 6px;
+    margin-bottom: 12px;
+    transform: none;
+  }
+
+  .products-page .product-card h4 {
+    font-size: 0.96rem;
+    font-weight: 750;
+    line-height: 1.2;
+    min-height: 2.35em;
+  }
+
+  .products-page .product-card p {
+    font-size: 0.86rem;
+  }
+
+  .products-page .product-card p strong {
+    font-size: 1.06rem;
+  }
+
+  .products-page .products .buy-btn {
+    flex-direction: column;
+    gap: 0;
+    margin-top: 10px;
+  }
+
+  .products-page .products .buy-btn .buy-now {
+    display: none;
+  }
+
+  .products-page .products .buy-btn .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-height: 38px;
+    padding: 10px 12px;
+    border: 1px solid #f9c80e;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .products-page .products .buy-btn .add-to-cart {
+    background: #f9c80e;
+    color: #111827;
+  }
+
+  .about-section,
+  .contact-section {
+    padding: 24px 12px;
+  }
+
+  .about-section .container,
+  .contact-section .container {
+    width: 100%;
+  }
+
+  .about-card {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  .about-card h3 {
+    font-size: 1.28rem;
+    line-height: 1.25;
+  }
+
+  .about-card p,
+  .about-card ul {
+    font-size: 0.98rem;
+  }
+
+  .contact-form {
+    max-width: none;
+    margin-top: 20px;
   }
 
   footer {
