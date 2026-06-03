@@ -547,6 +547,11 @@ function loadManagerPreviewProducts() {
   }
 }
 
+function isPublicCategory(category) {
+  const publicCategories = window.EO_PUBLIC_CATEGORIES || new Set(['TV Remotes']);
+  return publicCategories.has(category);
+}
+
 function normalizeCategory(category) {
   const value = String(category || '').trim();
   const lower = value.toLowerCase();
@@ -657,13 +662,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const products = await loadProducts();
 
     if (productId) {
-      const product = products.find(item => item.id === productId);
-      if (product) updateProductDetail(product);
+      const product = products.find(item => item.id === productId && item.active !== false && isPublicCategory(item.category));
+      if (product) {
+        updateProductDetail(product);
+      } else {
+        window.location.replace('/products');
+        return;
+      }
     }
 
     if (!productLists.length) return;
 
-    const activeProducts = products.filter(product => product.active !== false);
+    const activeProducts = products.filter(product => product.active !== false && isPublicCategory(product.category));
 
     if (activeProducts.length === 0) {
       productLists.forEach(productList => {
@@ -674,7 +684,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    const categoryOptions = ['All Products', 'TV Remotes', 'Smart Phone'];
+    const categoryOptions = ['All Products', ...Array.from(window.EO_PUBLIC_CATEGORIES || new Set(['TV Remotes']))];
     if (categorySelect) {
       categorySelect.innerHTML = categoryOptions.map(category => `
         <option value="${category === 'All Products' ? 'all' : category}">${category}</option>
@@ -685,6 +695,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderList(productList) {
       const mode = productList.dataset.productList;
       const listCategory = productList.dataset.productCategory;
+      if (listCategory && !isPublicCategory(listCategory)) {
+        productList.closest('[data-public-category-section]')?.setAttribute('hidden', '');
+        return;
+      }
       const limit = Number(productList.dataset.productLimit || 0);
       const selectedCategory = categorySelect ? categorySelect.value : selectedCategoryFromUrl;
       const searchTerm = productSearch ? productSearch.value.trim().toLowerCase() : '';

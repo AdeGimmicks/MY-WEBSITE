@@ -1,5 +1,6 @@
 const GA_MEASUREMENT_ID = 'G-RZLCQBJB3E';
 const META_PIXEL_ID = '457800017160804';
+window.EO_PUBLIC_CATEGORIES = new Set(['TV Remotes']);
 const EO_CLEAN_LINKS = new Map([
   ['index.html', '/'],
   ['about.html', '/about'],
@@ -56,7 +57,20 @@ function eoUseCleanInternalLinks() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', eoUseCleanInternalLinks);
+function eoApplyPublicCategoryVisibility() {
+  document.querySelectorAll('[data-public-category]').forEach(element => {
+    element.hidden = !window.EO_PUBLIC_CATEGORIES.has(element.dataset.publicCategory);
+  });
+
+  document.querySelectorAll('[data-public-category-section]').forEach(element => {
+    element.hidden = !window.EO_PUBLIC_CATEGORIES.has(element.dataset.publicCategorySection);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  eoUseCleanInternalLinks();
+  eoApplyPublicCategoryVisibility();
+});
 
 (function loadMetaPixel() {
   if (window.fbq) return;
