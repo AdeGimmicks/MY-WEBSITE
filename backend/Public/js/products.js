@@ -606,7 +606,7 @@ async function loadProducts() {
   }
 }
 
-function renderProductCard(product, mode = 'all') {
+function renderProductCard(product) {
   const price = Number(product.price || 0).toFixed(2);
   const stock = Number(product.stock || 0);
   const stockText = stock > 0 ? `${stock} in stock` : 'Out of stock';
@@ -617,17 +617,6 @@ function renderProductCard(product, mode = 'all') {
   const conditionBadge = product.category === 'Smart Phone'
     ? '<p class="condition-badge">Used/refurbished phone · Color may vary</p>'
     : '';
-  const actionButtons = mode === 'featured' ? '' : `
-      <div class="buy-btn">
-        <a href="#" class="btn small add-to-cart${disabledClass}"
-          data-name="${product.name}"
-          data-price="${price}"
-          data-image="${product.image}"
-          data-product-id="${product.id}">
-          Add to Cart
-        </a>
-      </div>
-  `;
 
   return `
     <div class="product-card">
@@ -639,7 +628,22 @@ function renderProductCard(product, mode = 'all') {
         <p class="product-price"><strong>$${price}</strong></p>
         <p class="stock-note">${stockText}</p>
       </a>
-      ${actionButtons}
+      <div class="buy-btn">
+        <a href="#" class="btn small buy-now${disabledClass}"
+          data-name="${product.name}"
+          data-price="${price}"
+          data-image="${product.image}"
+          data-product-id="${product.id}">
+          Buy Now
+        </a>
+        <a href="#" class="btn small add-to-cart${disabledClass}"
+          data-name="${product.name}"
+          data-price="${price}"
+          data-image="${product.image}"
+          data-product-id="${product.id}">
+          Add to Cart
+        </a>
+      </div>
     </div>
   `;
 }
@@ -712,7 +716,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (limit > 0) visibleProducts = visibleProducts.slice(0, limit);
 
       productList.innerHTML = visibleProducts.length
-        ? visibleProducts.map(product => renderProductCard(product, mode)).join('')
+        ? visibleProducts.map(renderProductCard).join('')
         : '<p class="empty-products">No products are available in this category yet.</p>';
     }
 
