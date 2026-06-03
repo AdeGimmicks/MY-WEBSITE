@@ -643,6 +643,10 @@ body {
   font-size: 16px;
 }
 
+.summary-amount {
+  white-space: nowrap;
+}
+
 .payment-methods {
   display: flex;
   flex-direction: column;
@@ -1232,12 +1236,19 @@ img {
   .cart-total-wrapper p {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
     gap: 12px;
     margin: 8px 0;
   }
 
   .cart-total-wrapper p strong {
     white-space: nowrap;
+  }
+
+  .cart-total-wrapper .summary-amount {
+    flex: 0 0 auto;
+    margin-left: auto;
+    text-align: right;
   }
 
   .checkout-form {

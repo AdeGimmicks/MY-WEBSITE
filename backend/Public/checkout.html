@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Checkout | Electroniconly</title>
-  <link rel="stylesheet" href="style.css?v=mobile-cart-1" />
+  <link rel="stylesheet" href="style.css?v=mobile-cart-2" />
   <link rel="icon" href="Product images/Favicon image/faveicon electroniconly.png" type="image/png" />
   <script src="https://js.stripe.com/v3/"></script>
   
@@ -79,7 +79,7 @@
       margin-top: 10px;
     }
   </style>
-  <script src="js/site-core.js?v=pixel-1"></script>
+  <script src="js/site-core.js?v=visitor-intent-1"></script>
 </head>
 
 <body>
@@ -104,12 +104,12 @@
 
       <div class="cart-summary" style="margin-top: 10px;">
         <div class="cart-total-wrapper">
-          <p><strong>Subtotal:</strong> $<span id="subtotal">0.00</span></p>
-          <p><strong>Shipping:</strong> $<span id="shipping-amount">0.00</span></p>
-          <p><strong>Tax:</strong> $<span id="tax">0.00</span></p>
-          <p><strong>Processing Fee:</strong> $<span id="processing-fee">1.47</span></p>
-          <p><strong>Total:</strong> $<span id="cart-total">0.00</span></p>
-          <p><strong>Final Total:</strong> $<span id="final-total">0.00</span></p>
+          <p><strong>Subtotal:</strong> <span class="summary-amount">$<span id="subtotal">0.00</span></span></p>
+          <p><strong>Shipping:</strong> <span class="summary-amount">$<span id="shipping-amount">0.00</span></span></p>
+          <p><strong>Tax:</strong> <span class="summary-amount">$<span id="tax">0.00</span></span></p>
+          <p><strong>Processing Fee:</strong> <span class="summary-amount">$<span id="processing-fee">1.47</span></span></p>
+          <p><strong>Total:</strong> <span class="summary-amount">$<span id="cart-total">0.00</span></span></p>
+          <p><strong>Final Total:</strong> <span class="summary-amount">$<span id="final-total">0.00</span></span></p>
         </div>
       </div>
 
@@ -198,7 +198,7 @@
   </div>
 </footer>
 
-<script src="js/cart.js?v=store-manager-1"></script>
+<script src="js/cart.js?v=mobile-cart-2"></script>
 
 <script>
   const PROCESSING_FEE = 1.47;

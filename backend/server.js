@@ -1085,11 +1085,19 @@ function maskVisitorIp(ip) {
 }
 
 function normalizeVisitorEventName(eventName) {
-  return "visit";
+  const normalized = String(eventName || "visit").toLowerCase().replace(/[\s-]+/g, "_");
+  const aliases = {
+    view_item: "product_view",
+    view_cart: "cart_view",
+    begin_checkout: "checkout"
+  };
+  const cleanName = aliases[normalized] || normalized;
+  const allowedEvents = new Set(["visit", "product_view", "add_to_cart", "cart_view", "checkout"]);
+  return allowedEvents.has(cleanName) ? cleanName : "visit";
 }
 
 function shouldStoreVisitorEvent(eventName) {
-  return false;
+  return ["product_view", "add_to_cart", "cart_view", "checkout"].includes(eventName);
 }
 
 app.post('/api/visitor-event', async (req, res) => {

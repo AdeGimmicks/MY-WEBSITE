@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cartTotalSpan.textContent = '0.00';
 
     const taxDisplay = document.getElementById('cart-tax');
-    if (taxDisplay) taxDisplay.textContent = 'Tax: $0.00';
+    if (taxDisplay) taxDisplay.innerHTML = '<strong>Tax:</strong> <span class="summary-amount">$0.00</span>';
 
     return;
   }
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const taxDisplay = document.getElementById('cart-tax');
 
   if (taxDisplay) {
-    taxDisplay.textContent = `Tax: $${taxAmount.toFixed(2)}`;
+    taxDisplay.innerHTML = `<strong>Tax:</strong> <span class="summary-amount">$${taxAmount.toFixed(2)}</span>`;
   }
 
   if (typeof eoTrackViewCart === 'function' && /^\/?cart(?:\.html)?$/i.test(window.location.pathname.replace(/^\//, ''))) {

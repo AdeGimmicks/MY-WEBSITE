@@ -200,6 +200,12 @@ function eoTrackProductView(product) {
     value: price
   });
 
+  eoTrackManagerVisit('product_view', {
+    productId: itemId,
+    productName: product.name,
+    title: `Product view - ${product.name}`,
+    value: price
+  });
 }
 
 function eoTrackAddToCart(item) {
@@ -221,10 +227,17 @@ function eoTrackAddToCart(item) {
     value: price
   });
 
+  eoTrackManagerVisit('add_to_cart', {
+    productId: itemId,
+    productName: item.name,
+    title: `Added to cart - ${item.name}`,
+    value: price
+  });
 }
 
 function eoTrackBeginCheckout(cart, total) {
   const items = Array.isArray(cart) ? cart : [];
+  const firstItem = items[0] || {};
 
   eoTrackEvent('begin_checkout', {
     currency: 'USD',
@@ -240,13 +253,29 @@ function eoTrackBeginCheckout(cart, total) {
     value: Number(total || 0)
   });
 
+  eoTrackManagerVisit('checkout', {
+    productId: firstItem.productId || firstItem.id || firstItem.name || "",
+    productName: firstItem.name || "",
+    title: 'Started checkout',
+    value: Number(total || 0)
+  });
 }
 
 function eoTrackViewCart(cart, total) {
+  const items = Array.isArray(cart) ? cart : [];
+  const firstItem = items[0] || {};
+
   eoTrackEvent('view_cart', {
     currency: 'USD',
     value: Number(total || 0),
-    items: (Array.isArray(cart) ? cart : []).map(eoAnalyticsItem)
+    items: items.map(eoAnalyticsItem)
+  });
+
+  eoTrackManagerVisit('cart_view', {
+    productId: firstItem.productId || firstItem.id || firstItem.name || "",
+    productName: firstItem.name || "",
+    title: 'Viewed cart',
+    value: Number(total || 0)
   });
 }
 

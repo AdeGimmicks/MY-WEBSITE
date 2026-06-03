@@ -1846,11 +1846,33 @@
     }
 
     function eventNameLabel(eventName) {
-      return String(eventName || "visit").replace(/_/g, " ");
+      const labels = {
+        visit: "Visit",
+        product_view: "Product view",
+        add_to_cart: "Added to cart",
+        cart_view: "Viewed cart",
+        checkout: "Started checkout"
+      };
+      return labels[eventName] || String(eventName || "visit").replace(/_/g, " ");
+    }
+
+    function escapeText(value = "") {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
     }
 
     function visitorLastAction(visitor) {
-      return eventNameLabel(visitor.lastEvent);
+      const action = eventNameLabel(visitor.lastEvent);
+      const product = visitor.lastProduct || "";
+      if (["product_view", "add_to_cart"].includes(visitor.lastEvent) && product) {
+        return `${action} - ${product}`;
+      }
+      return action;
     }
 
     async function loadVisitors() {
@@ -1864,8 +1886,8 @@
               <p class="visitor-meta">${visitor.device || "Device"} / ${visitor.browser || "Browser"}</p>
             </div>
             <div>
-              <p class="visitor-action">${visitorLastAction(visitor)}</p>
-              <p class="visitor-meta">${visitorLocationText(visitor)}${visitorIpText(visitor)}</p>
+              <p class="visitor-action">${escapeText(visitorLastAction(visitor))}</p>
+              <p class="visitor-meta">${escapeText(visitorLocationText(visitor))}${escapeText(visitorIpText(visitor))}</p>
             </div>
             <div>
               <p class="visitor-meta">Last seen</p>
@@ -1885,7 +1907,7 @@
       }
 
       const rows = [
-        ["Visitor", "Device", "Browser", "Location", "IP", "Visit Status", "Last Seen", "Customer Email"]
+        ["Visitor", "Device", "Browser", "Location", "IP", "Latest Activity", "Last Product", "Last Seen", "Customer Email"]
       ];
 
       visitorActivity.forEach(visitor => {
@@ -1895,7 +1917,8 @@
           visitor.browser || "",
           visitorLocationText(visitor),
           visitor.location?.ip || "",
-          eventNameLabel(visitor.lastEvent),
+          visitorLastAction(visitor),
+          visitor.lastProduct || "",
           visitor.lastSeen ? new Date(visitor.lastSeen).toLocaleString() : "",
           visitor.customerEmail || ""
         ]);
