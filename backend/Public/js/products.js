@@ -629,13 +629,6 @@ function renderProductCard(product) {
         <p class="stock-note">${stockText}</p>
       </a>
       <div class="buy-btn">
-        <a href="#" class="btn small buy-now${disabledClass}"
-          data-name="${product.name}"
-          data-price="${price}"
-          data-image="${product.image}"
-          data-product-id="${product.id}">
-          Buy Now
-        </a>
         <a href="#" class="btn small add-to-cart${disabledClass}"
           data-name="${product.name}"
           data-price="${price}"
