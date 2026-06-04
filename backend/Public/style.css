@@ -1297,6 +1297,25 @@ img {
     text-align: right;
   }
 
+  .cart-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .cart-buttons .btn {
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 14px;
+    border-radius: 999px;
+    font-size: clamp(0.92rem, 3.8vw, 1rem);
+    line-height: 1.1;
+    text-align: center;
+    white-space: normal;
+    box-shadow: 0 7px 16px rgba(0, 0, 0, 0.12);
+  }
+
   .checkout-form {
     width: 100%;
     min-width: 0;
